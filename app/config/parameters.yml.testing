@@ -14,6 +14,6 @@ parameters:
     database_testing_driver: pdo_mysql
     database_testing_host: hxv-sntdb.hexacta.com
     database_testing_port: 3306
-    database_testing_name: snd_unit
+    database_testing_name: snc_unit
     database_testing_user: root
     database_testing_password: asdf1234
