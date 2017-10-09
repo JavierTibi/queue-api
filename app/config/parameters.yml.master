@@ -3,7 +3,7 @@ parameters:
     database_driver: pdo_mysql
     database_host: hxv-sntdb.hexacta.com
     database_port: 3306
-    database_name: snc_testing
+    database_name: snc_uat
     database_user: root
     database_password: asdf1234
     mailer_transport: smtp

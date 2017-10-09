@@ -1,10 +1,10 @@
 {
-    "name": "fcarrera/apicolas",
+    "name": "Ministerio de Modernización Nacional/Sistema Nacional de Colas",
     "license": "proprietary",
     "type": "project",
     "autoload": {
         "psr-4": {
-            "AppBundle\\": "src/AppBundle"
+            "": "src"
         },
         "classmap": [
             "app/AppKernel.php",
@@ -26,11 +26,19 @@
         "symfony/monolog-bundle": "^3.0.2",
         "symfony/swiftmailer-bundle": "~2.3,>=2.3.10",
         "symfony/symfony": "2.8.*",
-        "twig/twig": "^1.0||^2.0"
+        "twig/twig": "^1.0||^2.0",
+        "doctrine/doctrine-migrations-bundle" : "~1.2",
+        "friendsofsymfony/rest-bundle": "@stable",
+        "jms/serializer-bundle": "2.0.0",
+        "ramsey/uuid": "3.7.0",
+        "nelmio/cors-bundle": "~1.5",
+        "gedmo/doctrine-extensions": "^2.4"
     },
     "require-dev": {
         "sensio/generator-bundle": "~3.0",
-        "symfony/phpunit-bridge": "~2.7"
+        "symfony/phpunit-bridge": "~2.7",
+        "phpmd/phpmd" : "@stable",
+        "squizlabs/php_codesniffer": "3.*"
     },
     "scripts": {
         "symfony-scripts": [
