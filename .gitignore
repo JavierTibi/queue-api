@@ -27,6 +27,10 @@
 !bin/symfony_requirements
 /vendor/
 /composer.lock
+app/SymfonyRequirements.php
+app/check.php
+web/config.php
+
 
 # Assets and user uploads
 /web/bundles/
@@ -52,3 +56,5 @@
 .buildpath
 .project
 .settings/
+# PHPStorm
+.idea/

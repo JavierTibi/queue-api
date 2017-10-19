@@ -65,3 +65,30 @@ swiftmailer:
     username: '%mailer_user%'
     password: '%mailer_password%'
     spool: { type: memory }
+
+#FOSRestBundle
+fos_rest:
+    routing_loader:
+        default_format: json
+    body_converter:
+        enabled: true
+        validate: true
+    serializer:
+        serialize_null: true
+    view:
+        formats:
+            xml:  false
+            json: true
+            rss:  false
+            yml:  true
+        view_response_listener: force
+    param_fetcher_listener: force
+    format_listener:
+        rules:
+            - { path: '^/api/v1.0/', priorities: ['json', 'yml'], fallback_format: json, prefer_extension: true }
+            - { path: '^/', stop: true } # FOSRest should not handle other routes than API
+    versioning:
+        enabled: true
+        resolvers:
+            media_type:
+                enabled: true
