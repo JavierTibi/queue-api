@@ -1,4 +1,24 @@
+parameters:
+    snc.services.general.class: ApiV1Bundle\ApplicationServices\SNCServices
+    snc.services.login.class: ApiV1Bundle\ApplicationServices\LoginServices
+    snc.repository.user.class: ApiV1Bundle\Repository\UserRepository
+
 services:
-#    api_v1.example:
-#        class: ApiV1Bundle\Example
-#        arguments: ["@service_id", "plain_value", "%parameter%"]
+    
+    ## REPOSITORIES ##
+
+    snc.repository.user:
+        class: '%snc.repository.user.class%'
+        factory: ['@doctrine.orm.entity_manager', getRepository]
+        arguments:
+            - ApiV1Bundle\Entity\User
+
+    ### SERVICES ###
+
+    snc.services.general:
+        class: '%snc.services.general.class%'
+        arguments: ['@service_container']
+    
+    snc.services.login:
+        class: '%snc.services.login.class%'
+        arguments: ['@service_container', '@snc.repository.user', '@security.password_encoder']

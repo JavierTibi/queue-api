@@ -1,10 +1,10 @@
 <?php
-
 namespace ApiV1Bundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * User
@@ -14,7 +14,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * @Gedmo\SoftDeleteable(fieldName="fechaBorrado")
  * @ORM\HasLifecycleCallbacks()
  */
-class User
+class User implements UserInterface, \Serializable
 {
     /**
      * @var int
@@ -30,43 +30,43 @@ class User
      *
      * @ORM\Column(name="username", type="string", length=128, unique=true)
      */
-    protected $username;
+    private $username;
 
     /**
      * @var string
      *
      * @ORM\Column(name="password", type="string", length=60)
      */
-    protected $password;
+    private $password;
 
     /**
      * @var string
      *
      * @ORM\Column(name="nombre", type="string", length=128)
      */
-    protected $nombre;
+    private $nombre;
 
     /**
      * @var string
      *
      * @ORM\Column(name="apellido", type="string", length=128)
      */
-    protected $apellido;
+    private $apellido;
 
     /**
      * @var int
      *
      * @ORM\Column(name="punto_atencion_id", type="integer")
      */
-    protected $puntoAtencion;
+    private $puntoAtencion;
 
     /**
      * @var int
      *
-     * @ORM\Column(name="tipo", type="smallint")
+     * @ORM\ManyToOne(targetEntity="Rol", inversedBy="usuarios")
+     * @ORM\JoinColumn(name="rol_id", referencedColumnName="id")
      */
-    protected $tipo;
-
+    private $rol;
 
     /**
      * Get id
@@ -86,6 +86,14 @@ class User
     public function getUsername()
     {
         return $this->username;
+    }
+
+    /**
+     * @param string $password
+     */
+    public function setPassword($password)
+    {
+        $this->password = $password;
     }
 
     /**
@@ -128,14 +136,54 @@ class User
         return $this->puntoAtencion;
     }
 
-    /**
-     * Get tipo
-     *
-     * @return int
-     */
-    public function getTipo()
+    public function getRoles()
     {
-        return $this->tipo;
+        return $this->rol->getNombre();
+    }
+
+    /**
+     * Password salt
+     * {@inheritDoc}
+     * @see \Symfony\Component\Security\Core\User\UserInterface::getSalt()
+     */
+    public function getSalt()
+    {
+        return null;
+    }
+
+    /**
+     * Erase user credentials
+     *
+     * {@inheritDoc}
+     * @see \Symfony\Component\Security\Core\User\UserInterface::eraseCredentials()
+     */
+    public function eraseCredentials()
+    {
+    }
+
+    /**
+     * Serialize user
+     *
+     * {@inheritDoc}
+     * @see Serializable::serialize()
+     */
+    public function serialize()
+    {
+        return serialize([
+            $this->id,
+            $this->username,
+            $this->password
+        ]);
+    }
+
+    /**
+     * Unserialize user
+     *
+     * {@inheritDoc}
+     * @see Serializable::unserialize()
+     */
+    public function unserialize($serialized)
+    {
+        list ($this->id, $this->username, $this->password) = unserialize($serialized);
     }
 }
-

@@ -1,5 +1,4 @@
 <?php
-
 namespace ApiV1Bundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -89,4 +88,3 @@ class Responsable extends Usuario
         return $this->fechaBorrado;
     }
 }
-
