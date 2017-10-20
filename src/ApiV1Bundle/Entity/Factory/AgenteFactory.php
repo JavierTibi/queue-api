@@ -43,10 +43,13 @@ class AgenteFactory
 
         if (! $validateResultadoUser->hasError() && ! $validateResultadoAgente->hasError()) {
 
+            //TODO Transaction
             $user = new User(
                 $params['username'],
                 $params['password']
             );
+
+
 
             $agente = new Agente(
                 $params['nombre'],

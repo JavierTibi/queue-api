@@ -40,20 +40,6 @@ class User implements UserInterface, \Serializable
     private $password;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="nombre", type="string", length=128)
-     */
-    private $nombre;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="apellido", type="string", length=128)
-     */
-    private $apellido;
-
-    /**
      * @var int
      *
      * @ORM\Column(name="punto_atencion_id", type="integer")
@@ -67,6 +53,12 @@ class User implements UserInterface, \Serializable
      * @ORM\JoinColumn(name="rol_id", referencedColumnName="id")
      */
     private $rol;
+
+    public function __construct($username, $password)
+    {
+        $this->username;
+        $this->password;
+    }
 
     /**
      * Get id
@@ -89,14 +81,6 @@ class User implements UserInterface, \Serializable
     }
 
     /**
-     * @param string $password
-     */
-    public function setPassword($password)
-    {
-        $this->password = $password;
-    }
-
-    /**
      * Get password
      *
      * @return string
@@ -104,26 +88,6 @@ class User implements UserInterface, \Serializable
     public function getPassword()
     {
         return $this->password;
-    }
-
-    /**
-     * Get nombre
-     *
-     * @return string
-     */
-    public function getNombre()
-    {
-        return $this->nombre;
-    }
-
-    /**
-     * Get apellido
-     *
-     * @return string
-     */
-    public function getApellido()
-    {
-        return $this->apellido;
     }
 
     /**

@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 
-class AgenteController extends Controller
+class AgenteController extends ApiController
 {
     private $agenteServices;
 
@@ -24,7 +24,7 @@ class AgenteController extends Controller
      */
     private function getAgenteServices()
     {
-        return $this->container->get('snc.agente.services');
+        return $this->container->get('snc.services.agente');
     }
 
     /**
@@ -41,23 +41,14 @@ class AgenteController extends Controller
 
         return $this->agenteServices->create(
             $params,
-            function ($tramite) {
+            function ($agente) {
                 return $this->respuestaOk('Agente creado con éxito', [
-                    'id' => $tramite->getId()
+                    'id' => $agente->getId()
                 ]);
             },
             function ($err) {
                 return $this->respuestaError($err);
             }
         );
-
-      //  $agente = new Agente($params['nombre'],$params['apellido'], $params['username'], $params['password']);
-
-/*
-        $em = $this->getDoctrine()->getManager();
-        $em->persist($agente);
-        $em->flush();*/
-
-      //  return new Response('Created product id '.$agente->getId());
     }
 }

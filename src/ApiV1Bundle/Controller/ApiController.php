@@ -1,6 +1,8 @@
 <?php
 namespace ApiV1Bundle\Controller;
 
+use ApiV1Bundle\Entity\Response\Respuesta;
+use ApiV1Bundle\Entity\Response\RespuestaConEstado;
 use FOS\RestBundle\Controller\FOSRestController;
 
 /**
@@ -22,5 +24,81 @@ class ApiController extends FOSRestController
     protected function getLoginServices()
     {
         return $this->container->get('snc.services.login');
+    }
+
+    /**
+     * Retorna una Respuesta con estado SUCCESS
+     *
+     * @param array $message Mensaje de éxito
+     * @return RespuestaConEstado
+     */
+    protected function respuestaOk($message, $additional = '')
+    {
+        return new RespuestaConEstado(
+            RespuestaConEstado::STATUS_SUCCESS,
+            RespuestaConEstado::CODE_SUCCESS,
+            $message,
+            '',
+            $additional
+        );
+    }
+
+    /**
+     * Retorna una Respuesta con estado FATAL
+     *
+     * @param array $message Mensaje Fatal
+     * @return RespuestaConEstado
+     */
+    protected function respuestaError($message)
+    {
+        return new RespuestaConEstado(
+            RespuestaConEstado::STATUS_FATAL,
+            RespuestaConEstado::CODE_FATAL,
+            $message,
+            '',
+            ''
+        );
+    }
+
+    /**
+     * Retorna una Respuesta con estado Not Found
+     *
+     * @param array $message Mensaje No encontrado
+     * @return RespuestaConEstado
+     */
+    protected function respuestaNotFound($message)
+    {
+        return new RespuestaConEstado(
+            RespuestaConEstado::STATUS_NOT_FOUND,
+            RespuestaConEstado::CODE_NOT_FOUND,
+            $message
+        );
+    }
+
+    /**
+     * Retorna una Respuesta con estado Bad Request
+     *
+     * @param array $message Mensaje respuesta errónea
+     * @return RespuestaConEstado
+     */
+    protected function respuestaBadRequest($message)
+    {
+        return new RespuestaConEstado(
+            RespuestaConEstado::STATUS_BAD_REQUEST,
+            RespuestaConEstado::CODE_BAD_REQUEST,
+            $message
+        );
+    }
+
+    /**
+     * Retorna una Respuesta con datos
+     *
+     * @param $metadata
+     * @param $result
+     * @return \ApiV1Bundle\Entity\Response\Respuesta
+     */
+    protected function respuestaData($metadata, $result)
+    {
+        return new Respuesta($metadata, $result);
     }
 }
