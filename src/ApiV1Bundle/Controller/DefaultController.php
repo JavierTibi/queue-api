@@ -1,17 +1,20 @@
 <?php
-
 namespace ApiV1Bundle\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use FOS\RestBundle\Controller\Annotations\Get;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
-class DefaultController extends Controller
+class DefaultController extends ApiController
 {
+
     /**
-     * @Route("/")
+     * Controller por defecto
+     *
+     * @return JsonResponse
+     * @Get("/", name="api_index")
      */
     public function indexAction()
     {
-        return $this->render('ApiV1Bundle:Default:index.html.twig');
+        return new JsonResponse([]);
     }
 }

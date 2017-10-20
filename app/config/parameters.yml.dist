@@ -17,3 +17,11 @@ parameters:
 
     # A secret key that's used to generate certain security-related tokens
     secret: ThisTokenIsNotSoSecretChangeIt
+    
+    # Unit testing database
+    database_testing_driver: pdo_mysql
+    database_testing_host: 127.0.0.1
+    database_testing_port: ~
+    database_testing_name: symfony
+    database_testing_user: root
+    database_testing_password: ~

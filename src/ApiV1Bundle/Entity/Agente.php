@@ -1,5 +1,4 @@
 <?php
-
 namespace ApiV1Bundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
@@ -73,7 +72,6 @@ class Agente extends Usuario
     {
         parent::__construct($nombre, $apellido, $user, $puntoAtencion);
         $this->ventanillas = new ArrayCollection();
-
     }
 
     /**
@@ -163,4 +161,3 @@ class Agente extends Usuario
         return $this->fechaBorrado;
     }
 }
-

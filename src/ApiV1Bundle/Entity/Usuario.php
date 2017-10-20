@@ -1,5 +1,4 @@
 <?php
-
 namespace ApiV1Bundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -11,7 +10,6 @@ use Doctrine\ORM\Mapping as ORM;
  */
 abstract class Usuario
 {
-
 
     /**
      * @var string
@@ -79,4 +77,3 @@ abstract class Usuario
         return $this->puntoAtencion;
     }
 }
-

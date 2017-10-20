@@ -32,7 +32,7 @@ class AgenteController extends Controller
      *
      * @param Request $request Espera el resultado de una petición como parámetro
      * @return mixed
-     * @POST("/agentes")
+     * @Post("/agentes")
      */
     public function postAction(Request $request)
     {

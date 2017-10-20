@@ -1,5 +1,4 @@
 <?php
-
 namespace ApiV1Bundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
@@ -176,6 +175,4 @@ class Ventanilla
     {
         return $this->fechaBorrado;
     }
-
 }
-
