@@ -15,6 +15,17 @@ use Symfony\Component\HttpFoundation\Response;
 
 class AgenteController extends Controller
 {
+    private $agenteServices;
+
+    /**
+     * Obtiene Agente service
+     *
+     * @return object
+     */
+    private function getAgenteServices()
+    {
+        return $this->container->get('snc.agente.services');
+    }
 
     /**
      * Crear un agente
@@ -25,14 +36,28 @@ class AgenteController extends Controller
      */
     public function postAction(Request $request)
     {
-     /*   $params = $request->request->all();
-        $agente = new Agente($params['nombre'],$params['apellido'], $params['username'], $params['password']);
+        $params = $request->request->all();
+        $this->agenteServices = $this->getAgenteServices();
 
+        return $this->agenteServices->create(
+            $params,
+            function ($tramite) {
+                return $this->respuestaOk('Agente creado con éxito', [
+                    'id' => $tramite->getId()
+                ]);
+            },
+            function ($err) {
+                return $this->respuestaError($err);
+            }
+        );
 
+      //  $agente = new Agente($params['nombre'],$params['apellido'], $params['username'], $params['password']);
+
+/*
         $em = $this->getDoctrine()->getManager();
         $em->persist($agente);
-        $em->flush();
+        $em->flush();*/
 
-        return new Response('Created product id '.$agente->getId());*/
+      //  return new Response('Created product id '.$agente->getId());
     }
 }
