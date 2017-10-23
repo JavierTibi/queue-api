@@ -1,7 +1,18 @@
 parameters:
+
+    #Services
     snc.services.general.class: ApiV1Bundle\ApplicationServices\SNCServices
     snc.services.login.class: ApiV1Bundle\ApplicationServices\LoginServices
+    snc.services.agente.class: ApiV1Bundle\ApplicationServices\AgenteServices
+
+    #Repositorys
     snc.repository.user.class: ApiV1Bundle\Repository\UserRepository
+    snc.repository.agente.class: ApiV1Bundle\Repository\AgenteRepository
+
+    #Validators
+    snc.validator.agente.class: ApiV1Bundle\Entity\Validator\AgenteValidator
+    snc.validator.user.class: ApiV1Bundle\Entity\Validator\UserValidator
+
 
 services:
     
@@ -13,6 +24,12 @@ services:
         arguments:
             - ApiV1Bundle\Entity\User
 
+    snc.repository.agente:
+        class: '%snc.repository.agente.class%'
+        factory: ['@doctrine.orm.entity_manager', getRepository]
+        arguments:
+            - ApiV1Bundle\Entity\Agente
+
     ### SERVICES ###
 
     snc.services.general:
@@ -22,3 +39,17 @@ services:
     snc.services.login:
         class: '%snc.services.login.class%'
         arguments: ['@service_container', '@snc.repository.user', '@security.password_encoder']
+
+    snc.services.agente:
+        class: '%snc.services.agente.class%'
+        arguments: ['@service_container', '@snc.repository.agente', '@snc.validator.agente', '@snc.validator.user']
+
+
+    ## VALIDATORS ##
+
+    snc.validator.agente:
+       class: '%snc.validator.agente.class%'
+
+    snc.validator.user:
+       class: '%snc.validator.user.class%'
+       arguments: ['@snc.repository.user']

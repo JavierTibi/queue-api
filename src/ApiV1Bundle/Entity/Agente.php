@@ -68,7 +68,7 @@ class Agente extends Usuario
      * @param $user
      * @param $puntoAtencion
      */
-    public function __construct($nombre, $apellido, $user, $puntoAtencion)
+    public function __construct($nombre, $apellido, $puntoAtencion, $ventanillas, User $user)
     {
         parent::__construct($nombre, $apellido, $user, $puntoAtencion);
         $this->ventanillas = new ArrayCollection();
