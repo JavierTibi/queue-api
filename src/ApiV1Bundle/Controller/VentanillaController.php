@@ -12,28 +12,28 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-
-class AgenteController extends ApiController
+class VentanillaController extends ApiController
 {
-    private $agenteServices;
+
+    private $ventanillaServices;
 
     /**
-     * Crear un agente
+     * Crear una ventanilla
      *
      * @param Request $request Espera el resultado de una petición como parámetro
      * @return mixed
-     * @Post("/agentes")
+     * @Post("/ventanillas")
      */
     public function postAction(Request $request)
     {
         $params = $request->request->all();
-        $this->agenteServices = $this->getAgenteServices();
+        $this->ventanillaServices = $this->getVentanillaServices();
 
-        return $this->agenteServices->create(
+        return $this->ventanillaServices->create(
             $params,
-            function ($agente) {
-                return $this->respuestaOk('Agente creado con éxito', [
-                    'id' => $agente->getId()
+            function ($ventanilla) {
+                return $this->respuestaOk('Ventanilla creada con éxito', [
+                    'id' => $ventanilla->getId()
                 ]);
             },
             function ($err) {
@@ -41,4 +41,5 @@ class AgenteController extends ApiController
             }
         );
     }
+
 }

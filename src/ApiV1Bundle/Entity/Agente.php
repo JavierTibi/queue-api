@@ -28,7 +28,7 @@ class Agente extends Usuario
     /**
      * @var int
      *
-     * @ORM\Column(name="ventanilla_id", type="integer")
+     * @ORM\Column(name="ventanilla_id", type="integer", nullable = true)
      */
     private $ventanillaActual;
 

@@ -27,6 +27,26 @@ class ApiController extends FOSRestController
     }
 
     /**
+     * Obtiene Agente service
+     *
+     * @return object
+     */
+    protected function getAgenteServices()
+    {
+        return $this->container->get('snc.services.agente');
+    }
+
+    /**
+     * Obtiene Ventanilla service
+     *
+     * @return object
+     */
+    protected function getVentanillaServices()
+    {
+        return $this->container->get('snc.services.ventanilla');
+    }
+
+    /**
      * Retorna una Respuesta con estado SUCCESS
      *
      * @param array $message Mensaje de éxito

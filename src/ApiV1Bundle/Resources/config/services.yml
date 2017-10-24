@@ -4,14 +4,17 @@ parameters:
     snc.services.general.class: ApiV1Bundle\ApplicationServices\SNCServices
     snc.services.login.class: ApiV1Bundle\ApplicationServices\LoginServices
     snc.services.agente.class: ApiV1Bundle\ApplicationServices\AgenteServices
+    snc.services.ventanilla.class: ApiV1Bundle\ApplicationServices\VentanillaServices
 
     #Repositorys
     snc.repository.user.class: ApiV1Bundle\Repository\UserRepository
     snc.repository.agente.class: ApiV1Bundle\Repository\AgenteRepository
+    snc.repository.ventanilla.class: ApiV1Bundle\Repository\VentanillaRepository
 
     #Validators
     snc.validator.agente.class: ApiV1Bundle\Entity\Validator\AgenteValidator
     snc.validator.user.class: ApiV1Bundle\Entity\Validator\UserValidator
+    snc.validator.ventanilla.class: ApiV1Bundle\Entity\Validator\VentanillaValidator
 
 
 services:
@@ -30,6 +33,12 @@ services:
         arguments:
             - ApiV1Bundle\Entity\Agente
 
+    snc.repository.ventanilla:
+        class: '%snc.repository.ventanilla.class%'
+        factory: ['@doctrine.orm.entity_manager', getRepository]
+        arguments:
+            - ApiV1Bundle\Entity\Ventanilla
+
     ### SERVICES ###
 
     snc.services.general:
@@ -42,13 +51,20 @@ services:
 
     snc.services.agente:
         class: '%snc.services.agente.class%'
-        arguments: ['@service_container', '@snc.repository.agente', '@snc.validator.agente', '@snc.validator.user']
+        arguments: ['@service_container', '@snc.repository.agente', '@snc.validator.agente', '@snc.validator.user', '@snc.repository.ventanilla']
+
+    snc.services.ventanilla:
+        class: '%snc.services.ventanilla.class%'
+        arguments: ['@service_container', '@snc.repository.ventanilla', '@snc.validator.ventanilla']
 
 
     ## VALIDATORS ##
 
     snc.validator.agente:
        class: '%snc.validator.agente.class%'
+
+    snc.validator.ventanilla:
+          class: '%snc.validator.ventanilla.class%'
 
     snc.validator.user:
        class: '%snc.validator.user.class%'

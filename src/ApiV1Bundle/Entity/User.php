@@ -42,22 +42,15 @@ class User implements UserInterface, \Serializable
     /**
      * @var int
      *
-     * @ORM\Column(name="punto_atencion_id", type="integer")
-     */
-    private $puntoAtencion;
-
-    /**
-     * @var int
-     *
      * @ORM\ManyToOne(targetEntity="Rol", inversedBy="usuarios")
-     * @ORM\JoinColumn(name="rol_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="rol_id", referencedColumnName="id", nullable = true)
      */
     private $rol;
 
     public function __construct($username, $password)
     {
-        $this->username;
-        $this->password;
+        $this->username = $username;
+        $this->password = $password;
     }
 
     /**

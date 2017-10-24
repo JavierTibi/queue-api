@@ -14,21 +14,29 @@ use ApiV1Bundle\Entity\User;
 use ApiV1Bundle\Entity\Validator\AgenteValidator;
 use ApiV1Bundle\Entity\Validator\UserValidator;
 use ApiV1Bundle\Entity\Validator\ValidateResultado;
+use ApiV1Bundle\Entity\Ventanilla;
+use ApiV1Bundle\Repository\VentanillaRepository;
 
 class AgenteFactory
 {
     private $agenteValidator;
     private $userValidator;
+    private $ventanillaRepository;
+
 
     /**
      * AgenteFactory constructor.
      * @param AgenteValidator $agenteValidator
      * @param UserValidator $userValidator
      */
-    public function __construct(AgenteValidator $agenteValidator, UserValidator $userValidator)
+    public function __construct(
+        AgenteValidator $agenteValidator,
+        UserValidator $userValidator,
+        VentanillaRepository $ventanillaRepository)
     {
         $this->agenteValidator = $agenteValidator;
         $this->userValidator = $userValidator;
+        $this->ventanillaRepository = $ventanillaRepository;
     }
 
     /**
@@ -43,13 +51,10 @@ class AgenteFactory
 
         if (! $validateResultadoUser->hasError() && ! $validateResultadoAgente->hasError()) {
 
-            //TODO Transaction
             $user = new User(
                 $params['username'],
                 $params['password']
             );
-
-
 
             $agente = new Agente(
                 $params['nombre'],
@@ -58,6 +63,11 @@ class AgenteFactory
                 $params['ventanillas'],
                 $user
             );
+
+            foreach ($params['ventanillas'] as $idVentanilla) {
+                $ventanilla = $this->ventanillaRepository->find($idVentanilla);
+                $agente->addVentanilla($ventanilla);
+            }
 
             $validateResultadoAgente->setEntity($agente);
 
