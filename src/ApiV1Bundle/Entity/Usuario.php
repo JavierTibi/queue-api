@@ -76,4 +76,37 @@ abstract class Usuario
     {
         return $this->puntoAtencion;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getUser()
+    {
+        return $this->user;
+    }
+
+    /**
+     * @param string $nombre
+     */
+    public function setNombre($nombre)
+    {
+        $this->nombre = $nombre;
+    }
+
+    /**
+     * @param string $apellido
+     */
+    public function setApellido($apellido)
+    {
+        $this->apellido = $apellido;
+    }
+
+    /**
+     * @param int $puntoAtencion
+     */
+    public function setPuntoAtencion($puntoAtencion)
+    {
+        $this->puntoAtencion = $puntoAtencion;
+    }
+
 }

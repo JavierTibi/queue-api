@@ -41,4 +41,28 @@ class AgenteController extends ApiController
             }
         );
     }
+
+    /**
+     * Modificar un agente
+     *
+     * @param Request $request Espera el resultado de una petición como parámetro
+     * @return mixed
+     * @Put("/agentes/{id}")
+     */
+    public function putAction(Request $request, $id)
+    {
+        $params = $request->request->all();
+        $this->agenteServices = $this->getAgenteServices();
+
+        return $this->agenteServices->edit(
+            $params,
+            $id,
+            function () {
+                return $this->respuestaOk('Agente modificado con éxito');
+            },
+            function ($err) {
+                return $this->respuestaError($err);
+            }
+        );
+    }
 }

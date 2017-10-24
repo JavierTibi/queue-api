@@ -3,6 +3,7 @@
 namespace ApiV1Bundle\ApplicationServices;
 
 use ApiV1Bundle\Entity\Factory\AgenteFactory;
+use ApiV1Bundle\Entity\Sync\AgenteSync;
 use ApiV1Bundle\Entity\Validator\AgenteValidator;
 use ApiV1Bundle\Entity\Validator\UserValidator;
 use ApiV1Bundle\Repository\AgenteRepository;
@@ -55,6 +56,33 @@ class AgenteServices extends SNCServices
             $validateResult,
             function ($entity) use ($sucess) {
                 return call_user_func($sucess, $this->agenteRepository->save($entity));
+            },
+            $error
+        );
+    }
+
+    /**
+     * Editar un usuario Agente
+     *
+     * @param $params
+     * @param $id
+     * @param $success
+     * @param $error
+     * @return mixed
+     */
+    public function edit($params, $id, $success, $error)
+    {
+        $agenteSync = new AgenteSync(
+            $this->agenteValidator,
+            $this->agenteRepository,
+            $this->ventanillaRepository
+        );
+
+        $validateResult = $agenteSync->edit($id, $params);
+        return $this->processResult(
+            $validateResult,
+            function ($entity) use ($success) {
+                return call_user_func($success, $this->agenteRepository->flush());
             },
             $error
         );

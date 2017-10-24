@@ -133,6 +133,14 @@ class Agente extends Usuario
     }
 
     /**
+     * Eliminar todas las ventanillas
+     */
+    public function removeAllVentanilla()
+    {
+        $this->ventanillas->clear();
+    }
+
+    /**
      * Genera las fechas de creación y modificación
      *
      * @ORM\PrePersist

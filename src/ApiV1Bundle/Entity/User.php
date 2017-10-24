@@ -84,6 +84,22 @@ class User implements UserInterface, \Serializable
     }
 
     /**
+     * @param string $username
+     */
+    public function setUsername($username)
+    {
+        $this->username = $username;
+    }
+
+    /**
+     * @param string $password
+     */
+    public function setPassword($password)
+    {
+        $this->password = $password;
+    }
+
+    /**
      * Get puntoAtencionId
      *
      * @return int
