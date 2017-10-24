@@ -43,4 +43,15 @@ class AgenteValidator extends SNCValidator
 
         return new ValidateResultado(null, $errors);
     }
+
+    public function validarDelete($agente)
+    {
+        $errors = [];
+
+        if (! $agente) {
+            $errors['agente'] = 'Agente inexistente';
+        }
+
+        return new ValidateResultado(null, $errors);
+    }
 }

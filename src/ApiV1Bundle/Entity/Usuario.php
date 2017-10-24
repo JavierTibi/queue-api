@@ -34,7 +34,7 @@ abstract class Usuario
 
     /**
      * Un usuario tiene un User
-     * @ORM\OneToOne(targetEntity="User", cascade={"persist"})
+     * @ORM\OneToOne(targetEntity="User", cascade={"persist", "remove"})
      * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
      */
     protected $user;

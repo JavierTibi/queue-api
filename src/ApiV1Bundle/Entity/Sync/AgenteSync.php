@@ -6,6 +6,7 @@ namespace ApiV1Bundle\Entity\Sync;
 use ApiV1Bundle\Entity\Agente;
 use ApiV1Bundle\Entity\Validator\AgenteValidator;
 use ApiV1Bundle\Entity\Validator\UserValidator;
+use ApiV1Bundle\Entity\Validator\ValidateResultado;
 use ApiV1Bundle\Repository\AgenteRepository;
 use ApiV1Bundle\Repository\VentanillaRepository;
 
@@ -65,6 +66,26 @@ class AgenteSync
             }
 
             $validateResultado->setEntity($agente);
+        }
+
+        return $validateResultado;
+    }
+
+    /**
+     * Borra un agente
+     * @param integer $id Identificador único del área
+     *
+     * @return ValidateResultado
+     */
+    public function delete($id)
+    {
+        $agente = $this->agenteRepository->find($id);
+
+        $validateResultado = $this->agenteValidator->validarDelete($agente);
+
+        if (! $validateResultado->hasError()) {
+            $validateResultado->setEntity($agente);
+            return $validateResultado;
         }
 
         return $validateResultado;

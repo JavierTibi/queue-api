@@ -87,4 +87,31 @@ class AgenteServices extends SNCServices
             $error
         );
     }
+
+    /**
+     * Elimina un agente
+     *
+     * @param integer $id Identificador único del área
+     * @param $success | Indica si tuvo éxito o no
+     * @param string $error Mensaje con el error ocurrido al borrar un área
+     * @return mixed
+     */
+    public function delete($id, $success, $error)
+    {
+        $agenteSync = new AgenteSync(
+            $this->agenteValidator,
+            $this->agenteRepository,
+            $this->ventanillaRepository
+        );
+
+        $validateResult = $agenteSync->delete($id);
+
+        return $this->processResult(
+            $validateResult,
+            function ($entity) use ($success) {
+                return call_user_func($success, $this->agenteRepository->remove($entity));
+            },
+            $error
+        );
+    }
 }

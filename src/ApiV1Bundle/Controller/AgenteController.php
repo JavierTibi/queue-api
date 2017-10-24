@@ -65,4 +65,25 @@ class AgenteController extends ApiController
             }
         );
     }
+
+    /**
+     * Eliminar un agente
+     *
+     * @param integer $id Identificador único del agente
+     * @return mixed
+     * @Delete("/agentes/{id}")
+     */
+    public function deleteAction($id)
+    {
+        $this->agenteServices = $this->getAgenteServices();
+        return $this->agenteServices->delete(
+            $id,
+            function () {
+                return $this->respuestaOk('Agente eliminado con éxito');
+            },
+            function ($err) {
+                return $this->respuestaError($err);
+            }
+        );
+    }
 }
