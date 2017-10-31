@@ -269,22 +269,19 @@ class SNCValidator
     public function validarAgente($agente)
     {
         $errors = [];
-
         if (! $agente) {
             $errors['agente'] = 'Agente inexistente';
         }
-
         return new ValidateResultado(null, $errors);
     }
 
     public function validarVentanilla($ventanilla)
     {
         $errors = [];
-
         if (! $ventanilla) {
             $errors['Ventanilla'] = "Ventanilla inexistente.";
         }
-
         return new ValidateResultado(null, $errors);
     }
 }
+

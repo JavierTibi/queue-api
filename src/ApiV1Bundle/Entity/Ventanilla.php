@@ -44,8 +44,9 @@ class Ventanilla
      * Ventanilla puede pertenecer a N colas
      *
      * @var ArrayCollection
-     * @ORM\ManyToMany(targetEntity="Cola", mappedBy="ventanillas")
-     */
+     * @ORM\ManyToMany(targetEntity="Cola", inversedBy="ventanillas")
+     * @ORM\JoinTable(name="cola_ventanilla")
+     **/
     private $colas;
 
     /**
@@ -56,6 +57,13 @@ class Ventanilla
      * @ORM\ManyToMany(targetEntity="Agente", mappedBy="ventanillas")
      */
     private $agentes;
+
+    /**
+     * @var int
+     * //TODO cambiar la relacion con punto de atencion
+     * @ORM\Column(name="punto_atencion_id", type="integer")
+     */
+    protected $puntoAtencion;
 
     /**
      * Fecha de creación de la ventanilla
@@ -81,9 +89,10 @@ class Ventanilla
      */
     private $fechaBorrado;
 
-    public function __construct($identificador)
+    public function __construct($identificador, $puntoAtencion)
     {
         $this->identificador = $identificador;
+        $this->puntoAtencion = $puntoAtencion;
         $this->agentes = new ArrayCollection();
         $this->colas = new ArrayCollection();
     }
@@ -145,6 +154,14 @@ class Ventanilla
     public function getIdentificador()
     {
         return $this->identificador;
+    }
+
+    /**
+     * @param string $identificador
+     */
+    public function setIdentificador($identificador)
+    {
+        $this->identificador = $identificador;
     }
 
     /**

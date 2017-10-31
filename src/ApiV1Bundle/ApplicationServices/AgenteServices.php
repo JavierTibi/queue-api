@@ -38,6 +38,41 @@ class AgenteServices extends SNCServices
     }
 
     /**
+     * @param $puntoAtencionId
+     * @param $limit
+     * @param $offset
+     * @return object
+     */
+    public function findAllPaginate($puntoAtencionId, $limit, $offset)
+    {
+        $result = $this->agenteRepository->findAllPaginate($puntoAtencionId, $offset, $limit);
+        $resultset = [
+            'resultset' => [
+                'count' => count($result),
+                'offset' => $offset,
+                'limit' => $limit
+            ]
+        ];
+        return $this->respuestaData($resultset, $result);
+    }
+
+    /**
+     * @param $id
+     * @return object
+     */
+    public function get($id)
+    {
+        $agente = $this->agenteRepository->find($id);
+        $validateResultado = $this->agenteValidator->validarAgente($agente);
+
+        if (! $validateResultado->hasError()) {
+            return $this->respuestaData([], $agente);
+        }
+
+        return $this->respuestaData([], null);
+    }
+
+    /**
      * @param array $params Array con los datos a crear
      * @param $sucess | funcion que devuelve si tuvo éxito
      * @param $error | funcion que devuelve si ocurrio un error

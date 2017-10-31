@@ -10,4 +10,29 @@ namespace ApiV1Bundle\Repository;
  */
 class AgenteRepository extends ApiRepository
 {
+    /**
+     * @return \Doctrine\ORM\EntityRepository
+     */
+
+    private function getRepository()
+    {
+        return $this->getEntityManager()->getRepository('ApiV1Bundle:Agente');
+    }
+
+    public function findAllPaginate($puntoAtencionId, $offset, $limit)
+    {
+        $query = $this->getRepository()->createQueryBuilder('a');
+
+        $query->select([
+            'a.nombre',
+            'a.apellido'
+        ])
+            ->where('a.puntoAtencion = :puntoAtencionId')
+            ->setParameter('puntoAtencionId', $puntoAtencionId);
+
+        $query->setFirstResult($offset);
+        $query->setMaxResults($limit);
+        $query->orderBy('a.id', 'ASC');
+        return $query->getQuery()->getResult();
+    }
 }

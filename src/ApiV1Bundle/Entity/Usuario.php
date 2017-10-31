@@ -27,7 +27,7 @@ abstract class Usuario
 
     /**
      * @var int
-     *
+     * //TODO cambiar la relacion con punto de atencion
      * @ORM\Column(name="punto_atencion_id", type="integer")
      */
     protected $puntoAtencion;

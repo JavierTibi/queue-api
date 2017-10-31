@@ -42,4 +42,78 @@ class VentanillaController extends ApiController
         );
     }
 
+    /**
+     * Modificar una ventanilla
+     *
+     * @param Request $request Espera el resultado de una petición como parámetro
+     * @return mixed
+     * @Put("/ventanillas/{id}")
+     */
+    public function putAction(Request $request, $id)
+    {
+        $params = $request->request->all();
+        $this->ventanillaServices = $this->getVentanillaServices();
+
+        return $this->ventanillaServices->edit(
+            $params,
+            $id,
+            function () {
+                return $this->respuestaOk('Ventanilla modificada con éxito');
+            },
+            function ($err) {
+                return $this->respuestaError($err);
+            }
+        );
+    }
+
+    /**
+     * Eliminar una ventanilla
+     *
+     * @param integer $id Identificador único de la ventanilla
+     * @return mixed
+     * @Delete("/ventanillas/{id}")
+     */
+    public function deleteAction($id)
+    {
+        $this->ventanillaServices = $this->getVentanillaServices();
+        return $this->ventanillaServices->delete(
+            $id,
+            function () {
+                return $this->respuestaOk('Ventanilla eliminada con éxito');
+            },
+            function ($err) {
+                return $this->respuestaError($err);
+            }
+        );
+    }
+
+    /**
+     * Listado de ventanillas
+     *
+     * @param Request $request Espera el resultado de una petición como parámetro
+     * @return mixed
+     * @Get("/ventanillas")
+     */
+    public function getListAction(Request $request)
+    {
+        $puntoAtencionId = $request->get('puntoatencion', null);
+        $offset = $request->get('offset', 0);
+        $limit = $request->get('limit', 10);
+        $this->ventanillaServices = $this->getVentanillaServices();
+        return $this->ventanillaServices->findAllPaginate($puntoAtencionId, (int) $limit, (int) $offset);
+    }
+
+    /**
+     * Obtiene una ventanilla
+     *
+     * @param integer $id Identificador único
+     * @return mixed
+     * @Get("/ventanillas/{id}")
+     */
+    public function getItemAction($id)
+    {
+        $this->ventanillaServices = $this->getVentanillaServices();
+        return $this->ventanillaServices->get($id);
+    }
+
 }

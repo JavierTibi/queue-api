@@ -14,7 +14,6 @@ use Doctrine\Common\Collections\ArrayCollection;
 class AgenteValidator extends SNCValidator
 {
 
-
     public function validarParams($params)
     {
         $errors = $this->validar($params, [

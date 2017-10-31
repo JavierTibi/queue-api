@@ -16,10 +16,12 @@ use ApiV1Bundle\Entity\Ventanilla;
 class VentanillaFactory
 {
     private $ventanillaValidator;
+    private $colaRepository;
 
-    public function __construct(VentanillaValidator $ventanillaValidator)
+    public function __construct(VentanillaValidator $ventanillaValidator, $colaRepository)
     {
         $this->ventanillaValidator = $ventanillaValidator;
+        $this->colaRepository = $colaRepository;
     }
     /**
      * @param $params
@@ -30,7 +32,13 @@ class VentanillaFactory
         $validateResultado = $this->ventanillaValidator->validarParams($params);
 
         if (! $validateResultado->hasError()) {
-            $ventanilla = new Ventanilla($params['identificador']);
+            //TODO find punto de atencion
+            $ventanilla = new Ventanilla($params['identificador'], $params['puntoAtencion']);
+
+            foreach ($params['colas'] as $colaId) {
+                $cola = $this->colaRepository->find($colaId);
+                $ventanilla->addCola($cola);
+            }
 
             return new ValidateResultado($ventanilla, []);
         }

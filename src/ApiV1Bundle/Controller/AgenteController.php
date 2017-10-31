@@ -18,6 +18,35 @@ class AgenteController extends ApiController
     private $agenteServices;
 
     /**
+     * Listado de agentes
+     *
+     * @param Request $request Espera el resultado de una petición como parámetro
+     * @return mixed
+     * @Get("/agentes")
+     */
+    public function getListAction(Request $request)
+    {
+        $puntoAtencionId = $request->get('puntoatencion', null);
+        $offset = $request->get('offset', 0);
+        $limit = $request->get('limit', 10);
+        $this->agenteServices = $this->getAgenteServices();
+        return $this->agenteServices->findAllPaginate($puntoAtencionId, (int) $limit, (int) $offset);
+    }
+
+    /**
+     * Obtiene un agente
+     *
+     * @param integer $id Identificador único
+     * @return mixed
+     * @Get("/agentes/{id}")
+     */
+    public function getItemAction($id)
+    {
+        $this->agenteServices = $this->getVentanillaServices();
+        return $this->agenteServices->get($id);
+    }
+
+    /**
      * Crear un agente
      *
      * @param Request $request Espera el resultado de una petición como parámetro

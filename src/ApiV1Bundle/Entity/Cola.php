@@ -70,10 +70,12 @@ class Cola
     private $tipo;
 
     /**
+     * Colección de ventanillas que tiene una cola
+     * Cola puede pertenecer a N ventanillas
+     *
      * @var ArrayCollection
-     * @ORM\ManyToMany(targetEntity="Ventanilla", inversedBy="colas")
-     * @ORM\JoinTable(name="cola_ventanilla")
-     **/
+     * @ORM\ManyToMany(targetEntity="Ventanilla", mappedBy="colas")
+     */
     private $ventanillas;
 
     public function __construct($nombre, $numero, $puntoAtencion, $tipo)
