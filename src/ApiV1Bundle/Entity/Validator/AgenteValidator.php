@@ -44,14 +44,25 @@ class AgenteValidator extends SNCValidator
         return new ValidateResultado(null, $errors);
     }
 
-    public function validarDelete($agente)
+    /**
+     * @param $agente
+     * @param $ventanilla
+     * @return ValidateResultado
+     */
+    public function validarAsignarVentanilla($agente, $ventanilla)
     {
-        $errors = [];
+        $validateResultadoAgente = $this->validarAgente($agente);
 
-        if (! $agente) {
-            $errors['agente'] = 'Agente inexistente';
+        if($validateResultadoAgente->hasError()) {
+            return $validateResultadoAgente;
         }
 
-        return new ValidateResultado(null, $errors);
+        $validateResultadoVentanilla = $this->validarVentanilla($ventanilla);
+
+        if($validateResultadoVentanilla->hasError()) {
+            return $validateResultadoVentanilla;
+        }
+
+        return new ValidateResultado(null, []);
     }
 }

@@ -6,6 +6,7 @@ use ApiV1Bundle\Entity\Factory\AgenteFactory;
 use ApiV1Bundle\Entity\Sync\AgenteSync;
 use ApiV1Bundle\Entity\Validator\AgenteValidator;
 use ApiV1Bundle\Entity\Validator\UserValidator;
+use ApiV1Bundle\Entity\Validator\VentanillaValidator;
 use ApiV1Bundle\Repository\AgenteRepository;
 use ApiV1Bundle\Repository\VentanillaRepository;
 use Symfony\Component\DependencyInjection\Container;
@@ -113,5 +114,32 @@ class AgenteServices extends SNCServices
             },
             $error
         );
+    }
+
+    /**
+     * @param $idAgente
+     * @param $idVentanilla
+     * @param $success
+     * @param $error
+     * @return mixed
+     */
+    public function asignarVentanilla($idAgente, $idVentanilla, $success, $error)
+    {
+        $agenteSync = new AgenteSync(
+            $this->agenteValidator,
+            $this->agenteRepository,
+            $this->ventanillaRepository
+        );
+
+        $validateResult = $agenteSync->asignarVentanilla($idAgente, $idVentanilla);
+
+        return $this->processResult(
+            $validateResult,
+            function () use ($success) {
+                return call_user_func($success, $this->agenteRepository->flush());
+            },
+            $error
+        );
+
     }
 }

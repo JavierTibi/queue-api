@@ -3,6 +3,8 @@
 namespace ApiV1Bundle\Entity\Validator;
 
 
+use ApiV1Bundle\Entity\Ventanilla;
+
 class VentanillaValidator extends SNCValidator
 {
     /**
@@ -16,4 +18,5 @@ class VentanillaValidator extends SNCValidator
 
         return new ValidateResultado(null, $errors);
     }
+
 }

@@ -86,4 +86,24 @@ class AgenteController extends ApiController
             }
         );
     }
+
+    /**
+     * Asigna una ventanilla a un Agente
+     * @param $idVentanilla
+     * @Post("/agentes/{idAgente}/ventanilla/{idVentanilla}")
+     */
+    public function asignarVentanillaAction($idAgente, $idVentanilla)
+    {
+        $this->agenteServices = $this->getAgenteServices();
+        return $this->agenteServices->asignarVentanilla(
+            $idAgente,
+            $idVentanilla,
+            function () {
+                return $this->respuestaOk('Agente asignado a la ventanilla con éxito');
+            },
+            function ($err) {
+                return $this->respuestaError($err);
+            }
+        );
+    }
 }

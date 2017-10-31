@@ -26,9 +26,9 @@ class Agente extends Usuario
     private $id;
 
     /**
-     * @var int
-     *
-     * @ORM\Column(name="ventanilla_id", type="integer", nullable = true)
+     * @var Ventanilla
+     * @ORM\OneToOne(targetEntity="Ventanilla")
+     * @ORM\JoinColumn(name="ventanilla_id", referencedColumnName="id", nullable = true)
      */
     private $ventanillaActual;
 
@@ -87,7 +87,7 @@ class Agente extends Usuario
     /**
      * Get ventanillaId
      *
-     * @return int
+     * @return Ventanilla
      */
     public function getVentanillaActual()
     {
@@ -95,7 +95,7 @@ class Agente extends Usuario
     }
 
     /**
-     * @param int $ventanillaActual
+     * @param Ventanilla $ventanillaActual
      */
     public function setVentanillaActual($ventanillaActual)
     {

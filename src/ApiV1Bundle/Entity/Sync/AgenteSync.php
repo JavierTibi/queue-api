@@ -81,9 +81,32 @@ class AgenteSync
     {
         $agente = $this->agenteRepository->find($id);
 
-        $validateResultado = $this->agenteValidator->validarDelete($agente);
+        $validateResultado = $this->agenteValidator->validarAgente($agente);
 
         if (! $validateResultado->hasError()) {
+            $validateResultado->setEntity($agente);
+            return $validateResultado;
+        }
+
+        return $validateResultado;
+    }
+
+    /**
+     * Asigna una ventanilla al Agente
+     * @param integer $idAgente Identificador del agente
+     * @param integer $idVentanilla Identificador de la ventanilla
+     *
+     * @return ValidateResultado
+     */
+    public function asignarVentanilla($idAgente, $idVentanilla)
+    {
+        $agente = $this->agenteRepository->find($idAgente);
+        $ventanilla = $this->ventanillaRepository->find($idVentanilla);
+
+        $validateResultado = $this->agenteValidator->validarAsignarVentanilla($agente, $ventanilla);
+
+        if (! $validateResultado->hasError()) {
+            $agente->setVentanillaActual($ventanilla);
             $validateResultado->setEntity($agente);
             return $validateResultado;
         }
