@@ -82,7 +82,7 @@ services:
 
     snc.services.ventanilla:
         class: '%snc.services.ventanilla.class%'
-        arguments: ['@service_container', '@snc.repository.ventanilla', '@snc.validator.ventanilla']
+        arguments: ['@service_container', '@snc.repository.ventanilla', '@snc.validator.ventanilla', '@snc.repository.cola']
 
     ## VALIDATORS ##
 
