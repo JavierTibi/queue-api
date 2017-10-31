@@ -15,7 +15,7 @@
     </php>
 
     <testsuites>
-        <testsuite name="Project Test Suite">
+        <testsuite name="Sistema Nacional de Colas API">
             <directory>../src/*/*Bundle/Tests</directory>
             <directory>../src/*/Bundle/*Bundle/Tests</directory>
             <directory>../src/*Bundle/Tests</directory>
@@ -35,4 +35,8 @@
             </exclude>
         </whitelist>
     </filter>
+    <logging>
+        <log type="coverage-html" target="coverage" title="Project Test Coverage" charset="UTF-8" yui="true" highlight="true" lowUpperBound="35" highLowerBound="70"/>
+        <log type="junit" target="logs/junit.xml" logIncompleteSkipped="false"/>
+    </logging>
 </phpunit>
