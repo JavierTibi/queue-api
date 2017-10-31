@@ -21,10 +21,12 @@ class RespuestaConEstado extends Response
     const STATUS_BAD_REQUEST = 'BAD REQUEST';
     const STATUS_NOT_FOUND = 'NOT FOUND';
     const STATUS_FATAL = 'FATAL';
+    const STATUS_FORBIDDEN = 'FORBIDDEN';
     const CODE_SUCCESS = parent::HTTP_OK;
     const CODE_BAD_REQUEST = parent::HTTP_BAD_REQUEST;
     const CODE_NOT_FOUND = parent::HTTP_NOT_FOUND;
     const CODE_FATAL = parent::HTTP_BAD_REQUEST;
+    const CODE_FORBIDDEN = parent::HTTP_FORBIDDEN;
 
     /**
      * RespuestaConEstado constructor.

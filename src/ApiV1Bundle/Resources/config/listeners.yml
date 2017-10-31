@@ -1,0 +1,6 @@
+services:
+    snt.headers.action_listeners:
+        class: ApiV1Bundle\EventListener\HeadersListener
+        tags:
+            - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse }
+        arguments: ['@snc.services.security', '%secureroutes%']

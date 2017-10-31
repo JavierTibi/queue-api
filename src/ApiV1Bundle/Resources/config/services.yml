@@ -1,24 +1,44 @@
 parameters:
 
-    #Services
+    # Services
     snc.services.general.class: ApiV1Bundle\ApplicationServices\SNCServices
-    snc.services.login.class: ApiV1Bundle\ApplicationServices\LoginServices
+    snc.services.security.class: ApiV1Bundle\ApplicationServices\SecurityServices
     snc.services.agente.class: ApiV1Bundle\ApplicationServices\AgenteServices
     snc.services.ventanilla.class: ApiV1Bundle\ApplicationServices\VentanillaServices
 
-    #Repositorys
+    # Repository    
     snc.repository.user.class: ApiV1Bundle\Repository\UserRepository
     snc.repository.agente.class: ApiV1Bundle\Repository\AgenteRepository
     snc.repository.ventanilla.class: ApiV1Bundle\Repository\VentanillaRepository
     snc.repository.cola.class: ApiV1Bundle\Repository\ColaRepository
 
-    #Validators
+    # Validators
     snc.validator.agente.class: ApiV1Bundle\Entity\Validator\AgenteValidator
     snc.validator.user.class: ApiV1Bundle\Entity\Validator\UserValidator
     snc.validator.ventanilla.class: ApiV1Bundle\Entity\Validator\VentanillaValidator
-
+    
+    # Security
+    snc.helper.jwtoken.class: ApiV1Bundle\Helper\JWToken
+    snc.security.builder.class: Lcobucci\JWT\Builder
+    snc.security.parser.class: Lcobucci\JWT\Parser
+    snc.security.validation.class: Lcobucci\JWT\ValidationData
 
 services:
+    
+    ## SECURITY ##
+    
+    snc.security.builder:
+        class: '%snc.security.builder.class%'
+    
+    snc.security.parser:
+        class: '%snc.security.parser.class%'
+        
+    snc.security.validation:
+        class: '%snc.security.validation.class%'
+    
+    snc.helper.jwtoken:
+        class: '%snc.helper.jwtoken.class%'
+        arguments: ['%secret%', '@snc.security.builder', '@snc.security.parser', '@snc.security.validation']
     
     ## REPOSITORIES ##
 
@@ -52,9 +72,9 @@ services:
         class: '%snc.services.general.class%'
         arguments: ['@service_container']
     
-    snc.services.login:
-        class: '%snc.services.login.class%'
-        arguments: ['@service_container', '@snc.repository.user', '@security.password_encoder']
+    snc.services.security:
+        class: '%snc.services.security.class%'
+        arguments: ['@service_container', '@snc.repository.user', '@security.password_encoder', '@snc.helper.jwtoken']
 
     snc.services.agente:
         class: '%snc.services.agente.class%'
@@ -62,8 +82,7 @@ services:
 
     snc.services.ventanilla:
         class: '%snc.services.ventanilla.class%'
-        arguments: ['@service_container', '@snc.repository.ventanilla', '@snc.validator.ventanilla', '@snc.repository.cola']
-
+        arguments: ['@service_container', '@snc.repository.ventanilla', '@snc.validator.ventanilla']
 
     ## VALIDATORS ##
 

@@ -21,9 +21,9 @@ class ApiController extends FOSRestController
      *
      * @return object
      */
-    protected function getLoginServices()
+    protected function getSecurityServices()
     {
-        return $this->container->get('snc.services.login');
+        return $this->container->get('snc.services.security');
     }
 
     /**
@@ -106,6 +106,21 @@ class ApiController extends FOSRestController
         return new RespuestaConEstado(
             RespuestaConEstado::STATUS_BAD_REQUEST,
             RespuestaConEstado::CODE_BAD_REQUEST,
+            $message
+        );
+    }
+
+    /**
+     * Retorna una Respuesta con estado Forbidden
+     *
+     * @param $message
+     * @return \ApiV1Bundle\Entity\Response\RespuestaConEstado
+     */
+    protected function respuestaForbiddenRequest($message)
+    {
+        return new RespuestaConEstado(
+            RespuestaConEstado::STATUS_FORBIDDEN,
+            RespuestaConEstado::CODE_FORBIDDEN,
             $message
         );
     }
