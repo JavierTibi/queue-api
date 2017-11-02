@@ -16,6 +16,11 @@ use Symfony\Component\Security\Core\User\UserInterface;
  */
 class User implements UserInterface, \Serializable
 {
+
+    const ROL_ADMIN = 1;
+    const ROL_RESPONSABLE = 2;
+    const ROL_AGENTE = 3;
+
     /**
      * @var int
      *
@@ -42,15 +47,15 @@ class User implements UserInterface, \Serializable
     /**
      * @var int
      *
-     * @ORM\ManyToOne(targetEntity="Rol", inversedBy="usuarios")
-     * @ORM\JoinColumn(name="rol_id", referencedColumnName="id", nullable = true)
+     * @ORM\Column(name="rol_id", type="smallint")
      */
     private $rol;
 
-    public function __construct($username, $password)
+    public function __construct($username, $rol)
     {
         $this->username = $username;
-        $this->password = $password;
+        $this->password = $this->generatePassword();
+        $this->rol = $rol;
     }
 
     /**
@@ -84,14 +89,6 @@ class User implements UserInterface, \Serializable
     }
 
     /**
-     * @param string $username
-     */
-    public function setUsername($username)
-    {
-        $this->username = $username;
-    }
-
-    /**
      * @param string $password
      */
     public function setPassword($password)
@@ -100,18 +97,17 @@ class User implements UserInterface, \Serializable
     }
 
     /**
-     * Get puntoAtencionId
-     *
      * @return int
      */
-    public function getPuntoAtencion()
+    public function getRol()
     {
-        return $this->puntoAtencion;
+        return $this->rol;
     }
+
 
     public function getRoles()
     {
-        return $this->rol->getNombre();
+        //return $this->rol->getNombre();
     }
 
     /**
@@ -158,5 +154,18 @@ class User implements UserInterface, \Serializable
     public function unserialize($serialized)
     {
         list ($this->id, $this->username, $this->password) = unserialize($serialized);
+    }
+
+    private function generatePassword($length = 8)
+    {
+        $chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        $count = mb_strlen($chars);
+
+        for ($i = 0, $result = ''; $i < $length; $i++) {
+            $index = rand(0, $count - 1);
+            $result .= mb_substr($chars, $index, 1);
+        }
+
+        return $result;
     }
 }

@@ -47,6 +47,16 @@ class ApiController extends FOSRestController
     }
 
     /**
+     * Obtiene Usuario service
+     *
+     * @return object
+     */
+    protected function getUsuarioServices()
+    {
+        return $this->container->get('snc.services.usuario');
+    }
+
+    /**
      * Retorna una Respuesta con estado SUCCESS
      *
      * @param array $message Mensaje de éxito

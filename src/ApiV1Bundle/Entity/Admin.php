@@ -1,20 +1,21 @@
 <?php
+
 namespace ApiV1Bundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Gedmo\Mapping\Annotation as Gedmo;
-use ApiV1Bundle\Entity\User;
 
 /**
- * Responsable
+ * Admin
  *
- * @ORM\Table(name="user_responsable")
- * @ORM\Entity(repositoryClass="ApiV1Bundle\Repository\ResponsableRepository")
+ * @ORM\Table(name="user_admin")
+ * @ORM\Entity(repositoryClass="ApiV1Bundle\Repository\AdminRepository")
  * @Gedmo\SoftDeleteable(fieldName="fechaBorrado")
  * @ORM\HasLifecycleCallbacks()
  */
-class Responsable extends Usuario
+class Admin extends Usuario
 {
     /**
      * @var int
@@ -24,13 +25,6 @@ class Responsable extends Usuario
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
-
-    /**
-     * @var int
-     * //TODO cambiar la relacion con punto de atencion
-     * @ORM\Column(name="punto_atencion_id", type="integer")
-     */
-    protected $puntoAtencion;
 
     /**
      * Fecha de creación del agente
@@ -56,35 +50,17 @@ class Responsable extends Usuario
      */
     private $fechaBorrado;
 
-    /**
-     * Responsable constructor.
-     * @param $nombre
-     * @param $apellido
-     * @param $puntoAtencion
-     * @param User $user
-     */
-    public function __construct($nombre, $apellido, $puntoAtencion, User $user)
+    public function __construct($nombre, $apellido, $user)
     {
         parent::__construct($nombre, $apellido, $user);
-        $this->puntoAtencion = $puntoAtencion;
     }
 
     /**
-     * Get id
-     *
      * @return int
      */
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * @return int
-     */
-    public function getPuntoAtencion()
-    {
-        return $this->puntoAtencion;
     }
 
     /**

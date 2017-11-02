@@ -5,10 +5,13 @@ parameters:
     snc.services.security.class: ApiV1Bundle\ApplicationServices\SecurityServices
     snc.services.agente.class: ApiV1Bundle\ApplicationServices\AgenteServices
     snc.services.ventanilla.class: ApiV1Bundle\ApplicationServices\VentanillaServices
+    snc.services.usuario.class: ApiV1Bundle\ApplicationServices\UsuarioServices
 
     # Repository    
     snc.repository.user.class: ApiV1Bundle\Repository\UserRepository
     snc.repository.agente.class: ApiV1Bundle\Repository\AgenteRepository
+    snc.repository.responsable.class: ApiV1Bundle\Repository\ResponsableRepository
+    snc.repository.admin.class: ApiV1Bundle\Repository\AdminRepository
     snc.repository.ventanilla.class: ApiV1Bundle\Repository\VentanillaRepository
     snc.repository.cola.class: ApiV1Bundle\Repository\ColaRepository
 
@@ -54,6 +57,18 @@ services:
         arguments:
             - ApiV1Bundle\Entity\Agente
 
+    snc.repository.responsable:
+        class: '%snc.repository.responsable.class%'
+        factory: ['@doctrine.orm.entity_manager', getRepository]
+        arguments:
+            - ApiV1Bundle\Entity\Responsable
+
+    snc.repository.admin:
+        class: '%snc.repository.admin.class%'
+        factory: ['@doctrine.orm.entity_manager', getRepository]
+        arguments:
+            - ApiV1Bundle\Entity\Admin
+
     snc.repository.ventanilla:
         class: '%snc.repository.ventanilla.class%'
         factory: ['@doctrine.orm.entity_manager', getRepository]
@@ -83,6 +98,10 @@ services:
     snc.services.ventanilla:
         class: '%snc.services.ventanilla.class%'
         arguments: ['@service_container', '@snc.repository.ventanilla', '@snc.validator.ventanilla', '@snc.repository.cola']
+
+    snc.services.usuario:
+        class: '%snc.services.usuario.class%'
+        arguments: ['@service_container', '@snc.validator.user', '@snc.repository.agente', '@snc.repository.admin', '@snc.repository.responsable', '@snc.repository.ventanilla']
 
     ## VALIDATORS ##
 

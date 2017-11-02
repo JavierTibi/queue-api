@@ -19,22 +19,19 @@ use ApiV1Bundle\Repository\VentanillaRepository;
 
 class AgenteFactory
 {
-    private $agenteValidator;
     private $userValidator;
     private $ventanillaRepository;
 
 
     /**
      * AgenteFactory constructor.
-     * @param AgenteValidator $agenteValidator
      * @param UserValidator $userValidator
+     * @param VentanillaRepository $ventanillaRepository
      */
     public function __construct(
-        AgenteValidator $agenteValidator,
         UserValidator $userValidator,
         VentanillaRepository $ventanillaRepository)
     {
-        $this->agenteValidator = $agenteValidator;
         $this->userValidator = $userValidator;
         $this->ventanillaRepository = $ventanillaRepository;
     }
@@ -46,14 +43,13 @@ class AgenteFactory
     public function create($params)
     {
 
-        $validateResultadoUser = $this->userValidator->validarParams($params);
-        $validateResultadoAgente = $this->agenteValidator->validarParams($params);
+        $validateResultado = $this->userValidator->validarParamsAgente($params);
 
-        if (! $validateResultadoUser->hasError() && ! $validateResultadoAgente->hasError()) {
+        if (! $validateResultado->hasError()) {
 
             $user = new User(
                 $params['username'],
-                $params['password']
+                $params['rol']
             );
 
             $agente = new Agente(
@@ -69,16 +65,9 @@ class AgenteFactory
                 $agente->addVentanilla($ventanilla);
             }
 
-            $validateResultadoAgente->setEntity($agente);
-
-            return $validateResultadoAgente;
-
-        } else {
-
-            if ($validateResultadoUser->hasError()) {
-                return $validateResultadoUser;
-            }
-            return $validateResultadoAgente;
+            $validateResultado->setEntity($agente);
         }
+
+        return $validateResultado;
     }
 }

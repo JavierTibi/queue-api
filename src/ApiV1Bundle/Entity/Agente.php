@@ -9,7 +9,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 /**
  * Agente
  *
- * @ORM\Table(name="agente")
+ * @ORM\Table(name="user_agente")
  * @ORM\Entity(repositoryClass="ApiV1Bundle\Repository\AgenteRepository")
  * @Gedmo\SoftDeleteable(fieldName="fechaBorrado")
  * @ORM\HasLifecycleCallbacks()
@@ -24,6 +24,13 @@ class Agente extends Usuario
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
+
+    /**
+     * @var int
+     * //TODO cambiar la relacion con punto de atencion
+     * @ORM\Column(name="punto_atencion_id", type="integer")
+     */
+    private $puntoAtencion;
 
     /**
      * @var Ventanilla
@@ -70,7 +77,8 @@ class Agente extends Usuario
      */
     public function __construct($nombre, $apellido, $puntoAtencion, $ventanillas, User $user)
     {
-        parent::__construct($nombre, $apellido, $user, $puntoAtencion);
+        parent::__construct($nombre, $apellido, $user);
+        $this->puntoAtencion = $puntoAtencion;
         $this->ventanillas = new ArrayCollection();
     }
 
@@ -82,6 +90,14 @@ class Agente extends Usuario
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @return int
+     */
+    public function getPuntoAtencion()
+    {
+        return $this->puntoAtencion;
     }
 
     /**

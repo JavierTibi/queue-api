@@ -26,25 +26,17 @@ abstract class Usuario
     protected $apellido;
 
     /**
-     * @var int
-     * //TODO cambiar la relacion con punto de atencion
-     * @ORM\Column(name="punto_atencion_id", type="integer")
-     */
-    protected $puntoAtencion;
-
-    /**
      * Un usuario tiene un User
      * @ORM\OneToOne(targetEntity="User", cascade={"persist", "remove"})
      * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
      */
     protected $user;
 
-    protected function __construct($nombre, $apellido, $user, $puntoAtencion)
+    protected function __construct($nombre, $apellido, $user)
     {
         $this->nombre = $nombre;
         $this->apellido = $apellido;
         $this->user = $user;
-        $this->puntoAtencion = $puntoAtencion;
     }
 
     /**
@@ -65,16 +57,6 @@ abstract class Usuario
     protected function getApellido()
     {
         return $this->apellido;
-    }
-
-    /**
-     * Get puntoAtencionId
-     *
-     * @return int
-     */
-    protected function getPuntoAtencion()
-    {
-        return $this->puntoAtencion;
     }
 
     /**
@@ -99,14 +81,6 @@ abstract class Usuario
     public function setApellido($apellido)
     {
         $this->apellido = $apellido;
-    }
-
-    /**
-     * @param int $puntoAtencion
-     */
-    public function setPuntoAtencion($puntoAtencion)
-    {
-        $this->puntoAtencion = $puntoAtencion;
     }
 
 }
