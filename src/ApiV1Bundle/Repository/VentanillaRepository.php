@@ -25,6 +25,7 @@ class VentanillaRepository extends ApiRepository
         $query = $this->getRepository()->createQueryBuilder('v');
 
         $query->select([
+            'v.id',
             'v.identificador'
         ])
             ->where('v.puntoAtencion = :puntoAtencionId')
