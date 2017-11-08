@@ -57,6 +57,17 @@ class ApiController extends FOSRestController
     }
 
     /**
+     * Obtiene Cola service
+     *
+     * @return object
+     */
+    protected function getColasServices()
+    {
+        return $this->container->get('snc.services.cola');
+    }
+
+
+    /**
      * Retorna una Respuesta con estado SUCCESS
      *
      * @param array $message Mensaje de éxito

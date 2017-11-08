@@ -266,15 +266,25 @@ class SNCValidator
         return null;
     }
 
-    public function validarUsuario($usuario)
+    /**
+     * Validar un Agente
+     * @param $agente
+     * @return ValidateResultado
+     */
+    public function validarAgente($agente)
     {
         $errors = [];
-        if (! $usuario) {
-            $errors['Usuario'] = 'Usuario Inexistente';
+        if (! $agente) {
+            $errors['agente'] = 'Agente inexistente';
         }
         return new ValidateResultado(null, $errors);
     }
 
+    /**
+     * Validar Ventanilla
+     * @param $ventanilla
+     * @return ValidateResultado
+     */
     public function validarVentanilla($ventanilla)
     {
         $errors = [];
@@ -284,11 +294,39 @@ class SNCValidator
         return new ValidateResultado(null, $errors);
     }
 
+    /**
+     * Validar User
+     * @param $user
+     * @return ValidateResultado
+     */
     public function validarUser($user)
     {
         $errors = [];
         if (! $user) {
             $errors['Usuario'] = 'Usuario inexistente';
+        }
+        return new ValidateResultado(null, $errors);
+    }
+
+    /**
+     * Validar Cola
+     * @param $cola
+     * @return ValidateResultado
+     */
+    public function validarCola($cola)
+    {
+        $errors = [];
+        if (! $cola) {
+            $errors['Cola'] = 'Cola inexistente';
+        }
+        return new ValidateResultado(null, $errors);
+    }
+
+    public function validarUsuario($usuario)
+    {
+        $errors = [];
+        if (! $usuario) {
+            $errors['Usuario'] = 'Usuario Inexistente';
         }
         return new ValidateResultado(null, $errors);
     }
