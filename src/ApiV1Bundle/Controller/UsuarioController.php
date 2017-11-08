@@ -86,4 +86,32 @@ class UsuarioController extends ApiController
             }
         );
     }
+
+	/**
+     * Listado de usuarios
+     *
+     * @param Request $request Espera el resultado de una petición como parámetro
+     * @return mixed
+     * @Get("/usuarios")
+     */
+    public function getListAction(Request $request)
+    {
+        $offset = $request->get('offset', 0);
+        $limit = $request->get('limit', 10);
+        $this->usuarioServices = $this->getUsuarioServices();
+        return $this->usuarioServices->findAllPaginate((int) $limit, (int) $offset);
+    }
+
+    /**
+     * Obtiene un usuario
+     *
+     * @param integer $id Identificador único
+     * @return mixed
+     * @Get("/usuarios/{id}")
+     */
+    public function getItemAction($id)
+    {
+        $this->usuarioServices = $this->getUsuarioServices();
+        return $this->usuarioServices->get($id);
+    }
 }

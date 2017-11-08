@@ -5,8 +5,8 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Usuario
- *
  * @ORM\MappedSuperclass
+ *
  */
 abstract class Usuario
 {
@@ -44,7 +44,7 @@ abstract class Usuario
      *
      * @return string
      */
-    protected function getNombre()
+    public function getNombre()
     {
         return $this->nombre;
     }
@@ -54,7 +54,7 @@ abstract class Usuario
      *
      * @return string
      */
-    protected function getApellido()
+    public function getApellido()
     {
         return $this->apellido;
     }

@@ -1,6 +1,10 @@
 <?php
 
 namespace ApiV1Bundle\Repository;
+use ApiV1Bundle\Entity\User;
+use ApiV1Bundle\Entity\Usuario;
+use Doctrine\ORM\Query\ResultSetMapping;
+
 
 /**
  * UserRepository
@@ -13,9 +17,59 @@ class UserRepository extends ApiRepository
     /**
      * @return \Doctrine\ORM\EntityRepository
      */
-
     private function getRepository()
     {
         return $this->getEntityManager()->getRepository('ApiV1Bundle:User');
+    }
+
+    /**
+     * @param $offset
+     * @param $limit
+     * @return array
+     */
+    public function findAllPaginate($offset, $limit)
+    {
+        $result = [];
+        $query = $this->getRepository()->createQueryBuilder('u');
+
+
+       $query->select(
+            'u.username',
+            'u.rol',
+            'a.puntoAtencion as puntoAgente',
+            'r.puntoAtencion as puntoResponsable'
+        )
+            ->leftJoin('ApiV1Bundle:Agente', 'a', "WITH", "u.id = a.user")
+           ->leftJoin('ApiV1Bundle:Responsable', 'r', "WITH", "u.id = r.user");
+
+        $query->setFirstResult($offset);
+        $query->setMaxResults($limit);
+        $query->orderBy('u.username', 'ASC');
+        $query->orderBy('u.rol', 'ASC');
+        $usuarios = $query->getQuery()->getResult();
+
+        foreach ($usuarios as $item) {
+            if(! is_null($item['puntoAgente'])) {
+                $result[] = [
+                  'username' => $item['username'],
+                    'rol' => $item['rol'],
+                    'puntoAtencion' => $item['puntoAgente']
+                ];
+            } elseif (! is_null($item['puntoResponsable'])) {
+                $result[] = [
+                    'username' => $item['username'],
+                    'rol' => $item['rol'],
+                    'puntoAtencion' => $item['puntoResponsable']
+                ];
+            } else {
+                $result[] = [
+                    'username' => $item['username'],
+                    'rol' => $item['rol'],
+                    'puntoAtencion' => null
+                ];
+            }
+        }
+
+        return $result;
     }
 }

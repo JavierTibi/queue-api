@@ -49,7 +49,6 @@ class UsuarioServices extends SNCServices
         ResponsableRepository $responsableRepository,
         UserRepository $userRepository,
         VentanillaRepository $ventanillaRepository
-            
     )
     {
         parent::__construct($container);
@@ -102,6 +101,84 @@ class UsuarioServices extends SNCServices
             $error
         );
     }
+
+    /**
+     * Listado de todos los usuarios
+     *
+     * @param $limit
+     * @param $offset
+     * @return object
+     */
+    public function findAllPaginate($limit, $offset)
+    {
+        $result = $this->userRepository->findAllPaginate($offset, $limit);
+
+        $resultset = [
+            'resultset' => [
+                'count' => count($result),
+                'offset' => $offset,
+                'limit' => $limit
+            ]
+        ];
+
+        return $this->respuestaData($resultset, $result);
+    }
+
+    /**
+     * @param $id
+     * @return object
+     */
+    public function get($id)
+    {
+        $result =[];
+        $user = $this->userRepository->find($id);
+
+        $validateResultado = $this->userValidator->validarUser($user);
+
+        if (! $validateResultado->hasError()) {
+            if($user->getRol() == User::ROL_AGENTE) {
+                $usuario = $this->agenteRepository->findOneByUser($user);
+
+                $result = [
+                    'nombre' => $usuario->getNombre(),
+                    'apellido' => $usuario->getApellido(),
+                    'username' => $usuario->getUser()->getUsername(),
+                    'rol' => $usuario->getUser()->getRol(),
+                    'puntoAtencion' => $usuario->getPuntoAtencion()
+                ];
+                foreach ($usuario->getVentanillas() as $ventanilla) {
+                    $result['ventanillas'][] = $ventanilla->getId();
+                }
+            }
+
+
+            if($user->getRol() == User::ROL_RESPONSABLE) {
+                $usuario = $this->responsableRepository->findOneByUser($user);
+                $result = [
+                    'nombre' => $usuario->getNombre(),
+                    'apellido' => $usuario->getApellido(),
+                    'username' => $usuario->getUser()->getUsername(),
+                    'rol' => $usuario->getUser()->getRol(),
+                    'puntoAtencion' => $usuario->getPuntoAtencion()
+                ];
+            }
+
+            if($user->getRol() == User::ROL_ADMIN) {
+                $usuario = $this->adminRepository->findOneByUser($user);
+                $result = [
+                    'nombre' => $usuario->getNombre(),
+                    'apellido' => $usuario->getApellido(),
+                    'username' => $usuario->getUser()->getUsername(),
+                    'rol' => $usuario->getUser()->getRol()
+                ];
+            }
+
+            return $this->respuestaData([], $result);
+        }
+
+        return $this->respuestaData([], $validateResultado->getErrors());
+    }
+
     
     /**
      * Editar un usuario
@@ -206,5 +283,4 @@ class UsuarioServices extends SNCServices
             $error
         );
     }
-
 }

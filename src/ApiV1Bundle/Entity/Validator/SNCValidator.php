@@ -283,5 +283,14 @@ class SNCValidator
         }
         return new ValidateResultado(null, $errors);
     }
+
+    public function validarUser($user)
+    {
+        $errors = [];
+        if (! $user) {
+            $errors['Usuario'] = 'Usuario inexistente';
+        }
+        return new ValidateResultado(null, $errors);
+    }
 }
 

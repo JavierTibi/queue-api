@@ -14,6 +14,7 @@ parameters:
     snc.repository.admin.class: ApiV1Bundle\Repository\AdminRepository
     snc.repository.ventanilla.class: ApiV1Bundle\Repository\VentanillaRepository
     snc.repository.cola.class: ApiV1Bundle\Repository\ColaRepository
+    snc.repository.usuario.class: ApiV1Bundle\Repository\UsuarioRepository
 
     # Validators
     snc.validator.agente.class: ApiV1Bundle\Entity\Validator\AgenteValidator
@@ -83,6 +84,12 @@ services:
         factory: ['@doctrine.orm.entity_manager', getRepository]
         arguments:
             - ApiV1Bundle\Entity\Cola
+
+    snc.repository.usuario:
+        class: '%snc.repository.usuario.class%'
+        factory: ['@doctrine.orm.entity_manager', getRepository]
+        arguments:
+            - ApiV1Bundle\Entity\Usuario
 
     ### SERVICES ###
 

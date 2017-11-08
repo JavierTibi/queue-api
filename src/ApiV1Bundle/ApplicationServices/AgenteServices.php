@@ -73,31 +73,6 @@ class AgenteServices extends SNCServices
     }
 
     /**
-     * @param array $params Array con los datos a crear
-     * @param $sucess | funcion que devuelve si tuvo éxito
-     * @param $error | funcion que devuelve si ocurrio un error
-     * @return mixed
-     */
-    public function create($params, $sucess, $error)
-    {
-        $agenteFactory = new AgenteFactory(
-            $this->agenteValidator,
-            $this->userValidator,
-            $this->ventanillaRepository
-        );
-
-        $validateResult = $agenteFactory->create($params);
-
-        return $this->processResult(
-            $validateResult,
-            function ($entity) use ($sucess) {
-                return call_user_func($sucess, $this->agenteRepository->save($entity));
-            },
-            $error
-        );
-    }
-
-    /**
      * Editar un usuario Agente
      *
      * @param $params
