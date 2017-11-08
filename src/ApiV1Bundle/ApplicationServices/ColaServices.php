@@ -6,8 +6,9 @@ namespace ApiV1Bundle\ApplicationServices;
 use ApiV1Bundle\Entity\Validator\ColaValidator;
 use ApiV1Bundle\Entity\Validator\SNCValidator;
 use ApiV1Bundle\Repository\ColaRepository;
+use Symfony\Component\DependencyInjection\Container;
 
-class ColaServices extends SNCValidator
+class ColaServices extends SNCServices
 {
     private $colaValidator;
     private $colaRepository;
@@ -18,10 +19,12 @@ class ColaServices extends SNCValidator
      * @param ColaRepository $colaRepository
      */
     public function __construct(
+        Container $container,
         ColaValidator $colaValidator,
         ColaRepository $colaRepository
     )
     {
+        parent::__construct($container);
         $this->colaValidator = $colaValidator;
         $this->colaRepository = $colaRepository;
     }

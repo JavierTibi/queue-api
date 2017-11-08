@@ -24,7 +24,7 @@ class ColaController extends ApiController
      */
     public function getListAction(Request $request)
     {
-        $puntoAtencionId = $request->get('puntoAtencion');
+        $puntoAtencionId = $request->get('puntoatencion');
         $offset = $request->get('offset', 0);
         $limit = $request->get('limit', 10);
         $this->colaServices = $this->getColasServices();

@@ -6,6 +6,7 @@ parameters:
     snc.services.agente.class: ApiV1Bundle\ApplicationServices\AgenteServices
     snc.services.ventanilla.class: ApiV1Bundle\ApplicationServices\VentanillaServices
     snc.services.usuario.class: ApiV1Bundle\ApplicationServices\UsuarioServices
+    snc.services.cola.class: ApiV1Bundle\ApplicationServices\ColaServices
 
     # Repository    
     snc.repository.user.class: ApiV1Bundle\Repository\UserRepository
@@ -22,7 +23,7 @@ parameters:
     snc.validator.ventanilla.class: ApiV1Bundle\Entity\Validator\VentanillaValidator
     snc.validator.admin.class: ApiV1Bundle\Entity\Validator\AdminValidator
     snc.validator.responsable.class: ApiV1Bundle\Entity\Validator\ResponsableValidator
-    
+    snc.validator.cola.class: ApiV1Bundle\Entity\Validator\ColaValidator
     
     # Security
     snc.helper.jwtoken.class: ApiV1Bundle\Helper\JWToken
@@ -113,6 +114,10 @@ services:
         class: '%snc.services.usuario.class%'
         arguments: ['@service_container', '@snc.validator.user', '@snc.validator.responsable', '@snc.validator.agente', '@snc.repository.agente', '@snc.repository.admin', '@snc.repository.responsable', '@snc.repository.user', '@snc.repository.ventanilla']
 
+    snc.services.cola:
+        class: '%snc.services.cola.class%'
+        arguments: ['@service_container', '@snc.validator.cola', '@snc.repository.cola']
+
     ## VALIDATORS ##
 
     snc.validator.agente:
@@ -131,3 +136,6 @@ services:
     snc.validator.user:
        class: '%snc.validator.user.class%'
        arguments: ['@snc.repository.user']
+
+    snc.validator.cola:
+        class: '%snc.validator.cola.class%'

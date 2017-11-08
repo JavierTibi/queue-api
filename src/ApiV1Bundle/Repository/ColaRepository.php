@@ -35,12 +35,12 @@ class ColaRepository extends ApiRepository
             'c.numero',
             'c.tipo'
         ])
-            ->where('a.puntoAtencion = :puntoAtencionId')
+            ->where('c.puntoAtencion = :puntoAtencionId')
             ->setParameter('puntoAtencionId', $puntoAtencionId);
 
         $query->setFirstResult($offset);
         $query->setMaxResults($limit);
-        $query->orderBy('a.id', 'ASC');
+        $query->orderBy('c.id', 'ASC');
         return $query->getQuery()->getResult();
     }
 }
