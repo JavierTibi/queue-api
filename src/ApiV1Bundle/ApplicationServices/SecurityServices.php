@@ -37,7 +37,8 @@ class SecurityServices extends SNCServices
             if ($this->encoder->isPasswordValid($user, $password)) {
                 $result = [
                     'username' => $user->getUsername(),
-                    'token' => $this->jwtoken->getToken($user->getId(), $user->getUsername(), $user->getRoles())
+                    'token' => $this->jwtoken->getToken($user->getId(), $user->getUsername(), $user->getRoles()),
+                    'rol' => $user->getRoles()
                 ];
             }
         }
@@ -51,8 +52,9 @@ class SecurityServices extends SNCServices
      * @param $token
      * @return array
      */
-    public function validarToken($token)
+    public function validarToken($authorization)
     {
+        list($bearer, $token) = explode(' ', $authorization);
         return $this->jwtoken->validate($token);
     }
 }

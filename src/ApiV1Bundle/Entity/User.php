@@ -21,6 +21,12 @@ class User implements UserInterface, \Serializable
     const ROL_RESPONSABLE = 2;
     const ROL_AGENTE = 3;
 
+    private $roles = [
+        1 => 'ROL_ADMIN',
+        2 => 'ROL_RESPONSABLE',
+        3 => 'ROL_AGENTE'
+    ];
+
     /**
      * @var int
      *
@@ -104,10 +110,14 @@ class User implements UserInterface, \Serializable
         return $this->rol;
     }
 
-
+    /**
+     * The user rol
+     * {@inheritDoc}
+     * @see \Symfony\Component\Security\Core\User\UserInterface::getRoles()
+     */
     public function getRoles()
     {
-        //return $this->rol->getNombre();
+        return $this->roles[$this->rol];
     }
 
     /**
@@ -156,6 +166,12 @@ class User implements UserInterface, \Serializable
         list ($this->id, $this->username, $this->password) = unserialize($serialized);
     }
 
+    /**
+     * Generate random password
+     *
+     * @param number $length
+     * @return string
+     */
     private function generatePassword($length = 8)
     {
         $chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';

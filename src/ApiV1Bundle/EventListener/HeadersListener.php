@@ -30,7 +30,7 @@ class HeadersListener
         // validate token
         $tokenResponse = $this->tokenValidationResponse(
             $request->getPathInfo(),
-            $request->headers->get('token', null)
+            $request->headers->get('authorization', null)
         );
         if ($tokenResponse) {
             $event->setResponse($tokenResponse);
