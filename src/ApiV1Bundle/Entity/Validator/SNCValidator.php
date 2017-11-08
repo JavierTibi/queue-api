@@ -266,11 +266,11 @@ class SNCValidator
         return null;
     }
 
-    public function validarAgente($agente)
+    public function validarUsuario($usuario)
     {
         $errors = [];
-        if (! $agente) {
-            $errors['agente'] = 'Agente inexistente';
+        if (! $usuario) {
+            $errors['Usuario'] = 'Usuario Inexistente';
         }
         return new ValidateResultado(null, $errors);
     }

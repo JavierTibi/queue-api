@@ -115,4 +115,12 @@ class Responsable extends Usuario
     {
         return $this->fechaBorrado;
     }
+    
+    /**
+     * 
+     * @param type $puntoAtencionID
+     */
+    public function setPuntoAtencion($puntoAtencionID) {
+        $this->puntoAtencion = $puntoAtencionID;
+    }
 }

@@ -28,7 +28,7 @@ class UserValidator extends SNCValidator
         if (! count($errors) > 0) {
             $user = $this->userRepository->findOneByUsername($params['username']);
             if ($user) {
-                $errors['User'] = 'Ya existe un usuario con ese nombre.';
+                $errors['User'] = 'Ya existe un usuario con el email ingresado';
                 return new ValidateResultado(null, $errors);
             }
 

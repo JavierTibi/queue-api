@@ -58,3 +58,4 @@ web/config.php
 .settings/
 # PHPStorm
 .idea/
+nbproject/

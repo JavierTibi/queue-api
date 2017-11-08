@@ -11,5 +11,12 @@ namespace ApiV1Bundle\Repository;
  */
 class AdminRepository extends ApiRepository
 {
+    /**
+     * @return \Doctrine\ORM\EntityRepository
+     */
 
+    private function getRepository()
+    {
+        return $this->getEntityManager()->getRepository('ApiV1Bundle:Admin');
+    }
 }

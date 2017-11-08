@@ -42,7 +42,7 @@ class AgenteSync
 
         if (! $validateResultado->hasError()) {
 
-            $agente = $this->agenteRepository->find($id);
+            $agente = $this->agenteRepository->findOneByUser($id);
             $user = $agente->getUser();
 
             $agente->setNombre($params['nombre']);
@@ -79,13 +79,12 @@ class AgenteSync
      */
     public function delete($id)
     {
-        $agente = $this->agenteRepository->find($id);
+        $agente = $this->agenteRepository->findOneByUser($id);
 
-        $validateResultado = $this->agenteValidator->validarAgente($agente);
+        $validateResultado = $this->agenteValidator->validarUsuario($agente);
 
         if (! $validateResultado->hasError()) {
             $validateResultado->setEntity($agente);
-            return $validateResultado;
         }
 
         return $validateResultado;
