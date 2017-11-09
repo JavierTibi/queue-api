@@ -24,28 +24,32 @@ class Turno
     /**
      * @var int
      *
-     * @ORM\Column(name="punto_atencion_id", type="integer", nullable=true)
+     * @ORM\ManyToOne(targetEntity="PuntoAtencion")
+     * @ORM\JoinColumn(name="punto_atencion_id", referencedColumnName="id")
      */
     private $puntoAtencionId;
 
     /**
      * @var int
      *
-     * @ORM\Column(name="datos_turno_id", type="integer", nullable=true, unique=true)
+     * @ORM\ManyToOne(targetEntity="DatosTurno")
+     * @ORM\JoinColumn(name="datos_turno_id", referencedColumnName="id")
      */
     private $datosTurnoId;
 
     /**
      * @var int
      *
-     * @ORM\Column(name="user_agente_id", type="integer", nullable=true)
+     * @ORM\ManyToOne(targetEntity="user_agente")
+     * @ORM\JoinColumn(name="user_agente_id", referencedColumnName="id")
      */
     private $userAgenteId;
 
     /**
      * @var int
      *
-     * @ORM\Column(name="ventanilla_id", type="integer", nullable=true)
+     * @ORM\ManyToOne(targetEntity="Ventanilla")
+     * @ORM\JoinColumn(name="ventanilla_id", referencedColumnName="id")
      */
     private $ventanillaId;
 
