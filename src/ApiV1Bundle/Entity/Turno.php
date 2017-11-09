@@ -31,30 +31,23 @@ class Turno
     /**
      * @var int
      *
-     * @ORM\Column(name="tramite_id", type="integer", nullable=true)
-     */
-    private $tramiteId;
-
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="grupo_tramite_id", type="integer", nullable=true)
-     */
-    private $grupoTramiteId;
-
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="datos_turno_id", type="integer", nullable=true)
+     * @ORM\Column(name="datos_turno_id", type="integer", nullable=true, unique=true)
      */
     private $datosTurnoId;
 
     /**
-     * @var string
+     * @var int
      *
-     * @ORM\Column(name="codigo", type="string", length=64)
+     * @ORM\Column(name="user_agente_id", type="integer", nullable=true)
      */
-    private $codigo;
+    private $userAgenteId;
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="ventanilla_id", type="integer", nullable=true)
+     */
+    private $ventanillaId;
 
     /**
      * @var \DateTime
@@ -66,9 +59,9 @@ class Turno
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="hora", type="time")
+     * @ORM\Column(name="horario", type="time")
      */
-    private $hora;
+    private $horario;
 
     /**
      * @var int
@@ -78,32 +71,32 @@ class Turno
     private $estado;
 
     /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="hora_estado", type="time")
+     */
+    private $horaEstado;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="tramite", type="string", length=255, nullable=true)
+     */
+    private $tramite;
+
+    /**
      * @var int
      *
-     * @ORM\Column(name="alerta", type="smallint", nullable=true)
+     * @ORM\Column(name="cuil", type="bigint")
      */
-    private $alerta;
+    private $cuil;
 
     /**
-     * @var \DateTime
+     * @var string
      *
-     * @ORM\Column(name="fecha_creado", type="datetimetz")
+     * @ORM\Column(name="codigo", type="string", length=64)
      */
-    private $fechaCreado;
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="fecha_modificado", type="datetimetz")
-     */
-    private $fechaModificado;
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="fecha_borrado", type="datetimetz", nullable=true)
-     */
-    private $fechaBorrado;
+    private $codigo;
 
 
     /**
@@ -141,54 +134,6 @@ class Turno
     }
 
     /**
-     * Set tramiteId
-     *
-     * @param integer $tramiteId
-     *
-     * @return Turno
-     */
-    public function setTramiteId($tramiteId)
-    {
-        $this->tramiteId = $tramiteId;
-
-        return $this;
-    }
-
-    /**
-     * Get tramiteId
-     *
-     * @return int
-     */
-    public function getTramiteId()
-    {
-        return $this->tramiteId;
-    }
-
-    /**
-     * Set grupoTramiteId
-     *
-     * @param integer $grupoTramiteId
-     *
-     * @return Turno
-     */
-    public function setGrupoTramiteId($grupoTramiteId)
-    {
-        $this->grupoTramiteId = $grupoTramiteId;
-
-        return $this;
-    }
-
-    /**
-     * Get grupoTramiteId
-     *
-     * @return int
-     */
-    public function getGrupoTramiteId()
-    {
-        return $this->grupoTramiteId;
-    }
-
-    /**
      * Set datosTurnoId
      *
      * @param integer $datosTurnoId
@@ -213,27 +158,51 @@ class Turno
     }
 
     /**
-     * Set codigo
+     * Set userAgenteId
      *
-     * @param string $codigo
+     * @param integer $userAgenteId
      *
      * @return Turno
      */
-    public function setCodigo($codigo)
+    public function setUserAgenteId($userAgenteId)
     {
-        $this->codigo = $codigo;
+        $this->userAgenteId = $userAgenteId;
 
         return $this;
     }
 
     /**
-     * Get codigo
+     * Get userAgenteId
      *
-     * @return string
+     * @return int
      */
-    public function getCodigo()
+    public function getUserAgenteId()
     {
-        return $this->codigo;
+        return $this->userAgenteId;
+    }
+
+    /**
+     * Set ventanillaId
+     *
+     * @param integer $ventanillaId
+     *
+     * @return Turno
+     */
+    public function setVentanillaId($ventanillaId)
+    {
+        $this->ventanillaId = $ventanillaId;
+
+        return $this;
+    }
+
+    /**
+     * Get ventanillaId
+     *
+     * @return int
+     */
+    public function getVentanillaId()
+    {
+        return $this->ventanillaId;
     }
 
     /**
@@ -261,27 +230,27 @@ class Turno
     }
 
     /**
-     * Set hora
+     * Set horario
      *
-     * @param \DateTime $hora
+     * @param \DateTime $horario
      *
      * @return Turno
      */
-    public function setHora($hora)
+    public function setHorario($horario)
     {
-        $this->hora = $hora;
+        $this->horario = $horario;
 
         return $this;
     }
 
     /**
-     * Get hora
+     * Get horario
      *
      * @return \DateTime
      */
-    public function getHora()
+    public function getHorario()
     {
-        return $this->hora;
+        return $this->horario;
     }
 
     /**
@@ -309,99 +278,99 @@ class Turno
     }
 
     /**
-     * Set alerta
+     * Set horaEstado
      *
-     * @param integer $alerta
+     * @param \DateTime $horaEstado
      *
      * @return Turno
      */
-    public function setAlerta($alerta)
+    public function setHoraEstado($horaEstado)
     {
-        $this->alerta = $alerta;
+        $this->horaEstado = $horaEstado;
 
         return $this;
     }
 
     /**
-     * Get alerta
+     * Get horaEstado
+     *
+     * @return \DateTime
+     */
+    public function getHoraEstado()
+    {
+        return $this->horaEstado;
+    }
+
+    /**
+     * Set tramite
+     *
+     * @param string $tramite
+     *
+     * @return Turno
+     */
+    public function setTramite($tramite)
+    {
+        $this->tramite = $tramite;
+
+        return $this;
+    }
+
+    /**
+     * Get tramite
+     *
+     * @return string
+     */
+    public function getTramite()
+    {
+        return $this->tramite;
+    }
+
+    /**
+     * Set cuil
+     *
+     * @param integer $cuil
+     *
+     * @return Turno
+     */
+    public function setCuil($cuil)
+    {
+        $this->cuil = $cuil;
+
+        return $this;
+    }
+
+    /**
+     * Get cuil
      *
      * @return int
      */
-    public function getAlerta()
+    public function getCuil()
     {
-        return $this->alerta;
+        return $this->cuil;
     }
 
     /**
-     * Set fechaCreado
+     * Set codigo
      *
-     * @param \DateTime $fechaCreado
+     * @param string $codigo
      *
      * @return Turno
      */
-    public function setFechaCreado($fechaCreado)
+    public function setCodigo($codigo)
     {
-        $this->fechaCreado = $fechaCreado;
+        $this->codigo = $codigo;
 
         return $this;
     }
 
     /**
-     * Get fechaCreado
+     * Get codigo
      *
-     * @return \DateTime
+     * @return string
      */
-    public function getFechaCreado()
+    public function getCodigo()
     {
-        return $this->fechaCreado;
-    }
-
-    /**
-     * Set fechaModificado
-     *
-     * @param \DateTime $fechaModificado
-     *
-     * @return Turno
-     */
-    public function setFechaModificado($fechaModificado)
-    {
-        $this->fechaModificado = $fechaModificado;
-
-        return $this;
-    }
-
-    /**
-     * Get fechaModificado
-     *
-     * @return \DateTime
-     */
-    public function getFechaModificado()
-    {
-        return $this->fechaModificado;
-    }
-
-    /**
-     * Set fechaBorrado
-     *
-     * @param \DateTime $fechaBorrado
-     *
-     * @return Turno
-     */
-    public function setFechaBorrado($fechaBorrado)
-    {
-        $this->fechaBorrado = $fechaBorrado;
-
-        return $this;
-    }
-
-    /**
-     * Get fechaBorrado
-     *
-     * @return \DateTime
-     */
-    public function getFechaBorrado()
-    {
-        return $this->fechaBorrado;
+        return $this->codigo;
     }
 }
 
