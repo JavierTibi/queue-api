@@ -61,7 +61,8 @@ class Ventanilla
     /**
      * @var int
      * //TODO cambiar la relacion con punto de atencion
-     * @ORM\Column(name="punto_atencion_id", type="integer")
+     * @ORM\ManyToOne(targetEntity="PuntoAtencion")
+     * @ORM\JoinColumn(name="punto_atencion_id", referencedColumnName="id")
      */
     protected $puntoAtencion;
 

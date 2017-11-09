@@ -33,7 +33,8 @@ class Cola
     /**
      * @var int
      *
-     * @ORM\Column(name="punto_atencion_id", type="integer")
+     * @ORM\ManyToOne(targetEntity="PuntoAtencion")
+     * @ORM\JoinColumn(name="punto_atencion_id", referencedColumnName="id")
      */
     private $puntoAtencion;
 
@@ -120,7 +121,7 @@ class Cola
     {
         return $this->id;
     }
-
+    
     /**
      * Get puntoatencionId
      *
