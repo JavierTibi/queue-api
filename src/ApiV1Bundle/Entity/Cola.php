@@ -53,19 +53,6 @@ class Cola
 
     /**
      * @var int
-     * @Assert\NotNull(
-     *     message="El campo Número no puede estar vacío."
-     * )
-     * @Assert\Type(
-     *     type="string",
-     *     message="Este campo Identificador solo acepta caracteres alfanumerico."
-     * )
-     * @ORM\Column(name="numero", type="integer")
-     */
-    private $numero;
-
-    /**
-     * @var int
      * @ORM\Column(name="tipo", type="integer")
      */
     private $tipo;
@@ -79,38 +66,13 @@ class Cola
      */
     private $ventanillas;
 
-    public function __construct($nombre, $numero, $puntoAtencion, $tipo)
+    public function __construct($nombre, $puntoAtencion, $tipo)
     {
         $this->nombre = $nombre;
         $this->puntoAtencion = $puntoAtencion;
         $this->tipo = $tipo;
         $this->ventanillas = new ArrayCollection();
     }
-
-    /**
-     * Fecha de creación de la ventanilla
-     *
-     * @var \DateTime
-     * @ORM\Column(name="fecha_creado", type="datetimetz")
-     */
-    private $fechaCreado;
-
-    /**
-     * Fecha de modificación de la ventanilla
-     *
-     * @var \DateTime
-     * @ORM\Column(name="fecha_modificado", type="datetimetz")
-     */
-    private $fechaModificado;
-
-    /**
-     * Fecha de borrado de la ventanilla
-     *
-     * @var \DateTime
-     * @ORM\Column(name="fecha_borrado", type="datetimetz", nullable=true)
-     */
-    private $fechaBorrado;
-
 
     /**
      * Get id
@@ -142,15 +104,30 @@ class Cola
         return $this->nombre;
     }
 
+
     /**
-     * Get numero
+     * Fecha de creación de la ventanilla
      *
-     * @return int
+     * @var \DateTime
+     * @ORM\Column(name="fecha_creado", type="datetimetz")
      */
-    public function getNumero()
-    {
-        return $this->numero;
-    }
+    private $fechaCreado;
+
+    /**
+     * Fecha de modificación de la ventanilla
+     *
+     * @var \DateTime
+     * @ORM\Column(name="fecha_modificado", type="datetimetz")
+     */
+    private $fechaModificado;
+
+    /**
+     * Fecha de borrado de la ventanilla
+     *
+     * @var \DateTime
+     * @ORM\Column(name="fecha_borrado", type="datetimetz", nullable=true)
+     */
+    private $fechaBorrado;
 
 }
 

@@ -13,4 +13,26 @@ class ColaValidator extends SNCValidator
 
         return new ValidateResultado(null, $errors);
     }
+
+    /**
+     * @param $params
+     * @return ValidateResultado
+     */
+    public function validarCreateByGrupoTramite($params)
+    {
+        $errors = [];
+
+        if (! isset($params["puntoAtencion"])) {
+            //TODO validar Punto de Atencion - find
+            $errors[] = "El punto de atención es obligatorio.";
+            return new ValidateResultado(null, $errors);
+        }
+
+        if (! isset($params["puntoAtencion"])) {
+            $errors[] = "El nombre del grupo tramite es es obligatorio.";
+            return new ValidateResultado(null, $errors);
+        }
+
+        return new ValidateResultado(null, $errors);
+    }
 }

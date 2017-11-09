@@ -95,3 +95,11 @@ fos_rest:
         resolvers:
             media_type:
                 enabled: true
+
+#Redis
+snc_redis:
+    clients:
+        default:
+            type: predis
+            alias: default
+            dsn: redis://hxv-sntdb.hexacta.com

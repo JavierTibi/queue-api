@@ -3,6 +3,7 @@
 namespace ApiV1Bundle\ApplicationServices;
 
 
+use ApiV1Bundle\Entity\Factory\ColaFactory;
 use ApiV1Bundle\Entity\Validator\ColaValidator;
 use ApiV1Bundle\Entity\Validator\SNCValidator;
 use ApiV1Bundle\Repository\ColaRepository;
@@ -67,5 +68,33 @@ class ColaServices extends SNCServices
         }
 
         return $this->respuestaData([], null);
+    }
+
+    /**
+     * Agrega una cola por grupo de tramite
+     *
+     * @param $params
+     * @param $redis
+     * @param $sucess
+     * @param $error
+     * @return mixed
+     */
+    public function addColaGrupoTramite($params, $sucess, $error)
+    {
+        $ventanillaFactory = new ColaFactory(
+            $this->colaValidator,
+            $this->colaRepository
+        );
+
+        $validateResult = $ventanillaFactory->create($params);
+
+        return $this->processResult(
+            $validateResult,
+            function ($entity) use ($sucess) {
+                return call_user_func($sucess, $this->colaRepository->save($entity));
+            },
+            $error
+        );
+
     }
 }

@@ -56,6 +56,7 @@ class ApiController extends FOSRestController
         return $this->container->get('snc.services.usuario');
     }
 
+
     /**
      * Obtiene Cola service
      *
@@ -156,5 +157,10 @@ class ApiController extends FOSRestController
     protected function respuestaData($metadata, $result)
     {
         return new Respuesta($metadata, $result);
+    }
+
+    protected function getContainerRedis()
+    {
+        return $this->container->get('snc_redis.default');
     }
 }

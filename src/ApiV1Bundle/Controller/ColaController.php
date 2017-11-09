@@ -43,4 +43,36 @@ class ColaController extends ApiController
         $this->colaServices = $this->getColasServices();
         return $this->colaServices->get($id);
     }
+
+    /**
+     * @param Request $request
+     * @Post("/colas/grupotramite")
+     */
+    public function postAction(Request $request)
+    {
+        $params = $request->request->all();
+        $this->colaServices = $this->getColasServices();
+
+        return $this->colaServices->addColaGrupoTramite(
+            $params,
+            function ($cola) {
+                return $this->respuestaOk('Cola agregada con éxito', [
+                    'id' => $cola->getId()
+                ]);
+            },
+            function ($err) {
+                return $this->respuestaError($err);
+            }
+        );
+
+        /*
+         *            $this->getContainerRedis(),
+        $this->redis = $this->getContainerRedis();
+        $val = $this->redis->sadd('cola:1', 10);
+        $fecha = new \DateTime();
+        $val = $this->redis->zadd('prioridad:0:cola:1', $fecha->getTimestamp(), 'hola fausto');
+        dump($this->redis->zscan('prioridad:0:cola:1', 0));
+        dump($val);
+        exit; */
+    }
 }
