@@ -2,13 +2,18 @@
 
 namespace ApiV1Bundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * Turno
  *
  * @ORM\Table(name="turno")
  * @ORM\Entity(repositoryClass="ApiV1Bundle\Repository\TurnoRepository")
+ * @Gedmo\SoftDeleteable(fieldName="fechaBorrado")
+ * @ORM\HasLifecycleCallbacks()
  */
 class Turno
 {
@@ -22,36 +27,44 @@ class Turno
     private $id;
 
     /**
-     * @var int
+     * @var PuntoAtencion
      *
      * @ORM\ManyToOne(targetEntity="PuntoAtencion")
      * @ORM\JoinColumn(name="punto_atencion_id", referencedColumnName="id")
      */
-    private $puntoAtencionId;
+    private $puntoAtencion;
 
     /**
      * @var int
+     * @ORM\Column(name="grupo_tramite_snt_id")
+     */
+    private $grupoTramiteIdSNT;
+
+    /**
+     * Campo de relación con los datos del turno
+     * A un turno le corresponde un solo grupo de datos
      *
-     * @ORM\ManyToOne(targetEntity="DatosTurno")
+     * @var DatosTurno
+     * @ORM\OneToOne(targetEntity="DatosTurno", inversedBy="turno", cascade={"persist"})
      * @ORM\JoinColumn(name="datos_turno_id", referencedColumnName="id")
      */
-    private $datosTurnoId;
+    private $datosTurno;
 
     /**
-     * @var int
+     * @var Agente
      *
-     * @ORM\ManyToOne(targetEntity="user_agente")
+     * @ORM\ManyToOne(targetEntity="Agente")
      * @ORM\JoinColumn(name="user_agente_id", referencedColumnName="id")
      */
-    private $userAgenteId;
+    private $agente;
 
     /**
-     * @var int
+     * @var Ventanilla
      *
      * @ORM\ManyToOne(targetEntity="Ventanilla")
      * @ORM\JoinColumn(name="ventanilla_id", referencedColumnName="id")
      */
-    private $ventanillaId;
+    private $ventanilla;
 
     /**
      * @var \DateTime
@@ -84,16 +97,9 @@ class Turno
     /**
      * @var string
      *
-     * @ORM\Column(name="tramite", type="string", length=255, nullable=true)
+     * @ORM\Column(name="tramite", type="string", length=255, nullable=false)
      */
     private $tramite;
-
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="cuil", type="bigint")
-     */
-    private $cuil;
 
     /**
      * @var string
@@ -102,10 +108,31 @@ class Turno
      */
     private $codigo;
 
+    /**
+     * Fecha de creación
+     *
+     * @var \DateTime
+     * @ORM\Column(name="fecha_creado", type="datetime")
+     */
+    private $fechaCreado;
 
     /**
-     * Get id
+     * Fecha de modificación
      *
+     * @var \DateTime
+     * @ORM\Column(name="fecha_modificado", type="datetime")
+     */
+    private $fechaModificado;
+
+    /**
+     * Fecha de borrado
+     *
+     * @var \DateTime
+     * @ORM\Column(name="fecha_borrado", type="datetimetz", nullable=true)
+     */
+    private $fechaBorrado;
+
+    /**
      * @return int
      */
     public function getId()
@@ -114,118 +141,38 @@ class Turno
     }
 
     /**
-     * Set puntoAtencionId
-     *
-     * @param integer $puntoAtencionId
-     *
-     * @return Turno
+     * @return PuntoAtencion
      */
-    public function setPuntoAtencionId($puntoAtencionId)
+    public function getPuntoAtencion()
     {
-        $this->puntoAtencionId = $puntoAtencionId;
-
-        return $this;
+        return $this->puntoAtencion;
     }
 
     /**
-     * Get puntoAtencionId
-     *
-     * @return int
+     * @return DatosTurno
      */
-    public function getPuntoAtencionId()
+    public function getDatosTurno()
     {
-        return $this->puntoAtencionId;
+        return $this->datosTurno;
     }
 
     /**
-     * Set datosTurnoId
-     *
-     * @param integer $datosTurnoId
-     *
-     * @return Turno
+     * @return Agente
      */
-    public function setDatosTurnoId($datosTurnoId)
+    public function getAgente()
     {
-        $this->datosTurnoId = $datosTurnoId;
-
-        return $this;
+        return $this->agente;
     }
 
     /**
-     * Get datosTurnoId
-     *
-     * @return int
+     * @return Ventanilla
      */
-    public function getDatosTurnoId()
+    public function getVentanilla()
     {
-        return $this->datosTurnoId;
+        return $this->ventanilla;
     }
 
     /**
-     * Set userAgenteId
-     *
-     * @param integer $userAgenteId
-     *
-     * @return Turno
-     */
-    public function setUserAgenteId($userAgenteId)
-    {
-        $this->userAgenteId = $userAgenteId;
-
-        return $this;
-    }
-
-    /**
-     * Get userAgenteId
-     *
-     * @return int
-     */
-    public function getUserAgenteId()
-    {
-        return $this->userAgenteId;
-    }
-
-    /**
-     * Set ventanillaId
-     *
-     * @param integer $ventanillaId
-     *
-     * @return Turno
-     */
-    public function setVentanillaId($ventanillaId)
-    {
-        $this->ventanillaId = $ventanillaId;
-
-        return $this;
-    }
-
-    /**
-     * Get ventanillaId
-     *
-     * @return int
-     */
-    public function getVentanillaId()
-    {
-        return $this->ventanillaId;
-    }
-
-    /**
-     * Set fecha
-     *
-     * @param \DateTime $fecha
-     *
-     * @return Turno
-     */
-    public function setFecha($fecha)
-    {
-        $this->fecha = $fecha;
-
-        return $this;
-    }
-
-    /**
-     * Get fecha
-     *
      * @return \DateTime
      */
     public function getFecha()
@@ -234,22 +181,6 @@ class Turno
     }
 
     /**
-     * Set horario
-     *
-     * @param \DateTime $horario
-     *
-     * @return Turno
-     */
-    public function setHorario($horario)
-    {
-        $this->horario = $horario;
-
-        return $this;
-    }
-
-    /**
-     * Get horario
-     *
      * @return \DateTime
      */
     public function getHorario()
@@ -258,22 +189,6 @@ class Turno
     }
 
     /**
-     * Set estado
-     *
-     * @param integer $estado
-     *
-     * @return Turno
-     */
-    public function setEstado($estado)
-    {
-        $this->estado = $estado;
-
-        return $this;
-    }
-
-    /**
-     * Get estado
-     *
      * @return int
      */
     public function getEstado()
@@ -282,22 +197,6 @@ class Turno
     }
 
     /**
-     * Set horaEstado
-     *
-     * @param \DateTime $horaEstado
-     *
-     * @return Turno
-     */
-    public function setHoraEstado($horaEstado)
-    {
-        $this->horaEstado = $horaEstado;
-
-        return $this;
-    }
-
-    /**
-     * Get horaEstado
-     *
      * @return \DateTime
      */
     public function getHoraEstado()
@@ -306,22 +205,6 @@ class Turno
     }
 
     /**
-     * Set tramite
-     *
-     * @param string $tramite
-     *
-     * @return Turno
-     */
-    public function setTramite($tramite)
-    {
-        $this->tramite = $tramite;
-
-        return $this;
-    }
-
-    /**
-     * Get tramite
-     *
      * @return string
      */
     public function getTramite()
@@ -330,51 +213,41 @@ class Turno
     }
 
     /**
-     * Set cuil
-     *
-     * @param integer $cuil
-     *
-     * @return Turno
-     */
-    public function setCuil($cuil)
-    {
-        $this->cuil = $cuil;
-
-        return $this;
-    }
-
-    /**
-     * Get cuil
-     *
-     * @return int
-     */
-    public function getCuil()
-    {
-        return $this->cuil;
-    }
-
-    /**
-     * Set codigo
-     *
-     * @param string $codigo
-     *
-     * @return Turno
-     */
-    public function setCodigo($codigo)
-    {
-        $this->codigo = $codigo;
-
-        return $this;
-    }
-
-    /**
-     * Get codigo
-     *
      * @return string
      */
     public function getCodigo()
     {
         return $this->codigo;
     }
+
+    /**
+     * Genera las fechas de creación y modificación del turno
+     *
+     * @ORM\PrePersist
+     */
+    public function setFechas()
+    {
+        $this->fechaCreado = new \DateTime();
+        $this->fechaModificado = new \DateTime();
+    }
+
+    /**
+     * Actualiza la fecha de modificación del turno
+     *
+     * @ORM\PreUpdate
+     */
+    public function updatedFechas()
+    {
+        $this->fechaModificado = new \DateTime();
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getFechaBorrado()
+    {
+        return $this->fechaBorrado;
+    }
+
 }
 
