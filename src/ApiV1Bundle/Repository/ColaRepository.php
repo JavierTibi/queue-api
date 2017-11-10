@@ -31,8 +31,8 @@ class ColaRepository extends ApiRepository
         $query = $this->getRepository()->createQueryBuilder('c');
 
         $query->select([
+            'c.id',
             'c.nombre',
-            'c.numero',
             'c.tipo'
         ])
             ->where('c.puntoAtencion = :puntoAtencionId')

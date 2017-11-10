@@ -67,7 +67,6 @@ class ApiController extends FOSRestController
         return $this->container->get('snc.services.cola');
     }
 
-
     /**
      * Retorna una Respuesta con estado SUCCESS
      *

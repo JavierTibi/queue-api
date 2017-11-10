@@ -53,6 +53,12 @@ class Cola
 
     /**
      * @var int
+     * @ORM\Column(name="grupo_tramite_snt_id", type="integer")
+     */
+    private $grupoTramiteSNTId;
+
+    /**
+     * @var int
      * @ORM\Column(name="tipo", type="integer")
      */
     private $tipo;
@@ -65,6 +71,31 @@ class Cola
      * @ORM\ManyToMany(targetEntity="Ventanilla", mappedBy="colas")
      */
     private $ventanillas;
+
+    /**
+     * Fecha de creación de la cola
+     *
+     * @var \DateTime
+     * @ORM\Column(name="fecha_creado", type="datetimetz")
+     */
+    private $fechaCreado;
+
+    /**
+     * Fecha de modificación de la cola
+     *
+     * @var \DateTime
+     * @ORM\Column(name="fecha_modificado", type="datetimetz")
+     */
+    private $fechaModificado;
+
+    /**
+     * Fecha de borrado de la cola
+     *
+     * @var \DateTime
+     * @ORM\Column(name="fecha_borrado", type="datetimetz", nullable=true)
+     */
+    private $fechaBorrado;
+
 
     public function __construct($nombre, $puntoAtencion, $tipo)
     {
@@ -104,30 +135,66 @@ class Cola
         return $this->nombre;
     }
 
+    /**
+     * @param string $nombre
+     */
+    public function setNombre($nombre)
+    {
+        $this->nombre = $nombre;
+    }
 
     /**
-     * Fecha de creación de la ventanilla
-     *
-     * @var \DateTime
-     * @ORM\Column(name="fecha_creado", type="datetimetz")
+     * @return int
      */
-    private $fechaCreado;
+    public function getGrupoTramiteSNTId()
+    {
+        return $this->grupoTramiteSNTId;
+    }
 
     /**
-     * Fecha de modificación de la ventanilla
-     *
-     * @var \DateTime
-     * @ORM\Column(name="fecha_modificado", type="datetimetz")
+     * @param int $grupoTramiteSNTId
      */
-    private $fechaModificado;
+    public function setGrupoTramiteSNTId($grupoTramiteSNTId)
+    {
+        $this->grupoTramiteSNTId = $grupoTramiteSNTId;
+    }
 
     /**
-     * Fecha de borrado de la ventanilla
-     *
-     * @var \DateTime
-     * @ORM\Column(name="fecha_borrado", type="datetimetz", nullable=true)
+     * @return ArrayCollection
      */
-    private $fechaBorrado;
+    public function getVentanillas()
+    {
+        return $this->ventanillas;
+    }
+
+    /**
+     * Genera las fechas de creación y modificación de un trámite
+     *
+     * @ORM\PrePersist
+     */
+    public function setFechas()
+    {
+        $this->fechaCreado = new \DateTime();
+        $this->fechaModificado = new \DateTime();
+    }
+
+    /**
+     * Actualiza la fecha de modificación de un trámite
+     *
+     * @ORM\PreUpdate
+     */
+    public function updatedFechas()
+    {
+        $this->fechaModificado = new \DateTime();
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getFechaBorrado()
+    {
+        return $this->fechaBorrado;
+    }
 
 }
 

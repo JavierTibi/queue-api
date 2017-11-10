@@ -322,11 +322,29 @@ class SNCValidator
         return new ValidateResultado(null, $errors);
     }
 
+    /**
+     * @param $usuario
+     * @return ValidateResultado
+     */
     public function validarUsuario($usuario)
     {
         $errors = [];
         if (! $usuario) {
-            $errors['Usuario'] = 'Usuario Inexistente';
+            $errors['Usuario'] = 'Usuario inexistente';
+        }
+        return new ValidateResultado(null, $errors);
+    }
+
+    /**
+     * Validar Punto de Atencion
+     * @param $puntoAtencion
+     * @return ValidateResultado
+     */
+    public function validarPuntoAtencion($puntoAtencion)
+    {
+        $errors = [];
+        if (! $puntoAtencion) {
+            $errors['Punto de Atencion'] = 'Punto de atencion inexistente';
         }
         return new ValidateResultado(null, $errors);
     }

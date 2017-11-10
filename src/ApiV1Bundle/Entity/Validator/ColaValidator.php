@@ -2,14 +2,16 @@
 
 namespace ApiV1Bundle\Entity\Validator;
 
+use ApiV1Bundle\Repository\PuntoAtencionRepository;
+
 class ColaValidator extends SNCValidator
 {
+
     public function validarParamsGet($puntoAtencionId){
         $errors = [];
         if (is_null($puntoAtencionId)) {
             $errors[] = "El punto de atención es obligatorio.";
         }
-        //TODO validar Punto de Atencion
 
         return new ValidateResultado(null, $errors);
     }
@@ -18,21 +20,36 @@ class ColaValidator extends SNCValidator
      * @param $params
      * @return ValidateResultado
      */
-    public function validarCreateByGrupoTramite($params)
+    public function validarCreateByGrupoTramite($params, $puntoAtencion)
     {
-        $errors = [];
+        $errors = $this->validar($params, [
+            'nombre' => 'required',
+            'puntoAtencion' => 'required',
+            'grupoTramite' => 'required:integer'
+        ]);
 
-        if (! isset($params["puntoAtencion"])) {
-            //TODO validar Punto de Atencion - find
-            $errors[] = "El punto de atención es obligatorio.";
-            return new ValidateResultado(null, $errors);
-        }
-
-        if (! isset($params["puntoAtencion"])) {
-            $errors[] = "El nombre del grupo tramite es es obligatorio.";
-            return new ValidateResultado(null, $errors);
+        if (! count($errors) > 0 ) {
+            return $this->validarPuntoAtencion($puntoAtencion);
         }
 
         return new ValidateResultado(null, $errors);
     }
+
+    /**
+     * @param $params
+     * @return ValidateResultado
+     */
+    public function validarEditByGrupoTramite($params, $cola)
+    {
+        $errors = $this->validar($params, [
+            'nombre' => 'required'
+        ]);
+
+        if (! count($errors) > 0) {
+            return $this->validarPuntoAtencion($cola);
+        }
+
+        return new ValidateResultado(null, $errors);
+    }
+
 }

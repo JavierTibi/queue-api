@@ -23,6 +23,7 @@ use ApiV1Bundle\Repository\AdminRepository;
 use ApiV1Bundle\Repository\AgenteRepository;
 use ApiV1Bundle\Repository\ResponsableRepository;
 use ApiV1Bundle\Repository\UserRepository;
+use ApiV1Bundle\Repository\UsuarioRepository;
 use ApiV1Bundle\Repository\VentanillaRepository;
 use Symfony\Component\DependencyInjection\Container;
 

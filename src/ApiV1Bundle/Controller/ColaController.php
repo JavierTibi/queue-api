@@ -32,7 +32,7 @@ class ColaController extends ApiController
     }
 
     /**
-     * Obtiene un usuario
+     * Obtiene una cola
      *
      * @param integer $id Identificador único
      * @return mixed
@@ -45,6 +45,7 @@ class ColaController extends ApiController
     }
 
     /**
+     * Crea una cola de un grupo de tramite
      * @param Request $request
      * @Post("/colas/grupotramite")
      */
@@ -66,6 +67,7 @@ class ColaController extends ApiController
         );
 
         /*
+         * POC REDIS
          *            $this->getContainerRedis(),
         $this->redis = $this->getContainerRedis();
         $val = $this->redis->sadd('cola:1', 10);
@@ -74,5 +76,50 @@ class ColaController extends ApiController
         dump($this->redis->zscan('prioridad:0:cola:1', 0));
         dump($val);
         exit; */
+    }
+
+    /**
+     * Eliminar una cola de grupo de tramite
+     *
+     * @param integer $id Identificador único de la ventanilla
+     * @return mixed
+     * @Delete("/colas/grupotramite/{id}")
+     */
+    public function deleteAction($id)
+    {
+        $this->colaServices = $this->getColasServices();
+        return $this->colaServices->removeColaGrupoTramite(
+            $id,
+            function () {
+                return $this->respuestaOk('Cola eliminada con éxito');
+            },
+            function ($err) {
+                return $this->respuestaError($err);
+            }
+        );
+    }
+
+    /**
+     * Modificar una cola
+     *
+     * @param Request $request Espera el resultado de una petición como parámetro
+     * @return mixed
+     * @Put("/colas/grupotramite/{id}")
+     */
+    public function putAction(Request $request, $id)
+    {
+        $params = $request->request->all();
+        $this->colaServices = $this->getColasServices();
+
+        return $this->colaServices->editColaGrupoTramite(
+            $params,
+            $id,
+            function () {
+                return $this->respuestaOk('Cola modificada con éxito');
+            },
+            function ($err) {
+                return $this->respuestaError($err);
+            }
+        );
     }
 }

@@ -16,6 +16,7 @@ parameters:
     snc.repository.ventanilla.class: ApiV1Bundle\Repository\VentanillaRepository
     snc.repository.cola.class: ApiV1Bundle\Repository\ColaRepository
     snc.repository.usuario.class: ApiV1Bundle\Repository\UsuarioRepository
+    snc.repository.puntoatencion.class: ApiV1Bundle\Repository\PuntoAtencionRepository
 
     # Validators
     snc.validator.agente.class: ApiV1Bundle\Entity\Validator\AgenteValidator
@@ -92,6 +93,12 @@ services:
         arguments:
             - ApiV1Bundle\Entity\Usuario
 
+    snc.repository.puntoatencion:
+        class: '%snc.repository.puntoatencion.class%'
+        factory: ['@doctrine.orm.entity_manager', getRepository]
+        arguments:
+            - ApiV1Bundle\Entity\PuntoAtencion
+
     ### SERVICES ###
 
     snc.services.general:
@@ -116,7 +123,7 @@ services:
 
     snc.services.cola:
         class: '%snc.services.cola.class%'
-        arguments: ['@service_container', '@snc.validator.cola', '@snc.repository.cola']
+        arguments: ['@service_container', '@snc.validator.cola', '@snc.repository.cola', '@snc.repository.puntoatencion']
 
     ## VALIDATORS ##
 
@@ -138,4 +145,4 @@ services:
        arguments: ['@snc.repository.user']
 
     snc.validator.cola:
-        class: '%snc.validator.cola.class%'
+       class: '%snc.validator.cola.class%'
