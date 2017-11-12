@@ -8,6 +8,7 @@ use ApiV1Bundle\Entity\Validator\AgenteValidator;
 use ApiV1Bundle\Entity\Validator\UserValidator;
 use ApiV1Bundle\Entity\Validator\VentanillaValidator;
 use ApiV1Bundle\Repository\AgenteRepository;
+use ApiV1Bundle\Repository\PuntoAtencionRepository;
 use ApiV1Bundle\Repository\VentanillaRepository;
 use Symfony\Component\DependencyInjection\Container;
 
@@ -21,13 +22,24 @@ class AgenteServices extends SNCServices
     private $agenteValidator;
     private $userValidator;
     private $ventanillaRepository;
+    private $puntoAtencionRepository;
 
+    /**
+     * AgenteServices constructor.
+     * @param Container $container
+     * @param AgenteRepository $agenteRepository
+     * @param AgenteValidator $agenteValidator
+     * @param UserValidator $userValidator
+     * @param VentanillaRepository $ventanillaRepository
+     * @param PuntoAtencionRepository $puntoAtencionRepository
+     */
     public function __construct(
         Container $container,
         AgenteRepository $agenteRepository,
         AgenteValidator $agenteValidator,
         UserValidator $userValidator,
-        VentanillaRepository $ventanillaRepository
+        VentanillaRepository $ventanillaRepository,
+        PuntoAtencionRepository $puntoAtencionRepository
     )
     {
         parent::__construct($container);
@@ -35,6 +47,7 @@ class AgenteServices extends SNCServices
         $this->agenteValidator = $agenteValidator;
         $this->userValidator = $userValidator;
         $this->ventanillaRepository = $ventanillaRepository;
+        $this->puntoAtencionRepository = $puntoAtencionRepository;
     }
 
     /**
@@ -45,7 +58,24 @@ class AgenteServices extends SNCServices
      */
     public function findAllPaginate($puntoAtencionId, $limit, $offset)
     {
-        $result = $this->agenteRepository->findAllPaginate($puntoAtencionId, $offset, $limit);
+        $agentes = $this->agenteRepository->findAllPaginate($puntoAtencionId, $offset, $limit);
+
+        foreach ($agentes as $agente) {
+
+            foreach ($agente->getVentanillas() as $ventanilla) {
+                $ventanillas[] =
+                    $ventanilla->getIdentificador();
+            }
+
+            $result[] = [
+                'id' => $agente->getId(),
+                'nombre' => $agente->getNombre(),
+                'apellido' => $agente->getApellido(),
+                'ventanillaActual' => $agente->getVentanillaActual(),
+                'ventanillas' => $ventanillas
+            ];
+        }
+
         $resultset = [
             'resultset' => [
                 'count' => count($result),
@@ -73,60 +103,6 @@ class AgenteServices extends SNCServices
     }
 
     /**
-     * Editar un usuario Agente
-     *
-     * @param $params
-     * @param $id
-     * @param $success
-     * @param $error
-     * @return mixed
-     */
-    public function edit($params, $id, $success, $error)
-    {
-        $agenteSync = new AgenteSync(
-            $this->agenteValidator,
-            $this->agenteRepository,
-            $this->ventanillaRepository
-        );
-
-        $validateResult = $agenteSync->edit($id, $params);
-        return $this->processResult(
-            $validateResult,
-            function ($entity) use ($success) {
-                return call_user_func($success, $this->agenteRepository->flush());
-            },
-            $error
-        );
-    }
-
-    /**
-     * Elimina un agente
-     *
-     * @param integer $id Identificador único del área
-     * @param $success | Indica si tuvo éxito o no
-     * @param string $error Mensaje con el error ocurrido al borrar un área
-     * @return mixed
-     */
-    public function delete($id, $success, $error)
-    {
-        $agenteSync = new AgenteSync(
-            $this->agenteValidator,
-            $this->agenteRepository,
-            $this->ventanillaRepository
-        );
-
-        $validateResult = $agenteSync->delete($id);
-
-        return $this->processResult(
-            $validateResult,
-            function ($entity) use ($success) {
-                return call_user_func($success, $this->agenteRepository->remove($entity));
-            },
-            $error
-        );
-    }
-
-    /**
      * @param $idAgente
      * @param $idVentanilla
      * @param $success
@@ -138,7 +114,8 @@ class AgenteServices extends SNCServices
         $agenteSync = new AgenteSync(
             $this->agenteValidator,
             $this->agenteRepository,
-            $this->ventanillaRepository
+            $this->ventanillaRepository,
+            $this->puntoAtencionRepository
         );
 
         $validateResult = $agenteSync->asignarVentanilla($idAgente, $idVentanilla);

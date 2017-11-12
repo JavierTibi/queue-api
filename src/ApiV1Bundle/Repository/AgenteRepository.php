@@ -23,10 +23,8 @@ class AgenteRepository extends ApiRepository
     {
         $query = $this->getRepository()->createQueryBuilder('a');
 
-        $query->select([
-            'a.nombre',
-            'a.apellido'
-        ])
+        $query
+            ->leftJoin('a.ventanillaActual', 'v')
             ->where('a.puntoAtencion = :puntoAtencionId')
             ->setParameter('puntoAtencionId', $puntoAtencionId);
 
