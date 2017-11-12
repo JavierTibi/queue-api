@@ -23,11 +23,9 @@ class Responsable extends Usuario
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    protected $id;
 
     /**
-     * @var int
-     * //TODO cambiar la relacion con punto de atencion
      * @ORM\ManyToOne(targetEntity="PuntoAtencion")
      * @ORM\JoinColumn(name="punto_atencion_id", referencedColumnName="id")
      */
@@ -81,11 +79,19 @@ class Responsable extends Usuario
     }
 
     /**
-     * @return int
+     * @return PuntoAtencion
      */
     public function getPuntoAtencion()
     {
         return $this->puntoAtencion;
+    }
+
+    /**
+     * @return int
+     */
+    public function getPuntoAtencionId()
+    {
+        return $this->getPuntoAtencion()->getId();
     }
 
     /**

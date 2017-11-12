@@ -8,6 +8,7 @@
 
 namespace ApiV1Bundle\ApplicationServices;
 
+use ApiV1Bundle\Entity\Admin;
 use ApiV1Bundle\Entity\Factory\AdminFactory;
 use ApiV1Bundle\Entity\Factory\AgenteFactory;
 use ApiV1Bundle\Entity\Factory\ResponsableFactory;
@@ -21,6 +22,7 @@ use ApiV1Bundle\Entity\Validator\ResponsableValidator;
 use ApiV1Bundle\Entity\Validator\AgenteValidator;
 use ApiV1Bundle\Repository\AdminRepository;
 use ApiV1Bundle\Repository\AgenteRepository;
+use ApiV1Bundle\Repository\PuntoAtencionRepository;
 use ApiV1Bundle\Repository\ResponsableRepository;
 use ApiV1Bundle\Repository\UserRepository;
 use ApiV1Bundle\Repository\UsuarioRepository;
@@ -38,6 +40,8 @@ class UsuarioServices extends SNCServices
     private $userRepository;
     private $ventanillaRepository;
     private $agenteValidator;
+    private $puntoAtencionRepository;
+    private $usuarioRepository;
 
 
     public function __construct(
@@ -49,7 +53,9 @@ class UsuarioServices extends SNCServices
         AdminRepository $adminRepository,
         ResponsableRepository $responsableRepository,
         UserRepository $userRepository,
-        VentanillaRepository $ventanillaRepository
+        VentanillaRepository $ventanillaRepository,
+        PuntoAtencionRepository $puntoAtencionRepository,
+        UsuarioRepository $usuarioRepository
     )
     {
         parent::__construct($container);
@@ -61,6 +67,8 @@ class UsuarioServices extends SNCServices
         $this->responsableRepository = $responsableRepository;
         $this->userRepository = $userRepository;
         $this->ventanillaRepository = $ventanillaRepository;
+        $this->puntoAtencionRepository = $puntoAtencionRepository;
+        $this->usuarioRepository = $usuarioRepository;
     }
 
     /**
@@ -74,14 +82,16 @@ class UsuarioServices extends SNCServices
         if ($params['rol'] == User::ROL_AGENTE) {
             $usuarioFactory = new AgenteFactory(
                 $this->userValidator,
-                $this->ventanillaRepository
+                $this->ventanillaRepository,
+                $this->puntoAtencionRepository
             );
 
             $repository = $this->agenteRepository;
 
         } elseif ($params['rol'] == User::ROL_RESPONSABLE) {
             $usuarioFactory = new ResponsableFactory(
-                $this->userValidator
+                $this->userValidator,
+                $this->puntoAtencionRepository
             );
             $repository = $this->responsableRepository;
 
@@ -112,8 +122,18 @@ class UsuarioServices extends SNCServices
      */
     public function findAllPaginate($limit, $offset)
     {
-        $result = $this->userRepository->findAllPaginate($offset, $limit);
 
+        $usuarios = $this->usuarioRepository->findAllPaginate($offset, $limit);
+
+        foreach ($usuarios as $usuario){
+            $result[] = [
+                'id' => $usuario->getUser()->getId(),
+                'nombre' => $usuario->getNombre(),
+                'apellido' => $usuario->getApellido(),
+                'rol' => $usuario->getUser()->getRol(),
+                'puntoAtencion' => $usuario->getPuntoAtencionId(),
+            ];
+        }
         $resultset = [
             'resultset' => [
                 'count' => count($result),
@@ -208,7 +228,8 @@ class UsuarioServices extends SNCServices
                     $userSync = new ResponsableSync(
                         $this->userValidator,
                         $this->responsableRepository,
-                        $this->responsableValidator
+                        $this->responsableValidator,
+                        $this->puntoAtencionRepository
                     );
                     $repository = $this->responsableRepository;
                     break;
@@ -216,7 +237,8 @@ class UsuarioServices extends SNCServices
                     $userSync = new AgenteSync(
                         $this->agenteValidator,
                         $this->agenteRepository,
-                        $this->ventanillaRepository
+                        $this->ventanillaRepository,
+                        $this->puntoAtencionRepository
                     );
                     $repository = $this->agenteRepository;
                     break;
@@ -259,7 +281,8 @@ class UsuarioServices extends SNCServices
                     $userSync = new ResponsableSync(
                         $this->userValidator,
                         $this->responsableRepository,
-                        $this->responsableValidator
+                        $this->responsableValidator,
+                        $this->puntoAtencionRepository
                     );
                     $repository = $this->responsableRepository;
                     break;
@@ -267,7 +290,8 @@ class UsuarioServices extends SNCServices
                     $userSync = new AgenteSync(
                         $this->agenteValidator,
                         $this->agenteRepository,
-                        $this->ventanillaRepository
+                        $this->ventanillaRepository,
+                        $this->puntoAtencionRepository
                     );
                     $repository = $this->agenteRepository;
                     break;

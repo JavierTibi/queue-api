@@ -8,6 +8,7 @@ use ApiV1Bundle\Entity\Validator\AgenteValidator;
 use ApiV1Bundle\Entity\Validator\UserValidator;
 use ApiV1Bundle\Entity\Validator\ValidateResultado;
 use ApiV1Bundle\Repository\AgenteRepository;
+use ApiV1Bundle\Repository\PuntoAtencionRepository;
 use ApiV1Bundle\Repository\VentanillaRepository;
 
 /**
@@ -19,6 +20,7 @@ class AgenteSync
     private $agenteValidator;
     private $agenteRepository;
     private $ventanillaRepository;
+    private $puntoAtencionRepository;
 
     /**
      * AgenteSync constructor.
@@ -29,11 +31,14 @@ class AgenteSync
     public function __construct(
         AgenteValidator $agenteValidator,
         AgenteRepository $agenteRepository,
-        VentanillaRepository $ventanillaRepository)
+        VentanillaRepository $ventanillaRepository,
+        PuntoAtencionRepository $puntoAtencionRepository
+    )
     {
         $this->agenteValidator = $agenteValidator;
         $this->agenteRepository = $agenteRepository;
         $this->ventanillaRepository = $ventanillaRepository;
+        $this->puntoAtencionRepository = $puntoAtencionRepository;
     }
 
     public function edit($id, $params)
@@ -47,8 +52,16 @@ class AgenteSync
 
             $agente->setNombre($params['nombre']);
             $agente->setApellido($params['apellido']);
-            //TODO find punto de atencion
-            $agente->setPuntoAtencion($params['puntoAtencion']);
+
+            $puntoAtencion = $this->puntoAtencionRepository->find($params['puntoAtencion']);
+
+            $validateResultadoPA = $this->agenteValidator->validarPuntoAtencion($puntoAtencion);
+
+            if ($validateResultadoPA->hasError()) {
+                    return $validateResultadoPA;
+            }
+
+            $agente->setPuntoAtencion($puntoAtencion);
 
             $agente->removeAllVentanilla();
 

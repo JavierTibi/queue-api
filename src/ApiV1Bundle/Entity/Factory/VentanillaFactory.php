@@ -17,11 +17,13 @@ class VentanillaFactory
 {
     private $ventanillaValidator;
     private $colaRepository;
+    private $puntoAtencionRepository;
 
-    public function __construct(VentanillaValidator $ventanillaValidator, $colaRepository)
+    public function __construct(VentanillaValidator $ventanillaValidator, $colaRepository, $puntoAtencionRepository)
     {
         $this->ventanillaValidator = $ventanillaValidator;
         $this->colaRepository = $colaRepository;
+        $this->puntoAtencionRepository = $puntoAtencionRepository;
     }
     /**
      * @param $params
@@ -29,11 +31,12 @@ class VentanillaFactory
      */
     public function create($params)
     {
-        $validateResultado = $this->ventanillaValidator->validarParams($params);
+        $puntoAtencion = $this->puntoAtencionRepository->find($params['puntoAtencion']);
+        $validateResultado = $this->ventanillaValidator->validarParams($params, $puntoAtencion);
 
         if (! $validateResultado->hasError()) {
-            //TODO find punto de atencion
-            $ventanilla = new Ventanilla($params['identificador'], $params['puntoAtencion']);
+
+            $ventanilla = new Ventanilla($params['identificador'], $puntoAtencion);
 
             foreach ($params['colas'] as $colaId) {
                 $cola = $this->colaRepository->find($colaId);

@@ -11,12 +11,14 @@ class VentanillaValidator extends SNCValidator
      * @param $params
      * @return ValidateResultado
      */
-    public function validarParams($params) {
+    public function validarParams($params, $puntoAtencion) {
         $errors = $this->validar($params, [
             'puntoAtencion' => 'required',
             'identificador' => 'required',
             'colas' => 'required:matriz'
         ]);
+
+        //TODO validar punto de atencion
 
         return new ValidateResultado(null, $errors);
     }

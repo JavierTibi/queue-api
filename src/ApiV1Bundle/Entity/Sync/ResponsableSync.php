@@ -4,6 +4,7 @@ namespace ApiV1Bundle\Entity\Sync;
 
 
 use ApiV1Bundle\Entity\Agente;
+use ApiV1Bundle\Repository\PuntoAtencionRepository;
 use ApiV1Bundle\Repository\ResponsableRepository;
 use ApiV1Bundle\Repository\UserRepository;
 use ApiV1Bundle\Entity\Validator\ResponsableValidator;
@@ -19,21 +20,25 @@ class ResponsableSync
     private $userValidator;
     private $responsableRepository;
     private $responsableValidator;
+    private $puntoAtencionRepository;
 
     /**
      * ResponsableSync constructor.
      * @param UserValidator $userValidator
      * @param ResponsableRepository $responsableRepository
      * @param ResponsableValidator $responsableValidator
+     * @param PuntoAtencionRepository $puntoAtencionRepository
      */
     public function __construct(
         UserValidator $userValidator,
         ResponsableRepository $responsableRepository,
-        ResponsableValidator $responsableValidator)
+        ResponsableValidator $responsableValidator,
+        PuntoAtencionRepository $puntoAtencionRepository)
     {
         $this->userValidator = $userValidator;
         $this->responsableRepository = $responsableRepository;
         $this->responsableValidator = $responsableValidator;
+        $this->puntoAtencionRepository = $puntoAtencionRepository;
     }
 
     public function edit($id, $params)
@@ -47,7 +52,14 @@ class ResponsableSync
 
             $responsable->setNombre($params['nombre']);
             $responsable->setApellido($params['apellido']);
-            $responsable->setPuntoAtencion($params['puntoAtencion']);
+
+            $puntoAtencion = $this->puntoAtencionRepository->find($params['puntoAtencion']);
+            $validateResultadoPA = $this->responsableValidator->validarPuntoAtencion($puntoAtencion);
+
+            if ($validateResultadoPA->hasError()) {
+                return $validateResultadoPA;
+            }
+            $responsable->setPuntoAtencion($puntoAtencion);
 
             if (isset($params['username'])) {
                 $user->setUsername($params['username']);

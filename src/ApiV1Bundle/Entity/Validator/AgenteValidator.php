@@ -14,6 +14,11 @@ use Doctrine\Common\Collections\ArrayCollection;
 class AgenteValidator extends SNCValidator
 {
 
+    /**
+     * @param $params
+     * @param $puntoAtencion
+     * @return ValidateResultado
+     */
     public function validarParams($params)
     {
         $errors = $this->validar($params, [
@@ -23,14 +28,8 @@ class AgenteValidator extends SNCValidator
             'ventanillas' => 'required:matriz'
         ]);
 
-        //TODO descomentar las validaciones cuando se creen los Repositorys de ventanilla y punto de atencion
+        //TODO descomentar las validaciones cuando se creen los Repositorys de ventanilla
         /*
-         * $puntoAtencion = $this->puntoAtencionRepository->find($params['puntoatencion']);
-
-        if (! $puntoAtencion) {
-            $errors['Punto Atencion'] = 'Punto de atención inexistente.';
-        }
-
         foreach ($params['ventanillas'] as $idVentanilla) {
             $ventanilla = $this->ventanillaRepository->find($idVentanilla);
 
@@ -38,7 +37,6 @@ class AgenteValidator extends SNCValidator
                 $errors['Ventanilla'][] = 'La ventanilla con ID: ' . $idVentanilla. 'no fue encontrada.';
             }
         }*/
-
 
         return new ValidateResultado(null, $errors);
     }

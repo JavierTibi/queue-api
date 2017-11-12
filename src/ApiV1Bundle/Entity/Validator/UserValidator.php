@@ -46,7 +46,7 @@ class UserValidator extends SNCValidator
      * @param $params
      * @return ValidateResultado
      */
-    public function validarParamsAgente($params)
+    public function validarParamsAgente($params, $puntoAtencion)
     {
         $validateResultado = $this->validarParams($params);
 
@@ -58,14 +58,14 @@ class UserValidator extends SNCValidator
                 'ventanillas' => 'required:matriz'
             ]);
 
-            //TODO descomentar las validaciones cuando se creen los Repositorys de ventanilla y punto de atencion
-            /*
-             * $puntoAtencion = $this->puntoAtencionRepository->find($params['puntoatencion']);
-
-            if (! $puntoAtencion) {
-                $errors['Punto Atencion'] = 'Punto de atención inexistente.';
+            if (! count($errors) > 0) {
+                return $this->validarPuntoAtencion($puntoAtencion);
             }
 
+            return new ValidateResultado(null, $errors);
+
+            //TODO descomentar las validaciones cuando se creen los Repositorys de ventanilla
+            /*
             foreach ($params['ventanillas'] as $idVentanilla) {
                 $ventanilla = $this->ventanillaRepository->find($idVentanilla);
 
@@ -74,7 +74,6 @@ class UserValidator extends SNCValidator
                 }
             }*/
 
-            return new ValidateResultado(null, $errors);
         }
 
         return $validateResultado;
@@ -107,7 +106,7 @@ class UserValidator extends SNCValidator
      * @param $params
      * @return ValidateResultado
      */
-    public function validarParamsResponsable($params)
+    public function validarParamsResponsable($params, $puntoAtencion)
     {
         $validateResultado = $this->validarParams($params);
 
@@ -118,14 +117,9 @@ class UserValidator extends SNCValidator
                 'puntoAtencion' => 'required:integer'
             ]);
 
-            //TODO descomentar las validaciones cuando se creen los Repositorys de ventanilla y punto de atencion
-            /*
-             * $puntoAtencion = $this->puntoAtencionRepository->find($params['puntoatencion']);
-
-            if (! $puntoAtencion) {
-                $errors['Punto Atencion'] = 'Punto de atención inexistente.';
+            if (! count($errors) > 0) {
+                return $this->validarPuntoAtencion($puntoAtencion);
             }
-          */
 
             return new ValidateResultado(null, $errors);
         }

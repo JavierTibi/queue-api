@@ -15,12 +15,14 @@ use ApiV1Bundle\Entity\Validator\AgenteValidator;
 use ApiV1Bundle\Entity\Validator\UserValidator;
 use ApiV1Bundle\Entity\Validator\ValidateResultado;
 use ApiV1Bundle\Entity\Ventanilla;
+use ApiV1Bundle\Repository\PuntoAtencionRepository;
 use ApiV1Bundle\Repository\VentanillaRepository;
 
 class AgenteFactory
 {
     private $userValidator;
     private $ventanillaRepository;
+    private $puntoAtencionRepository;
 
 
     /**
@@ -30,10 +32,12 @@ class AgenteFactory
      */
     public function __construct(
         UserValidator $userValidator,
-        VentanillaRepository $ventanillaRepository)
+        VentanillaRepository $ventanillaRepository,
+        PuntoAtencionRepository $puntoAtencionRepository)
     {
         $this->userValidator = $userValidator;
         $this->ventanillaRepository = $ventanillaRepository;
+        $this->puntoAtencionRepository = $puntoAtencionRepository;
     }
 
     /**
@@ -42,8 +46,8 @@ class AgenteFactory
      */
     public function create($params)
     {
-
-        $validateResultado = $this->userValidator->validarParamsAgente($params);
+        $puntoAtencion = $this->puntoAtencionRepository->find($params['puntoAtencion']);
+        $validateResultado = $this->userValidator->validarParamsAgente($params, $puntoAtencion);
 
         if (! $validateResultado->hasError()) {
 
@@ -55,8 +59,7 @@ class AgenteFactory
             $agente = new Agente(
                 $params['nombre'],
                 $params['apellido'],
-                $params['puntoAtencion'],
-                $params['ventanillas'],
+                $puntoAtencion,
                 $user
             );
 

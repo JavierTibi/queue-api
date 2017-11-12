@@ -6,11 +6,27 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Usuario
  * @ORM\MappedSuperclass
- *
  */
+
+/**
+ * Class Usuario
+ * @package ApiV1Bundle\Entity
+ * /**
+ * @ORM\Entity(repositoryClass="ApiV1Bundle\Repository\UsuarioRepository")
+ * @ORM\InheritanceType("JOINED")
+ * @ORM\DiscriminatorColumn(name="discr", type="string")
+ * @ORM\DiscriminatorMap({"agente" = "Agente", "responsable" = "Responsable", "admin" = "Admin"})
+ */
+
 abstract class Usuario
 {
 
+    /**
+     * @ORM\Id
+     * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    protected $id;
     /**
      * @var string
      *
@@ -82,5 +98,7 @@ abstract class Usuario
     {
         $this->apellido = $apellido;
     }
+
+    abstract public function getPuntoAtencionId();
 
 }

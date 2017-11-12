@@ -115,11 +115,11 @@ services:
 
     snc.services.ventanilla:
         class: '%snc.services.ventanilla.class%'
-        arguments: ['@service_container', '@snc.repository.ventanilla', '@snc.validator.ventanilla', '@snc.repository.cola']
+        arguments: ['@service_container', '@snc.repository.ventanilla', '@snc.validator.ventanilla', '@snc.repository.cola', '@snc.repository.puntoatencion']
 
     snc.services.usuario:
         class: '%snc.services.usuario.class%'
-        arguments: ['@service_container', '@snc.validator.user', '@snc.validator.responsable', '@snc.validator.agente', '@snc.repository.agente', '@snc.repository.admin', '@snc.repository.responsable', '@snc.repository.user', '@snc.repository.ventanilla']
+        arguments: ['@service_container', '@snc.validator.user', '@snc.validator.responsable', '@snc.validator.agente', '@snc.repository.agente', '@snc.repository.admin', '@snc.repository.responsable', '@snc.repository.user', '@snc.repository.ventanilla', '@snc.repository.puntoatencion', '@snc.repository.usuario']
 
     snc.services.cola:
         class: '%snc.services.cola.class%'

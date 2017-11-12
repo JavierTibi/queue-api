@@ -23,11 +23,9 @@ class Agente extends Usuario
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    protected $id;
 
     /**
-     * @var int
-     * //TODO cambiar la relacion con punto de atencion
      * @ORM\ManyToOne(targetEntity="PuntoAtencion")
      * @ORM\JoinColumn(name="punto_atencion_id", referencedColumnName="id")
      */
@@ -73,10 +71,12 @@ class Agente extends Usuario
 
     /**
      * Agente constructor.
-     * @param $user
+     * @param $nombre
+     * @param $apellido
      * @param $puntoAtencion
+     * @param User $user
      */
-    public function __construct($nombre, $apellido, $puntoAtencion, $ventanillas, User $user)
+    public function __construct($nombre, $apellido, $puntoAtencion, User $user)
     {
         parent::__construct($nombre, $apellido, $user);
         $this->puntoAtencion = $puntoAtencion;
@@ -94,11 +94,19 @@ class Agente extends Usuario
     }
 
     /**
-     * @return int
+     * @return PuntoAtencion
      */
     public function getPuntoAtencion()
     {
         return $this->puntoAtencion;
+    }
+
+    /**
+     * @return int
+     */
+    public function getPuntoAtencionId()
+    {
+        return $this->getPuntoAtencion()->getId();
     }
 
     /**

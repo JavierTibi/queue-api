@@ -13,20 +13,25 @@ use ApiV1Bundle\Entity\Responsable;
 use ApiV1Bundle\Entity\User;
 use ApiV1Bundle\Entity\Validator\UserValidator;
 use ApiV1Bundle\Entity\Validator\ValidateResultado;
+use ApiV1Bundle\Repository\PuntoAtencionRepository;
 
 class ResponsableFactory
 {
 
     private $userValidator;
+    private $puntoAtencionRepository;
 
     /**
      * ResponsableFactory constructor.
      * @param UserValidator $userValidator
      */
     public function __construct(
-        UserValidator $userValidator)
+        UserValidator $userValidator,
+        PuntoAtencionRepository $puntoAtencionRepository
+    )
     {
         $this->userValidator = $userValidator;
+        $this->puntoAtencionRepository = $puntoAtencionRepository;
     }
 
     /**
@@ -35,8 +40,8 @@ class ResponsableFactory
      */
     public function create($params)
     {
-
-        $validateResultado = $this->userValidator->validarParamsResponsable($params);
+        $puntoAtencion = $this->puntoAtencionRepository->find($params['puntoAtencion']);
+        $validateResultado = $this->userValidator->validarParamsResponsable($params, $puntoAtencion);
 
         if (! $validateResultado->hasError()) {
 
@@ -48,7 +53,7 @@ class ResponsableFactory
             $responsable = new Responsable(
                 $params['nombre'],
                 $params['apellido'],
-                $params['puntoAtencion'],
+                $puntoAtencion,
                 $user
             );
 

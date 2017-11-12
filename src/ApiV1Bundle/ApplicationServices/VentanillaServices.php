@@ -14,6 +14,7 @@ use ApiV1Bundle\Entity\Sync\VentanillaSync;
 use ApiV1Bundle\Entity\Validator\VentanillaValidator;
 use ApiV1Bundle\Entity\Ventanilla;
 use ApiV1Bundle\Repository\ColaRepository;
+use ApiV1Bundle\Repository\PuntoAtencionRepository;
 use ApiV1Bundle\Repository\VentanillaRepository;
 use Symfony\Component\DependencyInjection\Container;
 
@@ -22,18 +23,21 @@ class VentanillaServices extends SNCServices
     private $ventanillaRepository;
     private $ventanillaValidator;
     private $colaRepository;
+    private $puntoAtencionRepository;
 
     public function __construct(
         Container $container,
         VentanillaRepository $ventanillaRepository,
         VentanillaValidator $ventanillaValidator,
-        ColaRepository $colaRepository
+        ColaRepository $colaRepository,
+        PuntoAtencionRepository $puntoAtencionRepository
     )
     {
         parent::__construct($container);
         $this->ventanillaRepository = $ventanillaRepository;
         $this->ventanillaValidator = $ventanillaValidator;
         $this->colaRepository = $colaRepository;
+        $this->puntoAtencionRepository = $puntoAtencionRepository;
     }
 
     /**
@@ -46,7 +50,8 @@ class VentanillaServices extends SNCServices
     {
         $ventanillaFactory = new VentanillaFactory(
             $this->ventanillaValidator,
-            $this->colaRepository
+            $this->colaRepository,
+            $this->puntoAtencionRepository
         );
 
         $validateResult = $ventanillaFactory->create($params);

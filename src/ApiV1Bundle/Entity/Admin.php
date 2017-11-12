@@ -24,7 +24,7 @@ class Admin extends Usuario
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    protected $id;
 
     /**
      * Fecha de creación del agente
@@ -61,6 +61,14 @@ class Admin extends Usuario
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @return null
+     */
+    public function getPuntoAtencionId()
+    {
+        return null;
     }
 
     /**
