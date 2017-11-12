@@ -37,7 +37,7 @@ class ColaFactory
      */
     public function create($params)
     {
-        $puntoAtencion = $this->puntoAtencionRepository->find($params['puntoAtencion']);
+        $puntoAtencion = $this->puntoAtencionRepository->findOneByPuntoAtencionIdSnt($params['puntoAtencion']);
         $validateResultado = $this->colaValidator->validarCreateByGrupoTramite($params, $puntoAtencion);
 
         if (! $validateResultado->hasError()) {
