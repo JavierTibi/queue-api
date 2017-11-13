@@ -29,7 +29,7 @@ parameters:
     snc.validator.admin.class: ApiV1Bundle\Entity\Validator\AdminValidator
     snc.validator.responsable.class: ApiV1Bundle\Entity\Validator\ResponsableValidator
     snc.validator.cola.class: ApiV1Bundle\Entity\Validator\ColaValidator
-    snc.validator.turno.class: ApiV1Bundle\Entity\Validator\ColaValidator
+    snc.validator.turno.class: ApiV1Bundle\Entity\Validator\TurnoValidator
     
     # Security
     snc.helper.jwtoken.class: ApiV1Bundle\Helper\JWToken
@@ -148,7 +148,7 @@ services:
 
     snc.services.turno:
         class: '%snc.services.turno.class%'
-        arguments: ['@service_container', '@snc.repository.turno', '@snc.validator.cola', '@snc.repository.puntoatencion', '@snc.repository.cola']
+        arguments: ['@service_container', '@snc.repository.turno', '@snc.validator.turno', '@snc.repository.puntoatencion', '@snc.repository.cola']
 
     ## VALIDATORS ##
 

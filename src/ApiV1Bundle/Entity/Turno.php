@@ -182,6 +182,7 @@ class Turno
      * @param string $estado
      * @param string $tramite
      * @param string $codigo
+     * @param $prioridad
      */
     public function __construct(
         PuntoAtencion $puntoAtencion,
@@ -191,7 +192,8 @@ class Turno
         $hora,
         $estado,
         $tramite,
-        $codigo
+        $codigo,
+        $prioridad
     )
     {
         $this->puntoAtencion = $puntoAtencion;
@@ -203,6 +205,7 @@ class Turno
         $this->horaEstado = new \DateTime();
         $this->tramite = $tramite;
         $this->codigo = $codigo;
+        $this->prioridad = $prioridad;
     }
 
     /**
