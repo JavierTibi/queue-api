@@ -36,6 +36,7 @@ class SecurityServices extends SNCServices
         if ($user) {
             if ($this->encoder->isPasswordValid($user, $password)) {
                 $result = [
+                    'id' => $user->getId(),
                     'username' => $user->getUsername(),
                     'token' => $this->jwtoken->getToken($user->getId(), $user->getUsername(), $user->getRoles()),
                     'rol' => $user->getRoles()
