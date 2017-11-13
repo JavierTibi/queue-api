@@ -161,11 +161,12 @@ class UsuarioServices extends SNCServices
                 $usuario = $this->agenteRepository->findOneByUser($user);
 
                 $result = [
+                    'id' => $usuario->getId(),
                     'nombre' => $usuario->getNombre(),
                     'apellido' => $usuario->getApellido(),
                     'username' => $usuario->getUser()->getUsername(),
                     'rol' => $usuario->getUser()->getRol(),
-                    'puntoAtencion' => $usuario->getPuntoAtencion()
+                    'puntoAtencion' => $usuario->getPuntoAtencion()->getId()
                 ];
                 foreach ($usuario->getVentanillas() as $ventanilla) {
                     $result['ventanillas'][] = $ventanilla->getId();
@@ -176,17 +177,19 @@ class UsuarioServices extends SNCServices
             if($user->getRol() == User::ROL_RESPONSABLE) {
                 $usuario = $this->responsableRepository->findOneByUser($user);
                 $result = [
+                    'id' => $usuario->getId(),
                     'nombre' => $usuario->getNombre(),
                     'apellido' => $usuario->getApellido(),
                     'username' => $usuario->getUser()->getUsername(),
                     'rol' => $usuario->getUser()->getRol(),
-                    'puntoAtencion' => $usuario->getPuntoAtencion()
+                    'puntoAtencion' => $usuario->getPuntoAtencion()->getId()
                 ];
             }
 
             if($user->getRol() == User::ROL_ADMIN) {
                 $usuario = $this->adminRepository->findOneByUser($user);
                 $result = [
+                    'id' => $usuario->getId(),
                     'nombre' => $usuario->getNombre(),
                     'apellido' => $usuario->getApellido(),
                     'username' => $usuario->getUser()->getUsername(),
