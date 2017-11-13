@@ -3,6 +3,7 @@
 namespace ApiV1Bundle\ApplicationServices;
 
 use ApiV1Bundle\Entity\Response\Respuesta;
+use ApiV1Bundle\Entity\Validator\ValidateResultado;
 use Symfony\Component\DependencyInjection\Container;
 
 /**
@@ -105,6 +106,29 @@ class SNCServices
     protected function getContainerRedis()
     {
         return $this->container->get('snc_redis.default');
+    }
+
+    /**
+     * @param $puntoAtencionId
+     * @param $colaId
+     * @param $prioridad
+     * @param $value
+     * @return ValidateResultado
+     */
+    protected function sendColaGT($puntoAtencionId, $colaId, $prioridad, $value) {
+        $errors = [];
+        $fecha = new \DateTime();
+        $val = $this->getContainerRedis()->zadd(
+            'puntoAtencion:' . $puntoAtencionId . ':cola:' . $colaId . ':prioridad:' . $prioridad,
+            $fecha->getTimestamp(),
+            $value
+        );
+
+        if ($val != 1) {
+            $errors[] = 'No se ha podido crear la cola';
+        }
+
+        return new ValidateResultado(null, $errors);
     }
 
 }

@@ -39,7 +39,7 @@ class TurnoValidator extends SNCValidator
     public function validarChangeStatus($params)
     {
         $errors = $this->validar($params, [
-            'cuil' => 'required:cuil',
+            'cuil' => 'required',
             'codigo' => 'required',
             'estado' => 'required:integer'
         ]);

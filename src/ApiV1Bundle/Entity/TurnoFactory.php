@@ -47,6 +47,7 @@ class TurnoFactory
     {
         $validateResultado = $this->turnoValidator->validarCreate($params);
 
+
         if (! $validateResultado->hasError()) {
 
             $puntoAtencion = $this->puntoAtencionRepository->find($params['puntoAtencion']);
@@ -62,6 +63,8 @@ class TurnoFactory
                 $params['datosTurno']['campos']
             );
 
+            $this->turnoRepository->persist($datosTurno);
+
             $turno = new Turno(
                 $puntoAtencion,
                 $datosTurno,
@@ -74,12 +77,20 @@ class TurnoFactory
                 $params['prioridad']
             );
 
+            if (isset($params['motivo'])) {
+                $turno->setMotivoTerminado($params['motivo']);
+            }
+
             return new ValidateResultado($turno, []);
         }
 
         return $validateResultado;
     }
 
+    /**
+     * @param $params
+     * @return ValidateResultado
+     */
     public function changeStatus($params)
     {
         $validateResultado = $this->turnoValidator->validarChangeStatus($params);
@@ -91,16 +102,20 @@ class TurnoFactory
                 $newTurno = new Turno(
                     $turno->getPuntoAtencion(),
                     $turno->getDatosTurno(),
-                    $turno->getGrupoTramite(),
+                    $turno->getGrupoTramiteIdSNT(),
                     $turno->getFecha(),
                     $turno->getHora(),
                     $params['estado'],
                     $turno->getTramite(),
                     $params['codigo'],
-                    $turno->getPrioridad()
+                    $params['prioridad']
                 );
 
-                $validateResultado->setEntity($newTurno);
+                if (isset($params['motivo'])) {
+                    $newTurno->setMotivoTerminado($params['motivo']);
+                }
+
+                return new ValidateResultado($newTurno, []);
             }
         }
 

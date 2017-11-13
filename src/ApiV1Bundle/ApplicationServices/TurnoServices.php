@@ -74,7 +74,7 @@ class TurnoServices extends SNCServices
             );
 
             if ($val != 1) {
-                $errors[] = 'No se ha podido crear la cola';
+                $errors['errors'] = 'No se ha podido crear la cola';
                 $validateResult->setErrors($errors);
             }
         }
@@ -97,5 +97,30 @@ class TurnoServices extends SNCServices
         );
 
         $validateResult = $turnoFactory->changeStatus($params);
+
+        if (! $validateResult->hasError()) {
+            if ($validateResult->getEntity()->getEstado() == Turno::ESTADO_RECEPCIONADO) {
+                $cola = $this->colaRepository->findOneBy(['grupoTramiteSNTId' => $validateResult->getEntity()->getGrupoTramiteIdSNT()]);
+
+                $validateCola = $this->sendColaGT(
+                    $validateResult->getEntity()->getPuntoAtencion()->getId(),
+                    $cola->getId(),
+                    $params['prioridad'],
+                    $validateResult->getEntity()->getCodigo()
+                );
+
+               if($validateCola->hasError()) {
+                   $validateResult->setErrors($validateCola->getErrors());
+               }
+            }
+        }
+
+        return $this->processResult(
+            $validateResult,
+            function ($entity) use ($sucess) {
+                return call_user_func($sucess, $this->turnoRepository->save($entity));
+            },
+            $error
+        );
     }
 }

@@ -1,6 +1,7 @@
 <?php
 namespace ApiV1Bundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -29,15 +30,6 @@ class DatosTurno
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
-
-    /**
-     * Propiedad para la relación entre los datos del turno y el turno
-     * Los datos del tramite le corresponden a un solo turno
-     *
-     * @var Turno
-     * @ORM\OneToOne(targetEntity="Turno", mappedBy="datosTurno",  cascade={"persist"})
-     */
-    private $turno;
 
     /**
      * Nombre del ciudadano
@@ -121,6 +113,11 @@ class DatosTurno
     private $campos;
 
     /**
+     * @ORM\OneToMany(targetEntity="Turno", mappedBy="datosTurno")
+     */
+    private $turnos;
+
+    /**
      * Fecha de creación
      *
      * @var \DateTime
@@ -160,6 +157,7 @@ class DatosTurno
         $this->setEmail($email);
         $this->setTelefono($telefono);
         $this->setCampos($campos);
+        $this->turnos = new ArrayCollection();
     }
 
     /**

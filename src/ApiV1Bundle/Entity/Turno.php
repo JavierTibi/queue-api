@@ -54,7 +54,7 @@ class Turno
      * A un turno le corresponde un solo grupo de datos
      *
      * @var DatosTurno
-     * @ORM\OneToOne(targetEntity="DatosTurno", inversedBy="turno", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="DatosTurno", inversedBy="turnos")
      * @ORM\JoinColumn(name="datos_turno_id", referencedColumnName="id")
      */
     private $datosTurno;
@@ -136,7 +136,7 @@ class Turno
      * @Assert\NotNull(
      *     message="Este campo no puede estar vacío."
      * )
-     * @ORM\Column(name="codigo", type="string", unique=true, length=64)
+     * @ORM\Column(name="codigo", type="string", length=64)
      */
     private $codigo;
 
