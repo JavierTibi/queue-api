@@ -17,6 +17,10 @@ use Gedmo\Mapping\Annotation as Gedmo;
  */
 class Turno
 {
+    const ESTADO_RECEPCIONADO = 3;
+    const ESTADO_EN_TRANCURSO = 4;
+    const ESTADO_TERMINADO = 5;
+
     /**
      * @var int
      *
@@ -35,7 +39,12 @@ class Turno
     private $puntoAtencion;
 
     /**
+     * ID Grupo Tramite del SNT
+     *
      * @var int
+     * @Assert\NotNull(
+     *     message="Este campo no puede estar vacío."
+     * )
      * @ORM\Column(name="grupo_tramite_snt_id")
      */
     private $grupoTramiteIdSNT;
@@ -54,7 +63,7 @@ class Turno
      * @var Agente
      *
      * @ORM\ManyToOne(targetEntity="Agente")
-     * @ORM\JoinColumn(name="user_agente_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="user_agente_id", referencedColumnName="id", nullable = true)
      */
     private $agente;
 
@@ -67,22 +76,35 @@ class Turno
     private $ventanilla;
 
     /**
+     * Fecha del turno
+     *
      * @var \DateTime
      *
-     * @ORM\Column(name="fecha", type="datetime")
+     * @Assert\DateTime()
+     * @ORM\Column(name="fecha", type="date")
      */
     private $fecha;
 
     /**
+     * Hora del turno
+     *
      * @var \DateTime
      *
-     * @ORM\Column(name="horario", type="time")
+     * @Assert\DateTime()
+     * @ORM\Column(name="hora", type="time")
      */
-    private $horario;
+    private $hora;
 
     /**
-     * @var int
+     * Estados que puede tener el turno:
+     * [3 => recepcionado, 4 => en transcurso, 5 => terminado]
      *
+     * @var int
+     * @Assert\Type(
+     *     type="integer",
+     *     message="Este campo no puede estar vacío y debe ser numérico."
+     * )
+     * @Assert\Range(min = 3, max = 5)
      * @ORM\Column(name="estado", type="smallint")
      */
     private $estado;
@@ -102,11 +124,29 @@ class Turno
     private $tramite;
 
     /**
-     * @var string
+     * Clave hash de cada turno
      *
-     * @ORM\Column(name="codigo", type="string", length=64)
+     * @var string
+     * @Assert\NotNull(
+     *     message="Este campo no puede estar vacío."
+     * )
+     * @ORM\Column(name="codigo", type="string", unique=true, length=64)
      */
     private $codigo;
+
+    /**
+     * Estados que puede tener el turno:
+     * [0 => sin prioridad, 1 => con prioridad]
+     *
+     * @var int
+     * @Assert\Type(
+     *     type="integer",
+     *     message="Este campo no puede estar vacío y debe ser numérico."
+     * )
+     * @Assert\Range(min = 0, max = 1)
+     * @ORM\Column(name="prioridad", type="smallint")
+     */
+    private $prioridad;
 
     /**
      * Fecha de creación
@@ -131,6 +171,39 @@ class Turno
      * @ORM\Column(name="fecha_borrado", type="datetimetz", nullable=true)
      */
     private $fechaBorrado;
+
+    /**
+     * Turno constructor.
+     * @param PuntoAtencion $puntoAtencion
+     * @param DatosTurno $datosTurno
+     * @param int $grupoTramite
+     * @param $fecha
+     * @param $hora
+     * @param string $estado
+     * @param string $tramite
+     * @param string $codigo
+     */
+    public function __construct(
+        PuntoAtencion $puntoAtencion,
+        DatosTurno $datosTurno,
+        $grupoTramite,
+        $fecha,
+        $hora,
+        $estado,
+        $tramite,
+        $codigo
+    )
+    {
+        $this->puntoAtencion = $puntoAtencion;
+        $this->datosTurno = $datosTurno;
+        $this->grupoTramiteIdSNT = $grupoTramite;
+        $this->fecha = $fecha;
+        $this->hora = $hora;
+        $this->estado = $estado;
+        $this->horaEstado = new \DateTime();
+        $this->tramite = $tramite;
+        $this->codigo = $codigo;
+    }
 
     /**
      * @return int
@@ -183,9 +256,9 @@ class Turno
     /**
      * @return \DateTime
      */
-    public function getHorario()
+    public function getHora()
     {
-        return $this->horario;
+        return $this->hora;
     }
 
     /**
@@ -219,6 +292,23 @@ class Turno
     {
         return $this->codigo;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getGrupoTramiteIdSNT()
+    {
+        return $this->grupoTramiteIdSNT;
+    }
+
+    /**
+     * @return int
+     */
+    public function getPrioridad()
+    {
+        return $this->prioridad;
+    }
+
 
     /**
      * Genera las fechas de creación y modificación del turno

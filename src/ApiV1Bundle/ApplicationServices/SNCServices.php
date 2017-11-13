@@ -94,10 +94,17 @@ class SNCServices
      *
      * @return object Respuesta
      */
-
     protected function respuestaData($metadata, $result)
     {
         return new Respuesta($metadata, $result);
+    }
+
+    /**
+     * @return object
+     */
+    protected function getContainerRedis()
+    {
+        return $this->container->get('snc_redis.default');
     }
 
 }

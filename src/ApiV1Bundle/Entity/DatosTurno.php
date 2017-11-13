@@ -152,13 +152,14 @@ class DatosTurno
      * @param string $telefono teléfono del ciudadano
      * @param array $campos colección de datos del ciudadano
      */
-    public function __construct($nombre, $apellido, $cuil, $email, $telefono)
+    public function __construct($nombre, $apellido, $cuil, $email, $telefono, $campos)
     {
         $this->setNombre($nombre);
         $this->setApellido($apellido);
         $this->setCuil($cuil);
         $this->setEmail($email);
         $this->setTelefono($telefono);
+        $this->setCampos($campos);
     }
 
     /**
