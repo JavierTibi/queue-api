@@ -11,6 +11,13 @@ namespace ApiV1Bundle\Controller;
 
 use ApiV1Bundle\Entity\Turno;
 use Symfony\Component\HttpFoundation\Request;
+use FOS\RestBundle\Controller\Annotations as Rest;
+use FOS\RestBundle\Controller\Annotations\Get;
+use FOS\RestBundle\Controller\Annotations\Post;
+use FOS\RestBundle\Controller\Annotations\Put;
+use FOS\RestBundle\Controller\Annotations\Delete;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Response;
 
 class TurnoController extends ApiController
 {
@@ -21,7 +28,7 @@ class TurnoController extends ApiController
      *
      * @param Request $request Espera el resultado de una petición como parámetro
      * @return mixed
-     * @Post("/turnos/")
+     * @Post("/turnos")
      */
     public function postAction(Request $request)
     {
@@ -39,28 +46,5 @@ class TurnoController extends ApiController
                 return $this->respuestaError($err);
             }
         );
-    }
-
-    public function cambiarEstado(Request $request)
-    {
-        $params = $request->request->all();
-        $this->turnoServices = $this->getTurnoServices();
-
-        if (isset($params['estado'])) {
-
-            if($params['estado'] == Turno::ESTADO_RECEPCIONADO) {
-
-            }
-
-            if($params['estado'] == Turno::ESTADO_EN_TRANCURSO) {
-
-            }
-
-            if($params['estado'] == Turno::ESTADO_TERMINADO) {
-
-            }
-        }
-
-        return $this->respuestaError('El parametro estado no es válido.');
     }
 }

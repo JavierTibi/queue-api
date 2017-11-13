@@ -54,12 +54,12 @@ class TurnoFactory
             $hora = new \DateTime($params['hora']);
 
             $datosTurno = new DatosTurno(
-                $params['nombre'],
-                $params['apellido'],
-                $params['cuil'],
-                $params['email'],
-                $params['telefono'],
-                $params['campos']
+                $params['datosTurno']['nombre'],
+                $params['datosTurno']['apellido'],
+                $params['datosTurno']['cuil'],
+                $params['datosTurno']['email'],
+                $params['datosTurno']['telefono'],
+                $params['datosTurno']['campos']
             );
 
             $turno = new Turno(
@@ -70,7 +70,8 @@ class TurnoFactory
                 $hora,
                 $params['estado'],
                 $params['tramite'],
-                $params['codigo']
+                $params['codigo'],
+                $params['prioridad']
             );
 
             return new ValidateResultado($turno, []);

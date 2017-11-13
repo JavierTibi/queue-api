@@ -63,7 +63,7 @@ class TurnoServices extends SNCServices
         $validateResult = $turnoFactory->create($params);
 
         if (! $validateResult->hasError()) {
-            $cola = $this->colaRepository->findOneByGrupoTramiteIdSNT($params['grupoTramite']);
+            $cola = $this->colaRepository->findOneBy(['grupoTramiteSNTId' => $params['grupoTramite']]);
 
             $fecha = new \DateTime();
             $val = $this->getContainerRedis()->zadd(
@@ -73,8 +73,8 @@ class TurnoServices extends SNCServices
             );
 
             if ($val != 1) {
-                $erros = ['No se ha podido crear la cola'];
-                $validateResult->setErrors($error);
+                $errors[] = 'No se ha podido crear la cola';
+                $validateResult->setErrors($errors);
             }
         }
 

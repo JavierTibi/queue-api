@@ -14,14 +14,15 @@ class TurnoValidator extends SNCValidator
     public function validarCreate($params)
     {
         $errors = $this->validar($params, [
-            'puntoatencion' => 'required:integer',
+            'puntoAtencion' => 'required:integer',
             'tramite' => 'required',
 	        'grupoTramite' => 'required:integer',
             'fecha' => 'required:dateTZ',
             'hora' =>  'required:time',
             'estado' => 'required',
 	        'codigo' => 'required',
-	        'datosTurno' => 'required'
+	        'datosTurno' => 'required',
+            'prioridad' => 'required:integer'
         ]);
 
         return new ValidateResultado(null, $errors);
