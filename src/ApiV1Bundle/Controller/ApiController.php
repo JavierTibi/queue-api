@@ -68,6 +68,16 @@ class ApiController extends FOSRestController
     }
 
     /**
+     * Obtiene Cola service
+     *
+     * @return object
+     */
+    protected function getTurnoServices()
+    {
+        return $this->container->get('snc.services.turno');
+    }
+
+    /**
      * Retorna una Respuesta con estado SUCCESS
      *
      * @param array $message Mensaje de éxito
@@ -156,10 +166,5 @@ class ApiController extends FOSRestController
     protected function respuestaData($metadata, $result)
     {
         return new Respuesta($metadata, $result);
-    }
-
-    protected function getContainerRedis()
-    {
-        return $this->container->get('snc_redis.default');
     }
 }
