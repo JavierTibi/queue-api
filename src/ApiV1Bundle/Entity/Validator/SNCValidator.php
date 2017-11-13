@@ -348,5 +348,14 @@ class SNCValidator
         }
         return new ValidateResultado(null, $errors);
     }
+
+    public function validarTurno($turno)
+    {
+        $errors = [];
+        if (! $turno) {
+            $errors['Turno'] = 'Turno inexistente';
+        }
+        return new ValidateResultado(null, $errors);
+    }
 }
 

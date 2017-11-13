@@ -79,4 +79,32 @@ class TurnoFactory
 
         return $validateResultado;
     }
+
+    public function changeStatus($params)
+    {
+        $validateResultado = $this->turnoValidator->validarChangeStatus($params);
+
+        if (! $validateResultado->hasError()) {
+            $turno = $this->turnoRepository->search($params['cuil'], $params['codigo']);
+            $validateResultado = $this->turnoValidator->validarTurno($turno);
+            if (! $validateResultado->hasError()) {
+                $newTurno = new Turno(
+                    $turno->getPuntoAtencion(),
+                    $turno->getDatosTurno(),
+                    $turno->getGrupoTramite(),
+                    $turno->getFecha(),
+                    $turno->getHora(),
+                    $params['estado'],
+                    $turno->getTramite(),
+                    $params['codigo'],
+                    $turno->getPrioridad()
+                );
+
+                $validateResultado->setEntity($newTurno);
+            }
+        }
+
+        return $validateResultado;
+
+    }
 }

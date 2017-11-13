@@ -11,6 +11,10 @@ namespace ApiV1Bundle\Entity\Validator;
 
 class TurnoValidator extends SNCValidator
 {
+    /**
+     * @param $params
+     * @return ValidateResultado
+     */
     public function validarCreate($params)
     {
         $errors = $this->validar($params, [
@@ -23,6 +27,21 @@ class TurnoValidator extends SNCValidator
 	        'codigo' => 'required',
 	        'datosTurno' => 'required',
             'prioridad' => 'required:integer'
+        ]);
+
+        return new ValidateResultado(null, $errors);
+    }
+
+    /**
+     * @param $params
+     * @return ValidateResultado
+     */
+    public function validarChangeStatus($params)
+    {
+        $errors = $this->validar($params, [
+            'cuil' => 'required:cuil',
+            'codigo' => 'required',
+            'estado' => 'required:integer'
         ]);
 
         return new ValidateResultado(null, $errors);

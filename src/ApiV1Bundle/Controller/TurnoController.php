@@ -47,4 +47,29 @@ class TurnoController extends ApiController
             }
         );
     }
+
+    /**
+     * Cambiar estado Turno
+     *
+     * @param Request $request Espera el resultado de una petición como parámetro
+     * @return mixed
+     * @Post("/turnos/estado")
+     */
+    public function cambiarEstadoAction(Request $request)
+    {
+        $params = $request->request->all();
+        $this->turnoServices = $this->getTurnoServices();
+
+        return $this->turnoServices->changeStatus(
+            $params,
+            function ($usuario) {
+                return $this->respuestaOk('Turno modificado con éxito', [
+                    'id' => $usuario->getId()
+                ]);
+            },
+            function ($err) {
+                return $this->respuestaError($err);
+            }
+        );
+    }
 }

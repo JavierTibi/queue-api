@@ -109,6 +109,12 @@ class Turno
      */
     private $estado;
 
+    /*
+    * @var string
+    * @ORM\Column(name="estado", type="smallint", nullable = true)
+    */
+    private $motivoTerminado;
+
     /**
      * @var \DateTime
      *
@@ -310,6 +316,22 @@ class Turno
     public function getPrioridad()
     {
         return $this->prioridad;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getMotivoTerminado()
+    {
+        return $this->motivoTerminado;
+    }
+
+    /**
+     * @param mixed $motivoTerminado
+     */
+    public function setMotivoTerminado($motivoTerminado)
+    {
+        $this->motivoTerminado = $motivoTerminado;
     }
 
 

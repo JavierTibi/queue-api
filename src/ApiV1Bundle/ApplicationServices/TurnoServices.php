@@ -9,6 +9,7 @@
 namespace ApiV1Bundle\ApplicationServices;
 
 
+use ApiV1Bundle\Entity\Turno;
 use ApiV1Bundle\Entity\TurnoFactory;
 use ApiV1Bundle\Entity\Validator\TurnoValidator;
 use ApiV1Bundle\Repository\ColaRepository;
@@ -62,7 +63,7 @@ class TurnoServices extends SNCServices
 
         $validateResult = $turnoFactory->create($params);
 
-        if (! $validateResult->hasError()) {
+        if (! $validateResult->hasError() && $validateResult->getEntity()->getEstado() == Turno::ESTADO_RECEPCIONADO) {
             $cola = $this->colaRepository->findOneBy(['grupoTramiteSNTId' => $params['grupoTramite']]);
 
             $fecha = new \DateTime();
@@ -85,5 +86,16 @@ class TurnoServices extends SNCServices
             },
             $error
         );
+    }
+
+    public function changeStatus($params, $sucess, $error)
+    {
+        $turnoFactory = new TurnoFactory(
+            $this->turnoRepository,
+            $this->turnoValidator,
+            $this->puntoAtencionRepository
+        );
+
+        $validateResult = $turnoFactory->changeStatus($params);
     }
 }
