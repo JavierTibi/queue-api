@@ -162,4 +162,14 @@ class ApiController extends FOSRestController
     {
         return $this->container->get('snc_redis.default');
     }
+
+    /**
+     * Obtiene PuntoAtencion service
+     *
+     * @return object
+     */
+    protected function getPuntosAtencionService()
+    {
+        return $this->container->get('snc.services.puntoatencion');
+    }
 }

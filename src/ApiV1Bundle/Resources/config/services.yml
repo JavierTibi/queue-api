@@ -7,6 +7,7 @@ parameters:
     snc.services.ventanilla.class: ApiV1Bundle\ApplicationServices\VentanillaServices
     snc.services.usuario.class: ApiV1Bundle\ApplicationServices\UsuarioServices
     snc.services.cola.class: ApiV1Bundle\ApplicationServices\ColaServices
+    snc.services.puntoatencion.class: ApiV1Bundle\ApplicationServices\PuntoAtencionServices
 
     # Repository    
     snc.repository.user.class: ApiV1Bundle\Repository\UserRepository
@@ -124,6 +125,10 @@ services:
     snc.services.cola:
         class: '%snc.services.cola.class%'
         arguments: ['@service_container', '@snc.validator.cola', '@snc.repository.cola', '@snc.repository.puntoatencion']
+
+    snc.services.puntoatencion:
+        class: '%snc.services.puntoatencion.class%'
+        arguments: ['@service_container', '@snc.repository.puntoatencion']
 
     ## VALIDATORS ##
 
