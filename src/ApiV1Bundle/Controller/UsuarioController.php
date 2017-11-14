@@ -33,7 +33,7 @@ class UsuarioController extends ApiController
             $params,
             function ($usuario) {
                 return $this->respuestaOk('Usuario creado con éxito', [
-                    'id' => $usuario->getId()
+                    'id' => $usuario->getUser()->getId()
                 ]);
             },
             function ($err) {

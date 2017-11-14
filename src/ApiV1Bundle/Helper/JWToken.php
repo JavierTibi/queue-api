@@ -8,12 +8,14 @@ namespace ApiV1Bundle\Helper;
 use Lcobucci\JWT\Builder;
 use Lcobucci\JWT\Parser;
 use Lcobucci\JWT\ValidationData;
+use Lcobucci\JWT\Signer\Hmac\Sha256;
 
 class JWToken
 {
     private $secret;
     private $builder;
     private $parser;
+    private $signer;
     private $validationData;
     private $isValid = false;
     private $roles = null;
@@ -24,6 +26,7 @@ class JWToken
         $this->token = $builder;
         $this->parser = $parser;
         $this->validationData = $validationData;
+        $this->signer = new Sha256();
     }
     /**
      * Generar JWToken
@@ -37,11 +40,12 @@ class JWToken
         $token->setAudience($this->getDomain());
         $token->setIssuedAt(time());
         $token->setExpiration(time() + 14400);
-        $token->setId($this->secret);
+        $token->setId(md5($this->secret . $this->getDomain()));
         $token->set('timestamp', time());
         $token->set('uid', $uid);
         $token->set('username', $username);
         $token->set('role', $role);
+        $token->sign($this->signer, $this->secret);
         return (string) $token->getToken();
     }
 
@@ -57,8 +61,11 @@ class JWToken
             $token = $this->parseToken($tokenString);
             $isValid = $token->validate($this->validationData());
             if ($isValid) {
-                $this->isValid = $isValid;
-                $this->role = $token->getClaim('role');
+                // verify the token signature
+                if ($token->verify($this->signer, $this->secret)) {
+                    $this->isValid = $isValid;
+                    $this->role = $token->getClaim('role');
+                }
             }
         } catch (\Exception $e) {
             // do nothing
@@ -106,7 +113,7 @@ class JWToken
     {
         $this->validationData->setIssuer($this->getDomain());
         $this->validationData->setAudience($this->getDomain());
-        $this->validationData->setId($this->secret);
+        $this->validationData->setId(md5($this->secret . $this->getDomain()));
         return $this->validationData;
     }
 
@@ -117,6 +124,6 @@ class JWToken
      */
     public function getDomain()
     {
-        return $_SERVER['SERVER_NAME'];
+        return gethostname();
     }
 }

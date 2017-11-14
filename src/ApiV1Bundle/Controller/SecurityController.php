@@ -16,10 +16,14 @@ class SecurityController extends ApiController
      */
     public function login(Request $request)
     {
-        $username = $request->get('username', null);
-        $password = $request->get('password', null);
+        $params = $request->request->all();
         $this->securityServices = $this->getSecurityServices();
-        return $this->securityServices->login($username, $password);
+        return $this->securityServices->login(
+            $params,
+            function ($err) {
+                return $this->respuestaForbiddenRequest($err);
+            }
+        );
     }
 
     /**
@@ -30,6 +34,8 @@ class SecurityController extends ApiController
      */
     public function validate(Request $request)
     {
-        return ['Let me know if you can see this!'];
+        return [
+            'Let me know if you can see this!'
+        ];
     }
 }

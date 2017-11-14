@@ -7,6 +7,7 @@ parameters:
     snc.services.ventanilla.class: ApiV1Bundle\ApplicationServices\VentanillaServices
     snc.services.usuario.class: ApiV1Bundle\ApplicationServices\UsuarioServices
     snc.services.cola.class: ApiV1Bundle\ApplicationServices\ColaServices
+    snc.services.puntoatencion.class: ApiV1Bundle\ApplicationServices\PuntoAtencionServices
     snc.services.turno.class: ApiV1Bundle\ApplicationServices\TurnoServices
 
     # Repository    
@@ -116,7 +117,7 @@ services:
     
     snc.services.security:
         class: '%snc.services.security.class%'
-        arguments: ['@service_container', '@snc.repository.user', '@security.password_encoder', '@snc.helper.jwtoken']
+        arguments: ['@service_container', '@snc.repository.user', '@snc.helper.jwtoken', '@snc.validator.user']
 
     snc.services.agente:
         class: '%snc.services.agente.class%'
@@ -133,6 +134,10 @@ services:
     snc.services.cola:
         class: '%snc.services.cola.class%'
         arguments: ['@service_container', '@snc.validator.cola', '@snc.repository.cola', '@snc.repository.puntoatencion']
+
+    snc.services.puntoatencion:
+        class: '%snc.services.puntoatencion.class%'
+        arguments: ['@service_container', '@snc.repository.puntoatencion']
 
     snc.services.turno:
         class: '%snc.services.turno.class%'
@@ -156,7 +161,7 @@ services:
         
     snc.validator.user:
        class: '%snc.validator.user.class%'
-       arguments: ['@snc.repository.user']
+       arguments: ['@snc.repository.user', '@security.password_encoder']
 
     snc.validator.cola:
        class: '%snc.validator.cola.class%'
