@@ -4,14 +4,52 @@ namespace ApiV1Bundle\Entity\Validator;
 
 
 use ApiV1Bundle\Repository\UserRepository;
+use ApiV1Bundle\Entity\Validator\ValidateResultado;
 
 class UserValidator extends SNCValidator
 {
     private $userRepository;
+    private $encoder;
 
-    public function __construct(UserRepository $userRepository)
+    public function __construct(UserRepository $userRepository, $encoder)
     {
         $this->userRepository = $userRepository;
+        $this->encoder = $encoder;
+    }
+
+    /**
+     * Validar que exista usuario y contraseña
+     *
+     * @param $params
+     * @return ValidateResultado
+     */
+    public function validarParamsLogin($params, $user)
+    {
+        $errors = $this->validar($params, [
+            'username' => 'required',
+            'password' => 'required'
+        ]);
+        if (! count($errors) && ! $user) {
+            $errors['error'] = 'Usuario/contraseña incorrectos';
+        }
+        return new ValidateResultado(null, $errors);
+    }
+
+    /**
+     * Validar el login del usuario
+     *
+     * @param $enconder
+     * @param $user
+     * @param $password
+     * @return ValidateResultado
+     */
+    public function validarLogin($user, $password)
+    {
+        $errors = [];
+        if (! $this->encoder->isPasswordValid($user, $password)) {
+            $errors[] = 'Usuario/contraseña incorrectos';
+        }
+        return new ValidateResultado(null, $errors);
     }
 
     /**
