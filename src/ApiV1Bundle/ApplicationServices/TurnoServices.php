@@ -12,6 +12,7 @@ namespace ApiV1Bundle\ApplicationServices;
 use ApiV1Bundle\Entity\Turno;
 use ApiV1Bundle\Entity\TurnoFactory;
 use ApiV1Bundle\Entity\Validator\TurnoValidator;
+use ApiV1Bundle\Entity\Validator\ValidateResultado;
 use ApiV1Bundle\Repository\ColaRepository;
 use ApiV1Bundle\Repository\PuntoAtencionRepository;
 use ApiV1Bundle\Repository\TurnoRepository;
@@ -53,6 +54,8 @@ class TurnoServices extends SNCServices
     }
 
     /**
+     * Importa un nuevo turno del SNT
+     *
      * @param array $params Array con los datos a crear
      * @param $sucess | funcion que devuelve si tuvo éxito
      * @param $error | funcion que devuelve si ocurrio un error
@@ -69,8 +72,8 @@ class TurnoServices extends SNCServices
         $validateResult = $turnoFactory->create($params);
 
         if (! $validateResult->hasError()) {
-            $cola = $this->colaRepository->findOneBy(['grupoTramiteSNTId' => $params['grupoTramite']]);
-            $validateRedis = $this->redisServices->zaddCola($params['puntoAtencion'], $cola->getId(), $params['prioridad'], $validateResult->getEntity()->getCodigo());
+            $turno = $validateResult->getEntity();
+            $validateRedis = $this->recepcionarTurno($turno);
 
             if($validateRedis->hasError()) {
                 return $validateRedis;
@@ -86,6 +89,14 @@ class TurnoServices extends SNCServices
         );
     }
 
+    /**
+     * Cambia el estado del Turno luego de ser atendido
+     *
+     * @param $params
+     * @param $sucess
+     * @param $error
+     * @return ValidateResultado|mixed
+     */
     public function changeStatus($params, $sucess, $error)
     {
         $turnoFactory = new TurnoFactory(
@@ -97,19 +108,13 @@ class TurnoServices extends SNCServices
         $validateResult = $turnoFactory->changeStatus($params);
 
         if (! $validateResult->hasError()) {
-            if ($validateResult->getEntity()->getEstado() == Turno::ESTADO_RECEPCIONADO) {
-                $cola = $this->colaRepository->findOneBy(['grupoTramiteSNTId' => $validateResult->getEntity()->getGrupoTramiteIdSNT()]);
+            $turno = $validateResult->getEntity();
+            if ($turno->getEstado() == Turno::ESTADO_RECEPCIONADO) {
+                $validateRedis = $this->recepcionarTurno($turno);
 
-                $validateCola = $this->sendColaGT(
-                    $validateResult->getEntity()->getPuntoAtencion()->getId(),
-                    $cola->getId(),
-                    $params['prioridad'],
-                    $validateResult->getEntity()->getCodigo()
-                );
-
-               if($validateCola->hasError()) {
-                   $validateResult->setErrors($validateCola->getErrors());
-               }
+                if($validateRedis->hasError()) {
+                    return $validateRedis;
+                }
             }
         }
 
@@ -120,6 +125,16 @@ class TurnoServices extends SNCServices
             },
             $error
         );
+    }
+
+    /**
+     * @param Turno $turno
+     * @return ValidateResultado
+     */
+    private function recepcionarTurno($turno)
+    {
+        $cola = $this->colaRepository->findOneBy(['grupoTramiteSNTId' => $turno->getGrupoTramiteIdSNT()]);
+        return $this->redisServices->zaddCola($turno->getPuntoAtencion()->getId(), $cola->getId(), $turno->getPrioridad(), $turno->getCodigo());
     }
 
 
