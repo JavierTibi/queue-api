@@ -47,7 +47,6 @@ class TurnoFactory
     {
         $validateResultado = $this->turnoValidator->validarCreate($params);
 
-
         if (! $validateResultado->hasError()) {
 
             $puntoAtencion = $this->puntoAtencionRepository->find($params['puntoAtencion']);

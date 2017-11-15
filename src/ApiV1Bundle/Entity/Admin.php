@@ -99,4 +99,13 @@ class Admin extends Usuario
     {
         return $this->fechaBorrado;
     }
+
+    /**
+     * @return string
+     */
+    public function getNombrePuntoAtencion()
+    {
+        return "";
+    }
+
 }

@@ -131,7 +131,10 @@ class UsuarioServices extends SNCServices
                 'nombre' => $usuario->getNombre(),
                 'apellido' => $usuario->getApellido(),
                 'rol' => $usuario->getUser()->getRol(),
-                'puntoAtencion' => $usuario->getPuntoAtencionId(),
+                'puntoAtencion' => 
+                    [ 'id' => $usuario->getPuntoAtencionId(),
+                    'nombre' => $usuario->getNombrePuntoAtencion()
+                    ]
             ];
         }
         $resultset = [

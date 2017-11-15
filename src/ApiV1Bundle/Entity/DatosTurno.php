@@ -32,6 +32,15 @@ class DatosTurno
     private $id;
 
     /**
+     * Propiedad para la relación entre los datos del turno y el turno
+     * Los datos del tramite le corresponden a un solo turno
+     *
+     * @var Turno
+     * @ORM\OneToOne(targetEntity="Turno", mappedBy="datosTurno",  cascade={"persist"})
+     */
+    private $turno;
+
+    /**
      * Nombre del ciudadano
      *
      * @var string

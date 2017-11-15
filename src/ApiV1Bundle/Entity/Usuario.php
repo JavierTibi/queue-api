@@ -101,4 +101,6 @@ abstract class Usuario
 
     abstract public function getPuntoAtencionId();
 
+    abstract public function getNombrePuntoAtencion();
+
 }

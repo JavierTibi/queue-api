@@ -130,4 +130,12 @@ class Responsable extends Usuario
     public function setPuntoAtencion($puntoAtencionID) {
         $this->puntoAtencion = $puntoAtencionID;
     }
+
+    /**
+     * @return string
+     */
+    public function getNombrePuntoAtencion()
+    {
+        return $this->getPuntoAtencion()->getNombre();
+    }
 }

@@ -9,6 +9,7 @@ parameters:
     snc.services.cola.class: ApiV1Bundle\ApplicationServices\ColaServices
     snc.services.puntoatencion.class: ApiV1Bundle\ApplicationServices\PuntoAtencionServices
     snc.services.turno.class: ApiV1Bundle\ApplicationServices\TurnoServices
+    snc.services.redis.class: ApiV1Bundle\ApplicationServices\RedisServices
 
     # Repository    
     snc.repository.user.class: ApiV1Bundle\Repository\UserRepository
@@ -20,6 +21,7 @@ parameters:
     snc.repository.usuario.class: ApiV1Bundle\Repository\UsuarioRepository
     snc.repository.puntoatencion.class: ApiV1Bundle\Repository\PuntoAtencionRepository
     snc.repository.turno.class: ApiV1Bundle\Repository\TurnoRepository
+    snc.repository.token.class: ApiV1Bundle\Repository\TokenRepository
 
     # Validators
     snc.validator.agente.class: ApiV1Bundle\Entity\Validator\AgenteValidator
@@ -109,6 +111,12 @@ services:
         arguments:
             - ApiV1Bundle\Entity\Turno
 
+    snc.repository.token:
+        class: '%snc.repository.token.class%'
+        factory: ['@doctrine.orm.entity_manager', getRepository]
+        arguments:
+            - ApiV1Bundle\Entity\Token
+
     ### SERVICES ###
 
     snc.services.general:
@@ -117,7 +125,7 @@ services:
     
     snc.services.security:
         class: '%snc.services.security.class%'
-        arguments: ['@service_container', '@snc.repository.user', '@snc.helper.jwtoken', '@snc.validator.user']
+        arguments: ['@service_container', '@snc.repository.user', '@snc.repository.token', '@snc.helper.jwtoken', '@snc.validator.user']
 
     snc.services.agente:
         class: '%snc.services.agente.class%'
@@ -141,8 +149,11 @@ services:
 
     snc.services.turno:
         class: '%snc.services.turno.class%'
-        arguments: ['@service_container', '@snc.repository.turno', '@snc.validator.turno', '@snc.repository.puntoatencion', '@snc.repository.cola']
+        arguments: ['@service_container', '@snc.repository.turno', '@snc.validator.turno', '@snc.repository.puntoatencion', '@snc.repository.cola', '@snc.services.redis']
 
+    snc.services.redis:
+        class: '%snc.services.redis.class%'
+        arguments: ['@service_container']
 
     ## VALIDATORS ##
 
