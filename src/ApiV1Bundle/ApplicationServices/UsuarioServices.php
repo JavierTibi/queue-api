@@ -47,6 +47,7 @@ class UsuarioServices extends SNCServices
     public function __construct(
         Container $container,
         UserValidator $userValidator,
+        AdminValidator $adminValidator,
         ResponsableValidator $responsableValidator,
         AgenteValidator $agenteValidator,
         AgenteRepository $agenteRepository,
@@ -60,6 +61,7 @@ class UsuarioServices extends SNCServices
     {
         parent::__construct($container);
         $this->userValidator = $userValidator;
+        $this->adminValidator = $adminValidator;
         $this->responsableValidator = $responsableValidator;
         $this->agenteValidator = $agenteValidator;
         $this->agenteRepository = $agenteRepository;
@@ -139,7 +141,7 @@ class UsuarioServices extends SNCServices
         }
         $resultset = [
             'resultset' => [
-                'count' => count($result),
+                'count' => $this->usuarioRepository->getTotal(),
                 'offset' => $offset,
                 'limit' => $limit
             ]
@@ -164,7 +166,7 @@ class UsuarioServices extends SNCServices
                 $usuario = $this->agenteRepository->findOneByUser($user);
 
                 $result = [
-                    'id' => $usuario->getId(),
+                    'id' => $usuario->getUser()->getId(),
                     'nombre' => $usuario->getNombre(),
                     'apellido' => $usuario->getApellido(),
                     'username' => $usuario->getUser()->getUsername(),
@@ -180,7 +182,7 @@ class UsuarioServices extends SNCServices
             if($user->getRol() == User::ROL_RESPONSABLE) {
                 $usuario = $this->responsableRepository->findOneByUser($user);
                 $result = [
-                    'id' => $usuario->getId(),
+                    'id' => $usuario->getUser()->getId(),
                     'nombre' => $usuario->getNombre(),
                     'apellido' => $usuario->getApellido(),
                     'username' => $usuario->getUser()->getUsername(),
@@ -192,7 +194,7 @@ class UsuarioServices extends SNCServices
             if($user->getRol() == User::ROL_ADMIN) {
                 $usuario = $this->adminRepository->findOneByUser($user);
                 $result = [
-                    'id' => $usuario->getId(),
+                    'id' => $usuario->getUser()->getId(),
                     'nombre' => $usuario->getNombre(),
                     'apellido' => $usuario->getApellido(),
                     'username' => $usuario->getUser()->getUsername(),
@@ -226,6 +228,7 @@ class UsuarioServices extends SNCServices
                 case User::ROL_ADMIN:
                     $userSync = new AdminSync(
                         $this->userValidator,
+                        $this->adminValidator,
                         $this->adminRepository
                     );
                     $repository = $this->adminRepository;
@@ -279,6 +282,7 @@ class UsuarioServices extends SNCServices
                 case User::ROL_ADMIN:
                     $userSync = new AdminSync(
                         $this->userValidator,
+                        $this->adminValidator,
                         $this->adminRepository
                     );
                     $repository = $this->adminRepository;

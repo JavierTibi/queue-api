@@ -23,4 +23,12 @@ class UsuarioRepository extends ApiRepository
         return  $query->getQuery()->getResult();
 
     }
+
+    public function getTotal()
+    {
+        $query = $this->getRepository()->createQueryBuilder('u');
+        $query->select('count(u.id)');
+        $total = $query->getQuery()->getSingleScalarResult();
+        return (int) $total;
+    }
 }

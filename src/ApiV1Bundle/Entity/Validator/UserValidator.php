@@ -56,7 +56,7 @@ class UserValidator extends SNCValidator
      * @param $params
      * @return ValidateResultado
      */
-    public function validarParams($params)
+    private function validarParams($params)
     {
         $errors = $this->validar($params, [
             'username' => 'required:email',
