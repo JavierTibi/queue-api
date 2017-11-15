@@ -164,7 +164,7 @@ class UsuarioServices extends SNCServices
                 $usuario = $this->agenteRepository->findOneByUser($user);
 
                 $result = [
-                    'id' => $usuario->getId(),
+                    'id' => $usuario->getUser()->getId(),
                     'nombre' => $usuario->getNombre(),
                     'apellido' => $usuario->getApellido(),
                     'username' => $usuario->getUser()->getUsername(),
@@ -180,7 +180,7 @@ class UsuarioServices extends SNCServices
             if($user->getRol() == User::ROL_RESPONSABLE) {
                 $usuario = $this->responsableRepository->findOneByUser($user);
                 $result = [
-                    'id' => $usuario->getId(),
+                    'id' => $usuario->getUser()->getId(),
                     'nombre' => $usuario->getNombre(),
                     'apellido' => $usuario->getApellido(),
                     'username' => $usuario->getUser()->getUsername(),
@@ -192,7 +192,7 @@ class UsuarioServices extends SNCServices
             if($user->getRol() == User::ROL_ADMIN) {
                 $usuario = $this->adminRepository->findOneByUser($user);
                 $result = [
-                    'id' => $usuario->getId(),
+                    'id' => $usuario->getUser()->getId(),
                     'nombre' => $usuario->getNombre(),
                     'apellido' => $usuario->getApellido(),
                     'username' => $usuario->getUser()->getUsername(),
