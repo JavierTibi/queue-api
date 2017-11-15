@@ -18,6 +18,7 @@ parameters:
     snc.repository.cola.class: ApiV1Bundle\Repository\ColaRepository
     snc.repository.usuario.class: ApiV1Bundle\Repository\UsuarioRepository
     snc.repository.puntoatencion.class: ApiV1Bundle\Repository\PuntoAtencionRepository
+    snc.repository.token.class: ApiV1Bundle\Repository\TokenRepository
 
     # Validators
     snc.validator.agente.class: ApiV1Bundle\Entity\Validator\AgenteValidator
@@ -99,6 +100,12 @@ services:
         factory: ['@doctrine.orm.entity_manager', getRepository]
         arguments:
             - ApiV1Bundle\Entity\PuntoAtencion
+            
+    snc.repository.token:
+        class: '%snc.repository.token.class%'
+        factory: ['@doctrine.orm.entity_manager', getRepository]
+        arguments:
+            - ApiV1Bundle\Entity\Token
 
     ### SERVICES ###
 
@@ -108,7 +115,7 @@ services:
     
     snc.services.security:
         class: '%snc.services.security.class%'
-        arguments: ['@service_container', '@snc.repository.user', '@snc.helper.jwtoken', '@snc.validator.user']
+        arguments: ['@service_container', '@snc.repository.user', '@snc.repository.token', '@snc.helper.jwtoken', '@snc.validator.user']
 
     snc.services.agente:
         class: '%snc.services.agente.class%'

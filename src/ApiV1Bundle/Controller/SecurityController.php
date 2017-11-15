@@ -27,6 +27,28 @@ class SecurityController extends ApiController
     }
 
     /**
+     * User logout
+     *
+     * @param Request $request
+     * @Post("/auth/logout")
+     */
+    public function logout(Request $request)
+    {
+        $token = $request->headers->get('authorization', null);
+        $this->securityServices = $this->getSecurityServices();
+        return $this->securityServices->logout(
+            $token,
+            function ($token) {
+                return $this->respuestaOk('Sesion terminada');
+            },
+            function ($error) {
+                return $this->respuestaError($error);
+            }
+
+        );
+    }
+
+    /**
      * Validar token
      *
      * @param Request $request

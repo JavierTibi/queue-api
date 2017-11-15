@@ -2,11 +2,9 @@
 
 namespace ApiV1Bundle\ApplicationServices;
 
-use ApiV1Bundle\Entity\Factory\AgenteFactory;
 use ApiV1Bundle\Entity\Sync\AgenteSync;
 use ApiV1Bundle\Entity\Validator\AgenteValidator;
 use ApiV1Bundle\Entity\Validator\UserValidator;
-use ApiV1Bundle\Entity\Validator\VentanillaValidator;
 use ApiV1Bundle\Repository\AgenteRepository;
 use ApiV1Bundle\Repository\PuntoAtencionRepository;
 use ApiV1Bundle\Repository\VentanillaRepository;
@@ -59,6 +57,8 @@ class AgenteServices extends SNCServices
     public function findAllPaginate($puntoAtencionId, $limit, $offset)
     {
         $agentes = $this->agenteRepository->findAllPaginate($puntoAtencionId, $offset, $limit);
+        $result = [];
+        $ventanillas = [];
 
         foreach ($agentes as $agente) {
 

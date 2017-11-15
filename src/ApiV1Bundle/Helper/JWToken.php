@@ -19,6 +19,7 @@ class JWToken
     private $validationData;
     private $isValid = false;
     private $roles = null;
+    private $ttl = 7200;
 
     public function __construct($secret, Builder $builder, Parser $parser, ValidationData $validationData)
     {
@@ -39,7 +40,7 @@ class JWToken
         $token->setIssuer($this->getDomain());
         $token->setAudience($this->getDomain());
         $token->setIssuedAt(time());
-        $token->setExpiration(time() + 14400);
+        $token->setExpiration(time() + $this->ttl);
         $token->setId(md5($this->secret . $this->getDomain()));
         $token->set('timestamp', time());
         $token->set('uid', $uid);
@@ -55,12 +56,12 @@ class JWToken
      * @param $tokenString
      * @return boolean
      */
-    public function validate($tokenString)
+    public function validate($tokenString, $tokenCancelado)
     {
         try {
             $token = $this->parseToken($tokenString);
             $isValid = $token->validate($this->validationData());
-            if ($isValid) {
+            if ($isValid && is_null($tokenCancelado)) {
                 // verify the token signature
                 if ($token->verify($this->signer, $this->secret)) {
                     $this->isValid = $isValid;
