@@ -3,6 +3,7 @@
 namespace ApiV1Bundle\ApplicationServices;
 
 use ApiV1Bundle\Entity\Response\Respuesta;
+use ApiV1Bundle\Entity\Validator\ValidateResultado;
 use Symfony\Component\DependencyInjection\Container;
 
 /**

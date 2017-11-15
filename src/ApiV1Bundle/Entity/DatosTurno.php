@@ -1,6 +1,7 @@
 <?php
 namespace ApiV1Bundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -121,6 +122,11 @@ class DatosTurno
     private $campos;
 
     /**
+     * @ORM\OneToMany(targetEntity="Turno", mappedBy="datosTurno")
+     */
+    private $turnos;
+
+    /**
      * Fecha de creación
      *
      * @var \DateTime
@@ -160,6 +166,7 @@ class DatosTurno
         $this->setEmail($email);
         $this->setTelefono($telefono);
         $this->setCampos($campos);
+        $this->turnos = new ArrayCollection();
     }
 
     /**
