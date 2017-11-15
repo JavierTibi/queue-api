@@ -64,12 +64,10 @@ class UserValidator extends SNCValidator
         ]);
 
         if (! count($errors) > 0) {
-            if (isset($params['creation'])) {
-                $user = $this->userRepository->findOneByUsername($params['username']);
-                if ($user) {
-                    $errors['User'] = 'Ya existe un usuario con el email ingresado';
-                    return new ValidateResultado(null, $errors);
-                }
+            $user = $this->userRepository->findOneByUsername($params['username']);
+            if ($user) {
+                $errors['User'] = 'Ya existe un usuario con el email ingresado';
+                return new ValidateResultado(null, $errors);
             }
 
             if (! in_array((int) $params['rol'], [1,2,3], true)) {

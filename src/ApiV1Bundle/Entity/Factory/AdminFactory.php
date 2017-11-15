@@ -30,7 +30,6 @@ class AdminFactory
     public function create($params)
     {
 
-        $params['creation'] = true;
         $validateResultado = $this->userValidator->validarParamsAdmin($params);
 
         if (! $validateResultado->hasError()) {

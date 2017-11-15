@@ -40,7 +40,6 @@ class ResponsableFactory
      */
     public function create($params)
     {
-        $params['creation'] = true;
         $puntoAtencion = $this->puntoAtencionRepository->find($params['puntoAtencion']);
         $validateResultado = $this->userValidator->validarParamsResponsable($params, $puntoAtencion);
 

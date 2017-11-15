@@ -17,6 +17,7 @@ use ApiV1Bundle\Entity\Validator\ValidateResultado;
 class AdminSync
 {
     private $userValidator;
+    private $adminValidator;
     private $adminRepository;
 
     /**
@@ -26,15 +27,17 @@ class AdminSync
      */
     public function __construct(
         UserValidator $userValidator,
+        AdminValidator $adminValidator,
         AdminRepository $adminRepository)
     {
         $this->userValidator = $userValidator;
+        $this->adminValidator = $adminValidator;
         $this->adminRepository = $adminRepository;
     }
     
     public function edit($id, $params)
     {
-        $validateResultado = $this->userValidator->validarParamsAdmin($params);
+        $validateResultado = $this->adminValidator->validarParams($params);
 
         if (! $validateResultado->hasError()) {
 
