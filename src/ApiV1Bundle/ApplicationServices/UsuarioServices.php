@@ -106,6 +106,11 @@ class UsuarioServices extends SNCServices
 
         $validateResult = $usuarioFactory->create($params);
 
+        //segurizar password
+        if (! $validateResult->hasError()) {
+            $usuarioFactory->securityPassword($validateResult->getEntity()->getUser(), $this->getSecurityPassword());
+        }
+
         return $this->processResult(
             $validateResult,
             function ($entity) use ($sucess, $repository) {

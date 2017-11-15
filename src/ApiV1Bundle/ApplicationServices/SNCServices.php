@@ -108,4 +108,11 @@ class SNCServices
         return $this->container->get('snc_redis.default');
     }
 
+    /**
+     * @return object
+     */
+    protected function getSecurityPassword()
+    {
+        return $this->container->get('security.password_encoder');
+    }
 }

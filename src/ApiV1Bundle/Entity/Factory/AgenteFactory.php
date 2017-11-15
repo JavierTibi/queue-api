@@ -18,7 +18,7 @@ use ApiV1Bundle\Entity\Ventanilla;
 use ApiV1Bundle\Repository\PuntoAtencionRepository;
 use ApiV1Bundle\Repository\VentanillaRepository;
 
-class AgenteFactory
+class AgenteFactory extends UsuarioFactory
 {
     private $userValidator;
     private $ventanillaRepository;
