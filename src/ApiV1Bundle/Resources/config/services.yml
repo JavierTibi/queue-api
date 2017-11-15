@@ -8,6 +8,8 @@ parameters:
     snc.services.usuario.class: ApiV1Bundle\ApplicationServices\UsuarioServices
     snc.services.cola.class: ApiV1Bundle\ApplicationServices\ColaServices
     snc.services.puntoatencion.class: ApiV1Bundle\ApplicationServices\PuntoAtencionServices
+    snc.services.turno.class: ApiV1Bundle\ApplicationServices\TurnoServices
+    snc.services.redis.class: ApiV1Bundle\ApplicationServices\RedisServices
 
     # Repository    
     snc.repository.user.class: ApiV1Bundle\Repository\UserRepository
@@ -18,6 +20,7 @@ parameters:
     snc.repository.cola.class: ApiV1Bundle\Repository\ColaRepository
     snc.repository.usuario.class: ApiV1Bundle\Repository\UsuarioRepository
     snc.repository.puntoatencion.class: ApiV1Bundle\Repository\PuntoAtencionRepository
+    snc.repository.turno.class: ApiV1Bundle\Repository\TurnoRepository
     snc.repository.token.class: ApiV1Bundle\Repository\TokenRepository
 
     # Validators
@@ -27,6 +30,7 @@ parameters:
     snc.validator.admin.class: ApiV1Bundle\Entity\Validator\AdminValidator
     snc.validator.responsable.class: ApiV1Bundle\Entity\Validator\ResponsableValidator
     snc.validator.cola.class: ApiV1Bundle\Entity\Validator\ColaValidator
+    snc.validator.turno.class: ApiV1Bundle\Entity\Validator\TurnoValidator
     
     # Security
     snc.helper.jwtoken.class: ApiV1Bundle\Helper\JWToken
@@ -100,7 +104,13 @@ services:
         factory: ['@doctrine.orm.entity_manager', getRepository]
         arguments:
             - ApiV1Bundle\Entity\PuntoAtencion
-            
+
+    snc.repository.turno:
+        class: '%snc.repository.turno.class%'
+        factory: ['@doctrine.orm.entity_manager', getRepository]
+        arguments:
+            - ApiV1Bundle\Entity\Turno
+
     snc.repository.token:
         class: '%snc.repository.token.class%'
         factory: ['@doctrine.orm.entity_manager', getRepository]
@@ -137,6 +147,14 @@ services:
         class: '%snc.services.puntoatencion.class%'
         arguments: ['@service_container', '@snc.repository.puntoatencion']
 
+    snc.services.turno:
+        class: '%snc.services.turno.class%'
+        arguments: ['@service_container', '@snc.repository.turno', '@snc.validator.turno', '@snc.repository.puntoatencion', '@snc.repository.cola', '@snc.services.redis']
+
+    snc.services.redis:
+        class: '%snc.services.redis.class%'
+        arguments: ['@service_container']
+
     ## VALIDATORS ##
 
     snc.validator.agente:
@@ -158,3 +176,6 @@ services:
 
     snc.validator.cola:
        class: '%snc.validator.cola.class%'
+
+    snc.validator.turno:
+       class: '%snc.validator.turno.class%'
