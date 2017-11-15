@@ -9,6 +9,7 @@ parameters:
     snc.services.cola.class: ApiV1Bundle\ApplicationServices\ColaServices
     snc.services.puntoatencion.class: ApiV1Bundle\ApplicationServices\PuntoAtencionServices
     snc.services.turno.class: ApiV1Bundle\ApplicationServices\TurnoServices
+    snc.services.redis.class: ApiV1Bundle\ApplicationServices\RedisServices
 
     # Repository    
     snc.repository.user.class: ApiV1Bundle\Repository\UserRepository
@@ -148,7 +149,11 @@ services:
 
     snc.services.turno:
         class: '%snc.services.turno.class%'
-        arguments: ['@service_container', '@snc.repository.turno', '@snc.validator.turno', '@snc.repository.puntoatencion', '@snc.repository.cola']
+        arguments: ['@service_container', '@snc.repository.turno', '@snc.validator.turno', '@snc.repository.puntoatencion', '@snc.repository.cola', '@snc.services.redis']
+
+    snc.services.redis:
+        class: '%snc.services.redis.class%'
+        arguments: ['@service_container']
 
     ## VALIDATORS ##
 

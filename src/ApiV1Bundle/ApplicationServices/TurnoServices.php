@@ -23,6 +23,7 @@ class TurnoServices extends SNCServices
     private $turnoValidator;
     private $puntoAtencionRepository;
     private $colaRepository;
+    private $redisServices;
 
     /**
      * TurnoServices constructor.
@@ -30,13 +31,16 @@ class TurnoServices extends SNCServices
      * @param TurnoRepository $turnoRepository
      * @param TurnoValidator $turnoValidator
      * @param PuntoAtencionRepository $puntoAtencionRepository
+     * @param ColaRepository $colaRepository
+     * @param RedisServices $redisServices
      */
     public function __construct(
         Container $container,
         TurnoRepository $turnoRepository,
         TurnoValidator $turnoValidator,
         PuntoAtencionRepository $puntoAtencionRepository,
-        ColaRepository $colaRepository
+        ColaRepository $colaRepository,
+        RedisServices $redisServices
     )
     {
         parent::__construct($container);
@@ -44,6 +48,7 @@ class TurnoServices extends SNCServices
         $this->turnoValidator = $turnoValidator;
         $this->puntoAtencionRepository = $puntoAtencionRepository;
         $this->colaRepository = $colaRepository;
+        $this->redisServices = $redisServices;
     }
 
     /**
@@ -64,17 +69,10 @@ class TurnoServices extends SNCServices
 
         if (! $validateResult->hasError()) {
             $cola = $this->colaRepository->findOneBy(['grupoTramiteSNTId' => $params['grupoTramite']]);
+            $validateRedis = $this->redisServices->zaddCola($params['puntoAtencion'], $cola->getId(), $params['prioridad'], $validateResult->getEntity()->getCodigo());
 
-            $fecha = new \DateTime();
-            $val = $this->getContainerRedis()->zadd(
-                'puntoAtencion:' . $params['puntoAtencion'] . ':cola:' . $cola->getId() . ':prioridad:' . $params['prioridad'],
-                $fecha->getTimestamp(),
-                $validateResult->getEntity()->getCodigo()
-            );
-
-            if ($val != 1) {
-                $errors[] = 'No se ha podido crear la cola';
-                $validateResult->setErrors($errors);
+            if($validateRedis->hasError()) {
+                return $validateRedis;
             }
         }
 
