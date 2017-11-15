@@ -15,7 +15,7 @@ use ApiV1Bundle\Entity\Validator\UserValidator;
 use ApiV1Bundle\Entity\Validator\ValidateResultado;
 use ApiV1Bundle\Repository\PuntoAtencionRepository;
 
-class ResponsableFactory
+class ResponsableFactory extends UsuarioFactory
 {
 
     private $userValidator;

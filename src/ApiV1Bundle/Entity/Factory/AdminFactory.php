@@ -9,7 +9,7 @@ use ApiV1Bundle\Entity\User;
 use ApiV1Bundle\Entity\Validator\UserValidator;
 use ApiV1Bundle\Entity\Validator\ValidateResultado;
 
-class AdminFactory
+class AdminFactory extends UsuarioFactory
 {
     private $userValidator;
 
