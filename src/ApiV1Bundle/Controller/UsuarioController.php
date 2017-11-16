@@ -1,7 +1,5 @@
 <?php
-
 namespace ApiV1Bundle\Controller;
-
 
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Controller\Annotations\Get;
@@ -41,10 +39,10 @@ class UsuarioController extends ApiController
             }
         );
     }
-    
+
     /**
      * Editar un usuario
-     * 
+     *
      * @param Request $request Espera el resultado de una petición como parámetro
      * @param integer $idUser Espera el id del usuario
      * @return mixed
@@ -53,7 +51,7 @@ class UsuarioController extends ApiController
     public function putAction(Request $request, $idUser) {
         $params = $request->request->all();
         $this->usuarioServices = $this->getUsuarioServices();
-        
+
         return $this->usuarioServices->edit(
             $params,
             $idUser,

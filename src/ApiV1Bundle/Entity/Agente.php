@@ -193,12 +193,12 @@ class Agente extends Usuario
     {
         return $this->fechaBorrado;
     }
-    
+
     /**
-     * 
-     * @param type $puntoAtencionID
+     * @param int $puntoAtencionID
      */
-    public function setPuntoAtencion($puntoAtencionID) {
+    public function setPuntoAtencion($puntoAtencionID)
+    {
         $this->puntoAtencion = $puntoAtencionID;
     }
 

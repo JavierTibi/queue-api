@@ -129,8 +129,8 @@ class UsuarioServices extends SNCServices
      */
     public function findAllPaginate($limit, $offset)
     {
-
         $usuarios = $this->usuarioRepository->findAllPaginate($offset, $limit);
+        $result = [];
 
         foreach ($usuarios as $usuario){
             $result[] = [
@@ -138,10 +138,10 @@ class UsuarioServices extends SNCServices
                 'nombre' => $usuario->getNombre(),
                 'apellido' => $usuario->getApellido(),
                 'rol' => $usuario->getUser()->getRol(),
-                'puntoAtencion' => 
-                    [ 'id' => $usuario->getPuntoAtencionId(),
+                'puntoAtencion' => [
+                    'id' => $usuario->getPuntoAtencionId(),
                     'nombre' => $usuario->getNombrePuntoAtencion()
-                    ]
+                ]
             ];
         }
         $resultset = [
@@ -163,11 +163,10 @@ class UsuarioServices extends SNCServices
     {
         $result =[];
         $user = $this->userRepository->find($id);
-
         $validateResultado = $this->userValidator->validarUser($user);
 
         if (! $validateResultado->hasError()) {
-            if($user->getRol() == User::ROL_AGENTE) {
+            if ($user->getRol() == User::ROL_AGENTE) {
                 $usuario = $this->agenteRepository->findOneByUser($user);
 
                 $result = [
@@ -176,15 +175,17 @@ class UsuarioServices extends SNCServices
                     'apellido' => $usuario->getApellido(),
                     'username' => $usuario->getUser()->getUsername(),
                     'rol' => $usuario->getUser()->getRol(),
-                    'puntoAtencion' => $usuario->getPuntoAtencion()->getId()
+                    'puntoAtencion' => [
+                        'id' => $usuario->getPuntoAtencionId(),
+                        'nombre' => $usuario->getNombrePuntoAtencion()
+                    ]
                 ];
                 foreach ($usuario->getVentanillas() as $ventanilla) {
                     $result['ventanillas'][] = $ventanilla->getId();
                 }
             }
 
-
-            if($user->getRol() == User::ROL_RESPONSABLE) {
+            if ($user->getRol() == User::ROL_RESPONSABLE) {
                 $usuario = $this->responsableRepository->findOneByUser($user);
                 $result = [
                     'id' => $usuario->getUser()->getId(),
@@ -192,11 +193,14 @@ class UsuarioServices extends SNCServices
                     'apellido' => $usuario->getApellido(),
                     'username' => $usuario->getUser()->getUsername(),
                     'rol' => $usuario->getUser()->getRol(),
-                    'puntoAtencion' => $usuario->getPuntoAtencion()->getId()
+                    'puntoAtencion' => [
+                        'id' => $usuario->getPuntoAtencionId(),
+                        'nombre' => $usuario->getNombrePuntoAtencion()
+                    ]
                 ];
             }
 
-            if($user->getRol() == User::ROL_ADMIN) {
+            if ($user->getRol() == User::ROL_ADMIN) {
                 $usuario = $this->adminRepository->findOneByUser($user);
                 $result = [
                     'id' => $usuario->getUser()->getId(),
@@ -213,10 +217,10 @@ class UsuarioServices extends SNCServices
         return $this->respuestaData([], $validateResultado->getErrors());
     }
 
-    
+
     /**
      * Editar un usuario
-     * 
+     *
      * @param type $params Array con los datos a modificar
      * @param type $idUser ID del usuario a modificar
      * @param $sucess | funcion que devuelve si tuvo éxito
@@ -224,7 +228,7 @@ class UsuarioServices extends SNCServices
      * @return mixed
      */
     public function edit($params, $idUser, $sucess, $error) {
-        
+
         $user = $this->userRepository->find($idUser);
         $validateResult = $this->userValidator->validarUsuario($user);
 
@@ -269,7 +273,7 @@ class UsuarioServices extends SNCServices
             $error
         );
     }
-    
+
     /**
      * Elimina un usuario
      *

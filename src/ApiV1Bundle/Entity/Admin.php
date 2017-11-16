@@ -105,7 +105,6 @@ class Admin extends Usuario
      */
     public function getNombrePuntoAtencion()
     {
-        return "";
+        return '';
     }
-
 }
