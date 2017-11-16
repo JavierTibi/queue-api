@@ -66,7 +66,7 @@ class AgenteServices extends SNCServices
             }
 
             $result[] = [
-                'id' => $agente->getId(),
+                'id' => $agente->getUser()->getId(),
                 'nombre' => $agente->getNombre(),
                 'apellido' => $agente->getApellido(),
                 'ventanillaActual' => $agente->getVentanillaActual(),
