@@ -35,6 +35,7 @@ web/config.php
 # Assets and user uploads
 /web/bundles/
 /web/uploads/
+/app/coverage/
 
 # Assets managed by Bower
 /web/assets/vendor/
