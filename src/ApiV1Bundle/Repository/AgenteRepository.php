@@ -28,7 +28,6 @@ class AgenteRepository extends ApiRepository
     public function findAllPaginate($puntoAtencionId, $offset, $limit)
     {
         $query = $this->getRepository()->createQueryBuilder('a');
-
         $query->leftJoin('a.ventanillaActual', 'v');
         $query->where('a.puntoAtencion = :puntoAtencionId');
         $query->setParameter('puntoAtencionId', $puntoAtencionId);
@@ -36,5 +35,21 @@ class AgenteRepository extends ApiRepository
         $query->setMaxResults($limit);
         $query->orderBy('a.id', 'ASC');
         return $query->getQuery()->getResult();
+    }
+
+    /**
+     * Devuelve el total de agentes
+     *
+     * @param $puntoAtencionId
+     * @return number
+     */
+    public function getTotal($puntoAtencionId)
+    {
+        $query = $this->getRepository()->createQueryBuilder('a');
+        $query->select('count(a.id)');
+        $query->where('a.puntoAtencion = :puntoAtencionId');
+        $query->setParameter('puntoAtencionId', $puntoAtencionId);
+        $total = $query->getQuery()->getSingleScalarResult();
+        return (int) $total;
     }
 }

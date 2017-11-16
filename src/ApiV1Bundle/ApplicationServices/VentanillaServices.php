@@ -5,14 +5,11 @@
  * Date: 23/10/2017
  * Time: 10:51 AM
  */
-
 namespace ApiV1Bundle\ApplicationServices;
-
 
 use ApiV1Bundle\Entity\Factory\VentanillaFactory;
 use ApiV1Bundle\Entity\Sync\VentanillaSync;
 use ApiV1Bundle\Entity\Validator\VentanillaValidator;
-use ApiV1Bundle\Entity\Ventanilla;
 use ApiV1Bundle\Repository\ColaRepository;
 use ApiV1Bundle\Repository\PuntoAtencionRepository;
 use ApiV1Bundle\Repository\VentanillaRepository;
@@ -31,8 +28,7 @@ class VentanillaServices extends SNCServices
         VentanillaValidator $ventanillaValidator,
         ColaRepository $colaRepository,
         PuntoAtencionRepository $puntoAtencionRepository
-    )
-    {
+    ) {
         parent::__construct($container);
         $this->ventanillaRepository = $ventanillaRepository;
         $this->ventanillaValidator = $ventanillaValidator;
@@ -53,15 +49,12 @@ class VentanillaServices extends SNCServices
             $this->colaRepository,
             $this->puntoAtencionRepository
         );
-
         $validateResult = $ventanillaFactory->create($params);
 
-        return $this->processResult(
-            $validateResult,
+        return $this->processResult($validateResult,
             function ($entity) use ($sucess) {
                 return call_user_func($sucess, $this->ventanillaRepository->save($entity));
-            },
-            $error
+            }, $error
         );
     }
 
@@ -81,15 +74,12 @@ class VentanillaServices extends SNCServices
             $this->ventanillaRepository,
             $this->colaRepository
         );
-
         $validateResult = $ventanillaSync->edit($id, $params);
 
-        return $this->processResult(
-            $validateResult,
+        return $this->processResult($validateResult,
             function () use ($success) {
                 return call_user_func($success, $this->ventanillaRepository->flush());
-            },
-            $error
+            }, $error
         );
     }
 
@@ -108,15 +98,12 @@ class VentanillaServices extends SNCServices
             $this->ventanillaRepository,
             $this->colaRepository
         );
-
         $validateResult = $ventanillaSync->delete($id);
 
-        return $this->processResult(
-            $validateResult,
+        return $this->processResult($validateResult,
             function ($entity) use ($success) {
                 return call_user_func($success, $this->ventanillaRepository->remove($entity));
-            },
-            $error
+            }, $error
         );
     }
 
@@ -131,7 +118,7 @@ class VentanillaServices extends SNCServices
         $result = $this->ventanillaRepository->findAllPaginate($puntoAtencionId, $offset, $limit);
         $resultset = [
             'resultset' => [
-                'count' => count($result),
+                'count' => $this->ventanillaRepository->getTotal($puntoAtencionId),
                 'offset' => $offset,
                 'limit' => $limit
             ]
@@ -147,7 +134,6 @@ class VentanillaServices extends SNCServices
     {
         $ventanilla = $this->ventanillaRepository->find($id);
         $validateResultado = $this->ventanillaValidator->validarVentanilla($ventanilla);
-
         if (! $validateResultado->hasError()) {
             return $this->respuestaData([], $ventanilla);
         }

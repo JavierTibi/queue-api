@@ -1,5 +1,4 @@
 <?php
-
 namespace ApiV1Bundle\Repository;
 
 /**
@@ -14,25 +13,41 @@ class PuntoAtencionRepository extends ApiRepository
     /**
      * @return \Doctrine\ORM\EntityRepository
      */
-
     private function getRepository()
     {
         return $this->getEntityManager()->getRepository('ApiV1Bundle:PuntoAtencion');
     }
-    
+
+    /**
+     * Listado de puntos de atención
+     *
+     * @param $offset
+     * @param $limit
+     * @return array
+     */
     public function findAllPaginate($offset, $limit)
     {
-
         $query = $this->getRepository()->createQueryBuilder('p');
-
         $query->select([
             'p.id',
             'p.nombre'
         ]);
- 
         $query->setFirstResult($offset);
         $query->setMaxResults($limit);
         $query->orderBy('p.id', 'ASC');
         return $query->getQuery()->getResult();
+    }
+
+    /**
+     * Total puntos de atención
+     *
+     * @return number
+     */
+    public function getTotal()
+    {
+        $query = $this->getRepository()->createQueryBuilder('p');
+        $query->select('count(p.id)');
+        $total = $query->getQuery()->getSingleScalarResult();
+        return (int) $total;
     }
 }

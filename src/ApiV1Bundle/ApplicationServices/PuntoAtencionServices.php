@@ -8,10 +8,7 @@ class PuntoAtencionServices extends SNCServices
 {
     private $puntoAtencionRepository;
 
-    public function __construct(
-        Container $container,
-        PuntoAtencionRepository $puntoAtencionRepository
-    )
+    public function __construct(Container $container, PuntoAtencionRepository $puntoAtencionRepository)
     {
         parent::__construct($container);
         $this->puntoAtencionRepository = $puntoAtencionRepository;
@@ -27,12 +24,11 @@ class PuntoAtencionServices extends SNCServices
         $result = $this->puntoAtencionRepository->findAllPaginate($offset, $limit);
         $resultset = [
             'resultset' => [
-                'count' => count($result),
+                'count' => $this->puntoAtencionRepository->getTotal(),
                 'offset' => $offset,
                 'limit' => $limit
             ]
         ];
         return $this->respuestaData($resultset, $result);
     }
-        
 }
