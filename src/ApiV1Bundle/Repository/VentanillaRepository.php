@@ -35,9 +35,9 @@ class VentanillaRepository extends ApiRepository
         ]);
         $query->where('v.puntoAtencion = :puntoAtencionId');
         $query->setParameter('puntoAtencionId', $puntoAtencionId);
+        $query->orderBy('v.identificador', 'ASC');
         $query->setFirstResult($offset);
         $query->setMaxResults($limit);
-        $query->orderBy('v.id', 'ASC');
         return $query->getQuery()->getResult();
     }
 
