@@ -61,10 +61,8 @@ class AgenteServices extends SNCServices
         $ventanillas = [];
 
         foreach ($agentes as $agente) {
-
             foreach ($agente->getVentanillas() as $ventanilla) {
-                $ventanillas[] =
-                    $ventanilla->getIdentificador();
+                $ventanillas[] = $ventanilla->getIdentificador();
             }
 
             $result[] = [
@@ -78,7 +76,7 @@ class AgenteServices extends SNCServices
 
         $resultset = [
             'resultset' => [
-                'count' => count($result),
+                'count' => $this->agenteRepository->getTotal($puntoAtencionId),
                 'offset' => $offset,
                 'limit' => $limit
             ]

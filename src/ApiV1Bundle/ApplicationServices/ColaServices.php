@@ -51,7 +51,7 @@ class ColaServices extends SNCServices
             $result = $this->colaRepository->findAllPaginate($puntoAtencionId, $offset, $limit);
             $resultset = [
                 'resultset' => [
-                    'count' => count($result),
+                    'count' => $this->colaRepository->getTotal($puntoAtencionId),
                     'offset' => $offset,
                     'limit' => $limit
                 ]

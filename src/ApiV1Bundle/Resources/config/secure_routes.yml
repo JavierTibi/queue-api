@@ -1,4 +1,4 @@
 parameters:
     secureroutes:
-        '/api/v1.0/auth/test': ['ROL_ADMIN', 'ROL_RESPONSABLE']
+        '/api/v1.0/auth/test': ['ROL_ADMIN', 'ROL_RESPONSABLE', 'ROL_AGENTE']
         '/api/v1.0/auth/other': ['ROL_ADMIN', 'ROL_RESPONSABLE']

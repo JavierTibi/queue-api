@@ -1,5 +1,4 @@
 <?php
-
 namespace ApiV1Bundle\Repository;
 
 /**
@@ -10,30 +9,51 @@ namespace ApiV1Bundle\Repository;
  */
 class VentanillaRepository extends ApiRepository
 {
+
     /**
      * @return \Doctrine\ORM\EntityRepository
      */
-
     private function getRepository()
     {
         return $this->getEntityManager()->getRepository('ApiV1Bundle:Ventanilla');
     }
 
+    /**
+     * Listado de ventanillas por punto de atención
+     *
+     * @param $puntoAtencionId
+     * @param $offset
+     * @param $limit
+     * @return array
+     */
     public function findAllPaginate($puntoAtencionId, $offset, $limit)
     {
-
         $query = $this->getRepository()->createQueryBuilder('v');
-
         $query->select([
             'v.id',
             'v.identificador'
-        ])
-            ->where('v.puntoAtencion = :puntoAtencionId')
-            ->setParameter('puntoAtencionId', $puntoAtencionId);
-
+        ]);
+        $query->where('v.puntoAtencion = :puntoAtencionId');
+        $query->setParameter('puntoAtencionId', $puntoAtencionId);
         $query->setFirstResult($offset);
         $query->setMaxResults($limit);
         $query->orderBy('v.id', 'ASC');
         return $query->getQuery()->getResult();
+    }
+
+    /**
+     * Total ventanillas por punto de atención
+     *
+     * @param $puntoAtencionId
+     * @return number
+     */
+    public function getTotal($puntoAtencionId)
+    {
+        $query = $this->getRepository()->createQueryBuilder('v');
+        $query->select('count(v.id)');
+        $query->where('v.puntoAtencion = :puntoAtencionId');
+        $query->setParameter('puntoAtencionId', $puntoAtencionId);
+        $total = $query->getQuery()->getSingleScalarResult();
+        return (int) $total;
     }
 }

@@ -21,6 +21,7 @@ class ColaRepository extends ApiRepository
 
     /**
      * Obtiene todas las colas para un punto de atención
+     *
      * @param $puntoAtencionId
      * @param $offset
      * @param $limit
@@ -29,18 +30,32 @@ class ColaRepository extends ApiRepository
     public function findAllPaginate($puntoAtencionId, $offset, $limit)
     {
         $query = $this->getRepository()->createQueryBuilder('c');
-
         $query->select([
             'c.id',
             'c.nombre',
             'c.tipo'
-        ])
-            ->where('c.puntoAtencion = :puntoAtencionId')
-            ->setParameter('puntoAtencionId', $puntoAtencionId);
-
+        ]);
+        $query->where('c.puntoAtencion = :puntoAtencionId');
+        $query->setParameter('puntoAtencionId', $puntoAtencionId);
         $query->setFirstResult($offset);
         $query->setMaxResults($limit);
         $query->orderBy('c.id', 'ASC');
         return $query->getQuery()->getResult();
+    }
+
+    /**
+     * Total colas por punto de atención
+     *
+     * @param $puntoAtencionId
+     * @return number
+     */
+    public function getTotal($puntoAtencionId)
+    {
+        $query = $this->getRepository()->createQueryBuilder('c');
+        $query->select('count(c.id)');
+        $query->where('c.puntoAtencion = :puntoAtencionId');
+        $query->setParameter('puntoAtencionId', $puntoAtencionId);
+        $total = $query->getQuery()->getSingleScalarResult();
+        return (int) $total;
     }
 }

@@ -1,12 +1,9 @@
 <?php
-
 namespace ApiV1Bundle\Controller;
 
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Controller\Annotations\Get;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 class PuntoAtencionController extends ApiController
 {
@@ -26,6 +23,4 @@ class PuntoAtencionController extends ApiController
         $this->puntoAtencionServices = $this->getPuntosAtencionService();
         return $this->puntoAtencionServices->findAllPaginate((int) $limit, (int) $offset);
     }
-
-    
 }
