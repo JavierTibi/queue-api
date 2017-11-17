@@ -74,6 +74,7 @@ class TurnoController extends ApiController
     }
 
     /**
+<<<<<<< HEAD
      * @param Request $request
      * @return mixed
      * @Get("/snt/turnos")
@@ -96,19 +97,17 @@ class TurnoController extends ApiController
         $this->turnoServices = $this->getTurnoServices();
         return  $this->turnoServices->getItemTurnoSNT($id);
 
-    }
-
-    /**
+=======
      * Listado de turnos recepcionados por ventanilla y punto de atención
      * @param Request $request
      * @return mixed
-     * @Get("/turnos")
      */
-    public function getListTurnosRecepcionadosAction(Request $request)
+    public function getListTurnosRecepcionados(Request $request)
     {
         $params = $request->query->all();
         $this->turnoServices = $this->getTurnoServices();
 
         return $this->turnoServices->findAllPaginate($params);
+>>>>>>> 32109 - Listado turnos recepcionados
     }
 }

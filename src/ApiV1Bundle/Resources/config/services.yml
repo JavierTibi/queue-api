@@ -164,7 +164,7 @@ services:
 
     snc.services.turno:
         class: '%snc.services.turno.class%'
-        arguments: ['@service_container', '@snc.repository.turno', '@snc.validator.turno', '@snc.repository.puntoatencion', '@snc.repository.cola', '@snc.services.redis', '@snc.service.integration.turnos']
+        arguments: ['@service_container', '@snc.repository.turno', '@snc.validator.turno', '@snc.repository.puntoatencion', '@snc.repository.cola', '@snc.services.redis', '@snc.service.integration.turnos', '@snc.repository.ventanilla']
 
     snc.services.redis:
         class: '%snc.services.redis.class%'

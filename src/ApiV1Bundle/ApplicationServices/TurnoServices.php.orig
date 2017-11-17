@@ -29,7 +29,6 @@ class TurnoServices extends SNCServices
     private $colaRepository;
     private $redisServices;
     private $turnoIntegration;
-    private $ventanillaRepository;
 
     /**
      * TurnoServices constructor.
@@ -40,7 +39,6 @@ class TurnoServices extends SNCServices
      * @param ColaRepository $colaRepository
      * @param RedisServices $redisServices
      * @param SNTTurnosService $turnoIntegration
-     * @param VentanillaRepository $ventanillaRepository
      */
     public function __construct(
         Container $container,
@@ -49,8 +47,7 @@ class TurnoServices extends SNCServices
         PuntoAtencionRepository $puntoAtencionRepository,
         ColaRepository $colaRepository,
         RedisServices $redisServices,
-        SNTTurnosService $turnoIntegration,
-        VentanillaRepository $ventanillaRepository
+        SNTTurnosService $turnoIntegration
     )
     {
         parent::__construct($container);
@@ -60,7 +57,6 @@ class TurnoServices extends SNCServices
         $this->colaRepository = $colaRepository;
         $this->redisServices = $redisServices;
         $this->turnoIntegration = $turnoIntegration;
-        $this->ventanillaRepository = $ventanillaRepository;
     }
 
     /**
@@ -148,6 +144,7 @@ class TurnoServices extends SNCServices
     }
 
     /**
+<<<<<<< HEAD
      * Obtiene el listado de turnos del SNT
      *
      * @param $params
@@ -160,9 +157,16 @@ class TurnoServices extends SNCServices
         if (! $validateResult->hasError()) {
 
             $result = $this->turnoIntegration->getListTurnos($params);
-            $result->metadata->resultset = (array) $result->metadata->resultset;
 
-            return $this->respuestaData((array) $result->metadata, $result->result);
+            $resultset = [
+                'resultset' => [
+                    'count' => 100, //TODO modificar cuando SNT envie el count
+                    'offset' => $params['offset'],
+                    'limit' => $params['limit']
+                ]
+            ];
+
+            return $this->respuestaData($resultset, $result);
         }
 
         return $validateResult;
@@ -179,52 +183,17 @@ class TurnoServices extends SNCServices
         $result = $this->turnoIntegration->getItemTurnoSNT($id);
 
         return $this->respuestaData([], $result);
-    }
-
-
+=======
+     *
+     */
     public function findAllPaginate($params)
     {
         $validateResult = $this->turnoValidator->validarGetRecepcionados($params);
 
         if (! $validateResult->hasError()) {
-            $ventanilla = $this->ventanillaRepository->find($params['ventanilla']);
 
-            $colas = $ventanilla->getColas();
-
-            if($colas->count() == 1) {
-
-                $this->redisServices->getCola($params['puntoatencion'], $colas->first()->getId());
-
-            } elseif ($colas->count() > 1) {
-
-                $validateCola = $this->redisServices->unionColas($params['puntoatencion'], $colas, $ventanilla);
-                if(! $validateCola->hasError()) {
-                    $codigosTurno = $this->redisServices->getColaVentanilla($params['puntoatencion'], $ventanilla);
-                    $result = $this->searchTurnosByCodigo($params['puntoatencion'], $codigosTurno);
-                    $resultset = [
-                        'resultset' => [
-                            'count' => 100,
-                            'offset' => $params['offset'],
-                            'limit' => $params['limit']
-                        ]
-                    ];
-                    return $this->respuestaData($resultset, $result);
-                }
-                return $validateCola;
-
-            } else {
-                // LA VENTANILLA NO TIENE COLA
-            }
         }
-
-    }
-
-    /**
-     * @param array $codigoTurnos
-     */
-    private function searchTurnosByCodigo($puntoAtencionId, $codigoTurnos)
-    {
-        return $this->turnoRepository->getTurnosByCodigos($puntoAtencionId, $codigoTurnos);
+>>>>>>> 32109 - Listado turnos recepcionados
     }
 
 }

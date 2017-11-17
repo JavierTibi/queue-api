@@ -1,6 +1,7 @@
 <?php
 
 namespace ApiV1Bundle\Repository;
+use ApiV1Bundle\ApplicationServices\TurnoServices;
 use ApiV1Bundle\Entity\Turno;
 
 /**
@@ -36,5 +37,29 @@ class TurnoRepository extends ApiRepository
         $query->andWhere('lower(t.codigo) LIKE :codigo')->setParameter('codigo', strtolower($codigo) . '%');
         $query->orderBy('t.id', 'DESC');
         return $query->getQuery()->setMaxResults(1)->getOneOrNullResult();
+    }
+
+    /**
+     * Get turnos por código
+     * @param int $puntoAtencionId
+     * @param array$codigos
+     * @return array
+     */
+    public function getTurnosByCodigos($puntoAtencionId, $codigos)
+    {
+        $query = $this->getRepository()->createQueryBuilder('t');
+
+        $query->select(
+            't.id',
+            't.tramite',
+            't.codigo',
+            't.hora',
+            'd.cuil');
+        $query->join('t.datosTurno', 'd');
+        $query->andWhere('t.puntoAtencion = :pa')->setParameter('pa', $puntoAtencionId);
+        $query->andWhere('t.estado = :estado')->setParameter('estado', Turno::ESTADO_RECEPCIONADO);
+        $query->andWhere('lower(t.codigo) IN (:codigos)')->setParameter('codigos', $codigos);
+        $query->orderBy('t.id', 'DESC');
+        return $query->getQuery()->getResult();
     }
 }
