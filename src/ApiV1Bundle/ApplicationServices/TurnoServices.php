@@ -156,16 +156,9 @@ class TurnoServices extends SNCServices
         if (! $validateResult->hasError()) {
 
             $result = $this->turnoIntegration->getListTurnos($params);
+            $result->metadata->resultset = (array) $result->metadata->resultset;
 
-            $resultset = [
-                'resultset' => [
-                    'count' => 100, //TODO modificar cuando SNT envie el count
-                    'offset' => $params['offset'],
-                    'limit' => $params['limit']
-                ]
-            ];
-
-            return $this->respuestaData($resultset, $result);
+            return $this->respuestaData((array) $result->metadata, $result->result);
         }
 
         return $validateResult;
