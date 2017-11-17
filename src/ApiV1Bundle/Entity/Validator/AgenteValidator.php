@@ -46,12 +46,18 @@ class AgenteValidator extends SNCValidator
      * @param $ventanilla
      * @return ValidateResultado
      */
-    public function validarAsignarVentanilla($agente, $ventanilla)
+    public function validarAsignarVentanilla($agente, $agenteVentanilla, $ventanilla)
     {
         $validateResultadoAgente = $this->validarAgente($agente);
 
         if($validateResultadoAgente->hasError()) {
             return $validateResultadoAgente;
+        }
+
+        $validateResultadoAgenteVentanilla = $this->validarAgenteVentanilla($agenteVentanilla);
+
+        if($validateResultadoAgenteVentanilla->hasError()) {
+            return $validateResultadoAgenteVentanilla;
         }
 
         $validateResultadoVentanilla = $this->validarVentanilla($ventanilla);
@@ -61,5 +67,14 @@ class AgenteValidator extends SNCValidator
         }
 
         return new ValidateResultado(null, []);
+    }
+
+    private function validarAgenteVentanilla($agenteVentanilla)
+    {
+        $errors = [];
+        if ($agenteVentanilla) {
+            $errors['AgenteVentanilla'] = "Ya existe un usuario asociado a la ventanilla.";
+        }
+        return new ValidateResultado(null, $errors);
     }
 }

@@ -105,17 +105,18 @@ class AgenteSync
 
     /**
      * Asigna una ventanilla al Agente
-     * @param integer $idAgente Identificador del agente
+     * @param integer $idUsuario Identificador del usuario
      * @param integer $idVentanilla Identificador de la ventanilla
      *
      * @return ValidateResultado
      */
-    public function asignarVentanilla($idAgente, $idVentanilla)
+    public function asignarVentanilla($idUser, $idVentanilla)
     {
-        $agente = $this->agenteRepository->find($idAgente);
+        $agente = $this->agenteRepository->findOneByUser($idUser);
         $ventanilla = $this->ventanillaRepository->find($idVentanilla);
+        $agenteVentanilla = $this->agenteRepository->findOneByVentanilla($idVentanilla);
 
-        $validateResultado = $this->agenteValidator->validarAsignarVentanilla($agente, $ventanilla);
+        $validateResultado = $this->agenteValidator->validarAsignarVentanilla($agente, $agenteVentanilla, $ventanilla);
 
         if (! $validateResultado->hasError()) {
             $agente->setVentanillaActual($ventanilla);

@@ -52,4 +52,11 @@ class AgenteRepository extends ApiRepository
         $total = $query->getQuery()->getSingleScalarResult();
         return (int) $total;
     }
+
+    public function findOneByVentanilla($ventanillaId) {
+        $query = $this->getRepository()->createQueryBuilder('a');
+        $query->where('a.ventanillaActual = :ventanillaId');
+        $query->setParameter('ventanillaId', $ventanillaId);
+        return $query->getQuery()->getSingleResult();
+    }
 }
