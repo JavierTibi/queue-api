@@ -22,7 +22,6 @@ class SNTTurnosService
      */
     public function getListTurnos($params)
     {
-        $result = [];
         $parameters = [
             'puntoatencion' => (int)$params['puntoatencion'],
             'fecha' => $params['fecha'],
@@ -31,15 +30,7 @@ class SNTTurnosService
         ];
 
         $url = $this->integrationService->getUrl('turnos.fecha');
-        $response =  $this->integrationService->get($url, $parameters);
-
-        //transforma el resultado en array para enviarlo a Respuesta Data.
-        foreach ($response->result as $item) {
-            $item->campos =  (array) $item->campos;
-            $result[] = (array) $item;
-        }
-
-        return $result;
+        return $this->integrationService->get($url, $parameters);
     }
 
     /**
