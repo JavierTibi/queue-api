@@ -101,13 +101,13 @@ class AgenteServices extends SNCServices
     }
 
     /**
-     * @param $idAgente
+     * @param $idUsuario
      * @param $idVentanilla
      * @param $success
      * @param $error
      * @return mixed
      */
-    public function asignarVentanilla($idAgente, $idVentanilla, $success, $error)
+    public function asignarVentanilla($idUsuario, $idVentanilla, $success, $error)
     {
         $agenteSync = new AgenteSync(
             $this->agenteValidator,
@@ -116,7 +116,7 @@ class AgenteServices extends SNCServices
             $this->puntoAtencionRepository
         );
 
-        $validateResult = $agenteSync->asignarVentanilla($idAgente, $idVentanilla);
+        $validateResult = $agenteSync->asignarVentanilla($idUsuario, $idVentanilla);
 
         return $this->processResult(
             $validateResult,
