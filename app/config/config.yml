@@ -4,6 +4,7 @@ imports:
     - { resource: services.yml }
     - { resource: "@ApiV1Bundle/Resources/config/version.yml" }
     - { resource: "@ApiV1Bundle/Resources/config/services.yml" }
+    - { resource: "@ApiV1Bundle/Resources/config/integration.yml" }
     - { resource: "@ApiV1Bundle/Resources/config/secure_routes.yml" }
     - { resource: "@ApiV1Bundle/Resources/config/listeners.yml" }
 

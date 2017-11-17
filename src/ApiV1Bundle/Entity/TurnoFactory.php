@@ -49,38 +49,46 @@ class TurnoFactory
 
         if (! $validateResultado->hasError()) {
 
-            $puntoAtencion = $this->puntoAtencionRepository->find($params['puntoAtencion']);
-            $fecha = new \DateTime($params['fecha']);
-            $hora = new \DateTime($params['hora']);
+            $puntoAtencion = $this->puntoAtencionRepository->findOneBy(['puntoAtencionIdSnt' => $params['puntoAtencion']]);
 
-            $datosTurno = new DatosTurno(
-                $params['datosTurno']['nombre'],
-                $params['datosTurno']['apellido'],
-                $params['datosTurno']['cuil'],
-                $params['datosTurno']['email'],
-                $params['datosTurno']['telefono'],
-                $params['datosTurno']['campos']
-            );
+            $validatePuntoAtencion = $this->turnoValidator->validarPuntoAtencion($puntoAtencion);
 
-            $this->turnoRepository->persist($datosTurno);
+            if (!$validatePuntoAtencion->hasError()) {
+                $fecha = new \DateTime($params['fecha']);
+                $hora = new \DateTime($params['hora']);
 
-            $turno = new Turno(
-                $puntoAtencion,
-                $datosTurno,
-                $params['grupoTramite'],
-                $fecha,
-                $hora,
-                $params['estado'],
-                $params['tramite'],
-                $params['codigo'],
-                $params['prioridad']
-            );
+                $datosTurno = new DatosTurno(
+                    $params['datosTurno']['nombre'],
+                    $params['datosTurno']['apellido'],
+                    $params['datosTurno']['cuil'],
+                    $params['datosTurno']['email'],
+                    $params['datosTurno']['telefono'],
+                    $params['datosTurno']['campos']
+                );
 
-            if (isset($params['motivo'])) {
-                $turno->setMotivoTerminado($params['motivo']);
+                $this->turnoRepository->persist($datosTurno);
+
+                $turno = new Turno(
+                    $puntoAtencion,
+                    $datosTurno,
+                    $params['grupoTramite'],
+                    $fecha,
+                    $hora,
+                    $params['estado'],
+                    $params['tramite'],
+                    $params['codigo'],
+                    $params['prioridad']
+                );
+
+                if (isset($params['motivo'])) {
+                    $turno->setMotivoTerminado($params['motivo']);
+                }
+
+                return new ValidateResultado($turno, []);
+            } else {
+                return $validatePuntoAtencion;
             }
 
-            return new ValidateResultado($turno, []);
         }
 
         return $validateResultado;

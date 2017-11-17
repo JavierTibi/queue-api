@@ -13,6 +13,8 @@ use ApiV1Bundle\Entity\Turno;
 use ApiV1Bundle\Entity\TurnoFactory;
 use ApiV1Bundle\Entity\Validator\TurnoValidator;
 use ApiV1Bundle\Entity\Validator\ValidateResultado;
+use ApiV1Bundle\ExternalServices\SNCExternalService;
+use ApiV1Bundle\ExternalServices\SNTTurnosService;
 use ApiV1Bundle\Repository\ColaRepository;
 use ApiV1Bundle\Repository\PuntoAtencionRepository;
 use ApiV1Bundle\Repository\TurnoRepository;
@@ -26,6 +28,7 @@ class TurnoServices extends SNCServices
     private $puntoAtencionRepository;
     private $colaRepository;
     private $redisServices;
+    private $turnoIntegration;
 
     /**
      * TurnoServices constructor.
@@ -35,6 +38,7 @@ class TurnoServices extends SNCServices
      * @param PuntoAtencionRepository $puntoAtencionRepository
      * @param ColaRepository $colaRepository
      * @param RedisServices $redisServices
+     * @param SNTTurnosService $turnoIntegration
      */
     public function __construct(
         Container $container,
@@ -42,7 +46,8 @@ class TurnoServices extends SNCServices
         TurnoValidator $turnoValidator,
         PuntoAtencionRepository $puntoAtencionRepository,
         ColaRepository $colaRepository,
-        RedisServices $redisServices
+        RedisServices $redisServices,
+        SNTTurnosService $turnoIntegration
     )
     {
         parent::__construct($container);
@@ -51,6 +56,7 @@ class TurnoServices extends SNCServices
         $this->puntoAtencionRepository = $puntoAtencionRepository;
         $this->colaRepository = $colaRepository;
         $this->redisServices = $redisServices;
+        $this->turnoIntegration = $turnoIntegration;
     }
 
     /**
@@ -137,5 +143,45 @@ class TurnoServices extends SNCServices
         return $this->redisServices->zaddCola($turno->getPuntoAtencion()->getId(), $cola->getId(), $turno->getPrioridad(), $turno->getCodigo());
     }
 
+    /**
+     * Obtiene el listado de turnos del SNT
+     *
+     * @param $params
+     * @return ValidateResultado|object
+     */
+    public function getListTurnosSNT($params)
+    {
+        $validateResult = $this->turnoValidator->validarGetSNT($params);
+
+        if (! $validateResult->hasError()) {
+
+            $result = $this->turnoIntegration->getListTurnos($params);
+
+            $resultset = [
+                'resultset' => [
+                    'count' => 100, //TODO modificar cuando SNT envie el count
+                    'offset' => $params['offset'],
+                    'limit' => $params['limit']
+                ]
+            ];
+
+            return $this->respuestaData($resultset, $result);
+        }
+
+        return $validateResult;
+    }
+
+    /**
+     * Obtiene un turno por ID
+     *
+     * @param $id
+     * @return object
+     */
+    public function getItemTurnoSNT($id)
+    {
+        $result = $this->turnoIntegration->getItemTurnoSNT($id);
+
+        return $this->respuestaData([], $result);
+    }
 
 }

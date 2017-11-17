@@ -72,4 +72,29 @@ class TurnoController extends ApiController
             }
         );
     }
+
+    /**
+     * @param Request $request
+     * @return mixed
+     * @Get("/snt/turnos")
+     */
+    public function getTurnosSNTAction(Request $request)
+    {
+        $params = $request->query->all();
+        $this->turnoServices = $this->getTurnoServices();
+        return  $this->turnoServices->getListTurnosSNT($params);
+
+    }
+
+    /**
+     * @param $id
+     * @return mixed
+     * @Get("/snt/turnos/{id}")
+     */
+    public function getTurnoSNTAction($id)
+    {
+        $this->turnoServices = $this->getTurnoServices();
+        return  $this->turnoServices->getItemTurnoSNT($id);
+
+    }
 }

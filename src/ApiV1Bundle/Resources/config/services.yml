@@ -38,8 +38,13 @@ parameters:
     snc.security.parser.class: Lcobucci\JWT\Parser
     snc.security.validation.class: Lcobucci\JWT\ValidationData
 
+    ## External services
+    snc.services.integration.class: ApiV1Bundle\ExternalServices\SNCExternalService
+    snc.integration.turnos.class: ApiV1Bundle\ExternalServices\SNTTurnosService
+
+
 services:
-    
+
     ## SECURITY ##
     
     snc.security.builder:
@@ -117,6 +122,16 @@ services:
         arguments:
             - ApiV1Bundle\Entity\Token
 
+    ### EXTERNAL SERVICES ####
+
+    snc.service.integration:
+        class: '%snc.services.integration.class%'
+        arguments: ['@service_container']
+
+    snc.service.integration.turnos:
+        class: '%snc.integration.turnos.class%'
+        arguments: ['@snc.service.integration']
+
     ### SERVICES ###
 
     snc.services.general:
@@ -149,7 +164,7 @@ services:
 
     snc.services.turno:
         class: '%snc.services.turno.class%'
-        arguments: ['@service_container', '@snc.repository.turno', '@snc.validator.turno', '@snc.repository.puntoatencion', '@snc.repository.cola', '@snc.services.redis']
+        arguments: ['@service_container', '@snc.repository.turno', '@snc.validator.turno', '@snc.repository.puntoatencion', '@snc.repository.cola', '@snc.services.redis', '@snc.service.integration.turnos']
 
     snc.services.redis:
         class: '%snc.services.redis.class%'
