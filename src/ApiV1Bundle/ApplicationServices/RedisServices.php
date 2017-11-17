@@ -35,4 +35,8 @@ class RedisServices extends SNCServices
 
         return new ValidateResultado(null, $errors);
     }
+
+    public function zscan($puntoAtencionId, $colaId) {
+        $this->getContainerRedis()->zunionstore();
+    }
 }

@@ -97,4 +97,17 @@ class TurnoController extends ApiController
         return  $this->turnoServices->getItemTurnoSNT($id);
 
     }
+
+    /**
+     * Listado de turnos recepcionados por ventanilla y punto de atención
+     * @param Request $request
+     * @return mixed
+     */
+    public function getListTurnosRecepcionados(Request $request)
+    {
+        $params = $request->query->all();
+        $this->turnoServices = $this->getTurnoServices();
+
+        return $this->turnoServices->findAllPaginate($params);
+    }
 }

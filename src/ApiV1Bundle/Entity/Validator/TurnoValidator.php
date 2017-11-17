@@ -60,4 +60,14 @@ class TurnoValidator extends SNCValidator
 
         return new ValidateResultado(null, $errors);
     }
+
+    public function validarGetRecepcionados($params)
+    {
+        $errors = $this->validar($params, [
+            'puntoatencion' => 'required:integer',
+            'ventanilla' => 'required:integer'
+        ]);
+
+        return new ValidateResultado(null, $errors);
+    }
 }
