@@ -45,6 +45,15 @@ class ApiController extends FOSRestController
     {
         return $this->container->get('snc.services.ventanilla');
     }
+    
+    /**
+     * Obtiene Punto Atencion services
+     * 
+     * @return objet
+     */
+    protected function getPuntoAtencionServices() {
+        return $this->container->get('snc.services.puntoatencion');
+    }
 
     /**
      * Obtiene Usuario service

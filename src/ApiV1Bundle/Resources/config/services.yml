@@ -31,6 +31,7 @@ parameters:
     snc.validator.responsable.class: ApiV1Bundle\Entity\Validator\ResponsableValidator
     snc.validator.cola.class: ApiV1Bundle\Entity\Validator\ColaValidator
     snc.validator.turno.class: ApiV1Bundle\Entity\Validator\TurnoValidator
+    snc.validator.puntoatencion.class: ApiV1Bundle\Entity\Validator\PuntoAtencionValidator
     
     # Security
     snc.helper.jwtoken.class: ApiV1Bundle\Helper\JWToken
@@ -41,10 +42,9 @@ parameters:
     ## External services
     snc.services.integration.class: ApiV1Bundle\ExternalServices\SNCExternalService
     snc.integration.turnos.class: ApiV1Bundle\ExternalServices\SNTTurnosService
-
-
+    
 services:
-
+    
     ## SECURITY ##
     
     snc.security.builder:
@@ -131,7 +131,7 @@ services:
     snc.service.integration.turnos:
         class: '%snc.integration.turnos.class%'
         arguments: ['@snc.service.integration']
-
+        
     ### SERVICES ###
 
     snc.services.general:
@@ -160,7 +160,7 @@ services:
 
     snc.services.puntoatencion:
         class: '%snc.services.puntoatencion.class%'
-        arguments: ['@service_container', '@snc.repository.puntoatencion']
+        arguments: ['@service_container', '@snc.repository.puntoatencion', '@snc.validator.puntoatencion']
 
     snc.services.turno:
         class: '%snc.services.turno.class%'
@@ -194,3 +194,7 @@ services:
 
     snc.validator.turno:
        class: '%snc.validator.turno.class%'
+       
+    snc.validator.puntoatencion:
+       class: '%snc.validator.puntoatencion.class%'
+       arguments: ['@snc.repository.puntoatencion']

@@ -3,12 +3,15 @@
 namespace ApiV1Bundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * PuntoAtencion
  *
  * @ORM\Table(name="punto_atencion")
  * @ORM\Entity(repositoryClass="ApiV1Bundle\Repository\PuntoAtencionRepository")
+ * @Gedmo\SoftDeleteable(fieldName="fechaBorrado")
+ * @ORM\HasLifecycleCallbacks()
  */
 class PuntoAtencion
 {
@@ -185,6 +188,17 @@ class PuntoAtencion
     public function getFechaBorrado()
     {
         return $this->fechaBorrado;
+    }
+    
+    /**
+     * Genera las fechas de creación y modificación de un punto de atención
+     *
+     * @ORM\PrePersist
+     */
+    public function setFechas()
+    {
+        $this->fechaCreado = new \DateTime();
+        $this->fechaModificado = new \DateTime();
     }
 }
 
