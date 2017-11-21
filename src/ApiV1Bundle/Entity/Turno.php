@@ -149,7 +149,7 @@ class Turno
      *     type="integer",
      *     message="Este campo no puede estar vacío y debe ser numérico."
      * )
-     * @Assert\Range(min = 0, max = 1)
+     * @Assert\Range(min = 1, max = 2)
      * @ORM\Column(name="prioridad", type="smallint")
      */
     private $prioridad;

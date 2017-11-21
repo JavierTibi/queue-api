@@ -1,6 +1,7 @@
 <?php
 
 namespace ApiV1Bundle\Repository;
+use ApiV1Bundle\ApplicationServices\TurnoServices;
 use ApiV1Bundle\Entity\Turno;
 
 /**

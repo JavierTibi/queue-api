@@ -9,6 +9,7 @@
 namespace ApiV1Bundle\ApplicationServices;
 
 
+use ApiV1Bundle\Entity\Getter\TurnoGetter;
 use ApiV1Bundle\Entity\Turno;
 use ApiV1Bundle\Entity\TurnoFactory;
 use ApiV1Bundle\Entity\Validator\TurnoValidator;
@@ -29,6 +30,7 @@ class TurnoServices extends SNCServices
     private $colaRepository;
     private $redisServices;
     private $turnoIntegration;
+    private $ventanillaRepository;
 
     /**
      * TurnoServices constructor.
@@ -39,6 +41,7 @@ class TurnoServices extends SNCServices
      * @param ColaRepository $colaRepository
      * @param RedisServices $redisServices
      * @param SNTTurnosService $turnoIntegration
+     * @param VentanillaRepository $ventanillaRepository
      */
     public function __construct(
         Container $container,
@@ -47,7 +50,8 @@ class TurnoServices extends SNCServices
         PuntoAtencionRepository $puntoAtencionRepository,
         ColaRepository $colaRepository,
         RedisServices $redisServices,
-        SNTTurnosService $turnoIntegration
+        SNTTurnosService $turnoIntegration,
+        VentanillaRepository $ventanillaRepository
     )
     {
         parent::__construct($container);
@@ -57,6 +61,7 @@ class TurnoServices extends SNCServices
         $this->colaRepository = $colaRepository;
         $this->redisServices = $redisServices;
         $this->turnoIntegration = $turnoIntegration;
+        $this->ventanillaRepository = $ventanillaRepository;
     }
 
     /**
@@ -140,7 +145,7 @@ class TurnoServices extends SNCServices
     private function recepcionarTurno($turno)
     {
         $cola = $this->colaRepository->findOneBy(['grupoTramiteSNTId' => $turno->getGrupoTramiteIdSNT()]);
-        return $this->redisServices->zaddCola($turno->getPuntoAtencion()->getId(), $cola->getId(), $turno->getPrioridad(), $turno->getCodigo());
+        return $this->redisServices->zaddCola($turno->getPuntoAtencion()->getId(), $cola->getId(), $turno->getPrioridad(), $turno);
     }
 
     /**
@@ -175,6 +180,50 @@ class TurnoServices extends SNCServices
         $result = $this->turnoIntegration->getItemTurnoSNT($id);
 
         return $this->respuestaData([], $result);
+    }
+
+
+    /**
+     * @param $params
+     * @return ValidateResultado|object
+     */
+    public function findAllPaginate($params, $onError)
+    {
+        $resultset = [];
+        $response = [];
+        $ventanilla = $this->ventanillaRepository->find($params['ventanilla']);
+        $validateResultado = $this->turnoValidator->validarGetRecepcionados($params, $ventanilla);
+
+        if (! $validateResultado->hasError()) {
+
+            $turnoGetter = new TurnoGetter(
+                $this->ventanillaRepository,
+                $this->redisServices
+            );
+
+            $validateResultado = $turnoGetter->getAll($params, $ventanilla);
+
+            if (! $validateResultado->hasError()) {
+                $response = json_decode($validateResultado->getEntity());
+
+                $resultset = [
+                    'resultset' => [
+                        'count' => $response->cantTurnos,
+                        'offset' => $params['offset'],
+                        'limit' => $params['limit']
+                    ]
+                ];
+            }
+
+        }
+
+        return $this->processError(
+            $validateResultado,
+            function () use ($resultset, $response) {
+                return $this->respuestaData($resultset, $this->toArray($response->turnos));
+            },
+            $onError
+        );
     }
 
 }
