@@ -1,8 +1,8 @@
 # api specific parameters
 parameters:
     integration:
-     #   host: 'http://sntapi.hexacta.com:8008/api/v1.0'
-        host: 'http://localhost:8080/api/v1.0'
+        host: '%snt_api_integration%'
         urls:
             turnos.fecha: '/turnos/fecha'
             turnos: '/turnos'
+            turnos.buscar: '/turnos/buscar/codigo'

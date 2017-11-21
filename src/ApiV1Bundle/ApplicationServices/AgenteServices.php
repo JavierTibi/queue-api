@@ -38,8 +38,7 @@ class AgenteServices extends SNCServices
         UserValidator $userValidator,
         VentanillaRepository $ventanillaRepository,
         PuntoAtencionRepository $puntoAtencionRepository
-    )
-    {
+    ) {
         parent::__construct($container);
         $this->agenteRepository = $agenteRepository;
         $this->agenteValidator = $agenteValidator;
@@ -115,7 +114,6 @@ class AgenteServices extends SNCServices
             $this->ventanillaRepository,
             $this->puntoAtencionRepository
         );
-
         $validateResult = $agenteSync->asignarVentanilla($idUsuario, $idVentanilla);
 
         return $this->processResult(
@@ -125,6 +123,5 @@ class AgenteServices extends SNCServices
             },
             $error
         );
-
     }
 }

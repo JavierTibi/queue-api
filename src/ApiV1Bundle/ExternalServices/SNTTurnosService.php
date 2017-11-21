@@ -2,6 +2,7 @@
 
 namespace ApiV1Bundle\ExternalServices;
 
+use ApiV1Bundle\Entity\Validator\ValidateResultado;
 
 class SNTTurnosService
 {
@@ -52,4 +53,20 @@ class SNTTurnosService
         return (array) $response->result;
     }
 
+    /**
+     * Busqueda de turnos en el Sistema Nacional de Turnos
+     * @param $codigo
+     * @return array
+     */
+    public function searchTurnoSNT($codigo)
+    {
+        $url = $this->integrationService->getUrl('turnos.buscar', null, ['codigo' => $codigo]);
+        $response =  $this->integrationService->get($url);
+        if (isset($response->result)) {
+            return new ValidateResultado($response->result, []);
+        }
+        // errors
+        $errors = (array) $response->userMessage->errors;
+        return new ValidateResultado(null, $errors);
+    }
 }

@@ -74,6 +74,8 @@ class TurnoController extends ApiController
     }
 
     /**
+     * Listado de turnos del Sistema Nacional de Turnos
+     *
      * @param Request $request
      * @return mixed
      * @Get("/snt/turnos")
@@ -83,10 +85,33 @@ class TurnoController extends ApiController
         $params = $request->query->all();
         $this->turnoServices = $this->getTurnoServices();
         return  $this->turnoServices->getListTurnosSNT($params);
-
     }
 
     /**
+     * Busqueda de turnos por código en el Sistema Nacional de Turnos
+     *
+     * @param Request $request
+     * @return mixed
+     * @Get("/snt/turnos/buscar")
+     */
+    public function searchTurnosSNTAction(Request $request)
+    {
+        $params = $request->query->all();
+        $this->turnoServices = $this->getTurnoServices();
+        return $this->turnoServices->searchTurnoSNT(
+            $params,
+            function($response) {
+                return $response;
+            },
+            function($error) {
+                return $this->respuestaError($error);
+            }
+        );
+    }
+
+    /**
+     * Obtener un turno por ID
+     *
      * @param $id
      * @return mixed
      * @Get("/snt/turnos/{id}")
@@ -94,8 +119,7 @@ class TurnoController extends ApiController
     public function getTurnoSNTAction($id)
     {
         $this->turnoServices = $this->getTurnoServices();
-        return  $this->turnoServices->getItemTurnoSNT($id);
-
+        return $this->turnoServices->getItemTurnoSNT($id);
     }
 
     /**

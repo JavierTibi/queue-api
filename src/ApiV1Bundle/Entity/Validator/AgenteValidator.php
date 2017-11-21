@@ -8,7 +8,6 @@
 
 namespace ApiV1Bundle\Entity\Validator;
 
-
 use Doctrine\Common\Collections\ArrayCollection;
 
 class AgenteValidator extends SNCValidator
@@ -50,25 +49,31 @@ class AgenteValidator extends SNCValidator
     {
         $validateResultadoAgente = $this->validarAgente($agente);
 
-        if($validateResultadoAgente->hasError()) {
+        if ($validateResultadoAgente->hasError()) {
             return $validateResultadoAgente;
         }
 
         $validateResultadoAgenteVentanilla = $this->validarAgenteVentanilla($agenteVentanilla);
 
-        if($validateResultadoAgenteVentanilla->hasError()) {
+        if ($validateResultadoAgenteVentanilla->hasError()) {
             return $validateResultadoAgenteVentanilla;
         }
 
         $validateResultadoVentanilla = $this->validarVentanilla($ventanilla);
 
-        if($validateResultadoVentanilla->hasError()) {
+        if ($validateResultadoVentanilla->hasError()) {
             return $validateResultadoVentanilla;
         }
 
         return new ValidateResultado(null, []);
     }
 
+    /**
+     * Validamos la asociación agente - ventanilla
+     *
+     * @param $agenteVentanilla
+     * @return ValidateResultado
+     */
     private function validarAgenteVentanilla($agenteVentanilla)
     {
         $errors = [];

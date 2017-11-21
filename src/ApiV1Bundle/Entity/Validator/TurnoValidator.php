@@ -61,6 +61,28 @@ class TurnoValidator extends SNCValidator
         return new ValidateResultado(null, $errors);
     }
 
+    /**
+     * Validamos los parametors de la busqueda de turnos
+     *
+     * @param $params
+     * @return ValidateResultado
+     */
+    public function validarSearchSNT($params)
+    {
+        $errors = $this->validar($params, [
+            'codigo' => 'required'
+        ]);
+
+        return new ValidateResultado(null, $errors);
+    }
+
+    /**
+     * Validamos el turno recepcionado
+     *
+     * @param unknown $params
+     * @param unknown $ventanilla
+     * @return ValidateResultado
+     */
     public function validarGetRecepcionados($params, $ventanilla)
     {
         $errors = $this->validar($params, [

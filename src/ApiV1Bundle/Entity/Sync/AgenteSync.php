@@ -2,7 +2,6 @@
 
 namespace ApiV1Bundle\Entity\Sync;
 
-
 use ApiV1Bundle\Entity\Agente;
 use ApiV1Bundle\Entity\Validator\AgenteValidator;
 use ApiV1Bundle\Entity\Validator\UserValidator;
@@ -33,8 +32,7 @@ class AgenteSync
         AgenteRepository $agenteRepository,
         VentanillaRepository $ventanillaRepository,
         PuntoAtencionRepository $puntoAtencionRepository
-    )
-    {
+    ) {
         $this->agenteValidator = $agenteValidator;
         $this->agenteRepository = $agenteRepository;
         $this->ventanillaRepository = $ventanillaRepository;
@@ -44,9 +42,7 @@ class AgenteSync
     public function edit($id, $params)
     {
         $validateResultado = $this->agenteValidator->validarParams($params);
-
         if (! $validateResultado->hasError()) {
-
             $agente = $this->agenteRepository->findOneByUser($id);
             $user = $agente->getUser();
 
@@ -54,7 +50,6 @@ class AgenteSync
             $agente->setApellido($params['apellido']);
 
             $puntoAtencion = $this->puntoAtencionRepository->find($params['puntoAtencion']);
-
             $validateResultadoPA = $this->agenteValidator->validarPuntoAtencion($puntoAtencion);
 
             if ($validateResultadoPA->hasError()) {
@@ -62,7 +57,6 @@ class AgenteSync
             }
 
             $agente->setPuntoAtencion($puntoAtencion);
-
             $agente->removeAllVentanilla();
 
             foreach ($params['ventanillas'] as $idVentanilla) {
@@ -93,13 +87,10 @@ class AgenteSync
     public function delete($id)
     {
         $agente = $this->agenteRepository->findOneByUser($id);
-
         $validateResultado = $this->agenteValidator->validarUsuario($agente);
-
         if (! $validateResultado->hasError()) {
             $validateResultado->setEntity($agente);
         }
-
         return $validateResultado;
     }
 
@@ -115,15 +106,16 @@ class AgenteSync
         $agente = $this->agenteRepository->findOneByUser($idUser);
         $ventanilla = $this->ventanillaRepository->find($idVentanilla);
         $agenteVentanilla = $this->agenteRepository->findOneByVentanilla($idVentanilla);
-
-        $validateResultado = $this->agenteValidator->validarAsignarVentanilla($agente, $agenteVentanilla, $ventanilla);
-
+        $validateResultado = $this->agenteValidator->validarAsignarVentanilla(
+            $agente,
+            $agenteVentanilla,
+            $ventanilla
+        );
         if (! $validateResultado->hasError()) {
             $agente->setVentanillaActual($ventanilla);
             $validateResultado->setEntity($agente);
             return $validateResultado;
         }
-
         return $validateResultado;
     }
 }

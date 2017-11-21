@@ -50,10 +50,8 @@ class TurnoServices extends SNCServices
         PuntoAtencionRepository $puntoAtencionRepository,
         ColaRepository $colaRepository,
         RedisServices $redisServices,
-        SNTTurnosService $turnoIntegration,
-        VentanillaRepository $ventanillaRepository
-    )
-    {
+        SNTTurnosService $turnoIntegration
+    ) {
         parent::__construct($container);
         $this->turnoRepository = $turnoRepository;
         $this->turnoValidator = $turnoValidator;
@@ -86,7 +84,7 @@ class TurnoServices extends SNCServices
             $turno = $validateResult->getEntity();
             $validateRedis = $this->recepcionarTurno($turno);
 
-            if($validateRedis->hasError()) {
+            if ($validateRedis->hasError()) {
                 return $validateRedis;
             }
         }
@@ -123,7 +121,7 @@ class TurnoServices extends SNCServices
             if ($turno->getEstado() == Turno::ESTADO_RECEPCIONADO) {
                 $validateRedis = $this->recepcionarTurno($turno);
 
-                if($validateRedis->hasError()) {
+                if ($validateRedis->hasError()) {
                     return $validateRedis;
                 }
             }
@@ -145,7 +143,12 @@ class TurnoServices extends SNCServices
     private function recepcionarTurno($turno)
     {
         $cola = $this->colaRepository->findOneBy(['grupoTramiteSNTId' => $turno->getGrupoTramiteIdSNT()]);
-        return $this->redisServices->zaddCola($turno->getPuntoAtencion()->getId(), $cola->getId(), $turno->getPrioridad(), $turno);
+        return $this->redisServices->zaddCola(
+            $turno->getPuntoAtencion()->getId(),
+            $cola->getId(),
+            $turno->getPrioridad(),
+            $turno
+        );
     }
 
     /**
@@ -159,13 +162,11 @@ class TurnoServices extends SNCServices
         $validateResult = $this->turnoValidator->validarGetSNT($params);
 
         if (! $validateResult->hasError()) {
-
             $result = $this->turnoIntegration->getListTurnos($params);
             $result->metadata->resultset = (array) $result->metadata->resultset;
 
             return $this->respuestaData((array) $result->metadata, $result->result);
         }
-
         return $validateResult;
     }
 
@@ -178,12 +179,43 @@ class TurnoServices extends SNCServices
     public function getItemTurnoSNT($id)
     {
         $result = $this->turnoIntegration->getItemTurnoSNT($id);
-
         return $this->respuestaData([], $result);
     }
 
+    /**
+     * Busqueda de turnos por código
+     *
+     * @param $params
+     * @return Respuesta|ValidateResultado
+     */
+    public function searchTurnoSNT($params, $success, $error)
+    {
+        $validateResult = $this->turnoValidator->validarSearchSNT($params);
+
+        if (! $validateResult->hasError()) {
+            $validateResult = $this->turnoIntegration->searchTurnoSNT($params['codigo']);
+            $result = $validateResult->getEntity();
+
+            // @ToDo cambiar la transformación de objeto a array
+            $result->punto_atencion = (array) $result->punto_atencion;
+            $result->tramite = (array) $result->tramite;
+            $result->grupo_tramite = (array) $result->grupo_tramite;
+            $result->datos_turno = (array) $result->datos_turno;
+            $result->datos_turno['campos'] = (array) $result->datos_turno['campos'];
+            $result = (array) $result;
+        }
+        return $this->processError(
+            $validateResult,
+            function () use ($result) {
+                return $this->respuestaData([], (array) $result);
+            },
+            $error
+        );
+    }
 
     /**
+     * Devuelve el listado de turnos
+     *
      * @param $params
      * @return ValidateResultado|object
      */
@@ -225,5 +257,4 @@ class TurnoServices extends SNCServices
             $onError
         );
     }
-
 }

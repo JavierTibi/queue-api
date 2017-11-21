@@ -71,7 +71,7 @@ class SNCExternalService
      * @param $additional
      * @return NULL|string
      */
-    public function getUrl($name, $additional = null)
+    public function getUrl($name, $additional = null, $params = null)
     {
         $url = null;
         if (isset($this->urls[$name])) {
@@ -79,6 +79,14 @@ class SNCExternalService
         }
         if ($url && $additional) {
             $url .= '/' . $additional;
+        }
+        if ($url && $params) {
+            if (strpos($url, '?') !== false) {
+                $url .= '&';
+            } else {
+                $url .= '?';
+            }
+            $url .= http_build_query($params);
         }
         return $url;
     }

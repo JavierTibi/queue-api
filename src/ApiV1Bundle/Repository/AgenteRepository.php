@@ -53,7 +53,14 @@ class AgenteRepository extends ApiRepository
         return (int) $total;
     }
 
-    public function findOneByVentanilla($ventanillaId) {
+    /**
+     * Encontrar agente por ventanilla
+     *
+     * @param $ventanillaId
+     * @return mixed|\Doctrine\DBAL\Driver\Statement|array|NULL
+     */
+    public function findOneByVentanilla($ventanillaId)
+    {
         $query = $this->getRepository()->createQueryBuilder('a');
         $query->where('a.ventanillaActual = :ventanillaId');
         $query->setParameter('ventanillaId', $ventanillaId);
