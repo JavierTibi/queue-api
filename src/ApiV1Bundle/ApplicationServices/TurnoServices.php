@@ -247,7 +247,8 @@ class TurnoServices extends SNCServices
 
             $turnoGetter = new TurnoGetter(
                 $this->ventanillaRepository,
-                $this->redisServices
+                $this->redisServices,
+                $this->turnoRepository
             );
 
             $validateResultado = $turnoGetter->getAll($params, $ventanilla);
@@ -274,4 +275,55 @@ class TurnoServices extends SNCServices
             $onError
         );
     }
+
+    /**
+     * Quita el primer elemento de la cola y lo retorna
+     *
+     * @param $params
+     * @param $onError
+     * @return mixed
+     */
+    public function getProximoTurno($params, $onError)
+    {
+        $result = [];
+        $ventanilla = $this->ventanillaRepository->find($params['ventanilla']);
+        $validateResultado = $this->turnoValidator->validarGetRecepcionados($params, $ventanilla);
+
+        if (! $validateResultado->hasError()) {
+            $turnoGetter = new TurnoGetter(
+                $this->ventanillaRepository,
+                $this->redisServices,
+                $this->turnoRepository
+            );
+
+            $turno = $turnoGetter->getProximoTurno($params, $ventanilla);
+
+            $result = [
+                'id' => $turno->getId(),
+                'tramite' => $turno->getTramite(),
+                'puntoAtencion' => $turno->getPuntoAtencion()->getId(),
+                'codigo' => $turno->getCodigo(),
+                'fecha' => $turno->getFecha(),
+                'hora' => $turno->getHora(),
+                'estado' => $turno->getEstado(),
+                'datosTurno' => [
+                    'nombre' => $turno->getDatosTurno()->getNombre(),
+		    'apellido' => $turno->getDatosTurno()->getApellido(),
+		    'cuil' => $turno->getDatosTurno()->getCuil(),
+                    'email' => $turno->getDatosTurno()->getEmail(),
+                    'telefono' => $turno->getDatosTurno()->getTelefono(),
+		    'campos' => $turno->getDatosTurno()->getCampos()
+                ]
+            ];
+        }
+
+        return $this->processError(
+            $validateResultado,
+            function () use ($result) {
+                return $this->respuestaData([], $result);
+            },
+            $onError
+        );
+    }
+
 }

@@ -4,7 +4,9 @@ namespace ApiV1Bundle\Entity\Getter;
 
 
 use ApiV1Bundle\ApplicationServices\RedisServices;
+use ApiV1Bundle\Entity\Turno;
 use ApiV1Bundle\Entity\Validator\ValidateResultado;
+use ApiV1Bundle\Repository\TurnoRepository;
 use ApiV1Bundle\Repository\VentanillaRepository;
 
 class TurnoGetter
@@ -12,19 +14,23 @@ class TurnoGetter
 
     private $ventanillaRepository;
     private $redisServices;
+    private $turnoRepository;
 
     /**
      * TurnoGetter constructor.
      * @param VentanillaRepository $ventanillaRepository
      * @param RedisServices $redisServices
+     * @param TurnoRepository $turnoRepository
      */
     public function __construct(
         VentanillaRepository $ventanillaRepository,
-        RedisServices $redisServices
+        RedisServices $redisServices,
+        TurnoRepository $turnoRepository
     )
     {
         $this->ventanillaRepository = $ventanillaRepository;
         $this->redisServices = $redisServices;
+        $this->turnoRepository = $turnoRepository;
     }
 
     /**
@@ -45,12 +51,8 @@ class TurnoGetter
      */
     private function getTurnos($colas, $ventanilla, $params)
     {
-        if($colas->count() == 1) {
 
-            $turnos = $this->redisServices->getCola($params['puntoatencion'], $colas->first()->getId(), $params['offset'], $params['limit']);
-            $cantTurnos = count($this->redisServices->getTotalCola($params['puntoatencion'], $colas->first()->getId()));
-
-        } elseif ($colas->count() > 1) {
+        if ($colas->count() > 0) {
 
             $validateCola = $this->redisServices->unionColas($params['puntoatencion'], $colas, $ventanilla);
 
@@ -86,4 +88,24 @@ class TurnoGetter
         }
         return $result;
     }
+
+    /**
+     * Obtiene un turno del SNC
+     *
+     * @param $puntoAtencionId
+     * @param $ventanilla
+     * @return mixed
+     */
+    public function getProximoTurno($puntoAtencionId, $ventanilla)
+    {
+        $proximoTurno = $this->redisServices->getProximoTurno($puntoAtencionId, $ventanilla);
+        return $this->getTurno($puntoAtencionId, json_decode($proximoTurno));
+    }
+
+    private function getTurno($puntoAtencionId, $turno)
+    {
+        return $this->turnoRepository->search($turno->cuil, $turno->codigo, $puntoAtencionId);
+    }
+
+
 }
