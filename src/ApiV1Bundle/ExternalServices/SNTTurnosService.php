@@ -19,7 +19,7 @@ class SNTTurnosService
 
     /**
      * @param $params
-     * @return array
+     * @return ValidateResultado
      */
     public function getListTurnos($params)
     {
@@ -31,7 +31,15 @@ class SNTTurnosService
         ];
 
         $url = $this->integrationService->getUrl('turnos.fecha');
-        return $this->integrationService->get($url, $parameters);
+        $response =  $this->integrationService->get($url, $parameters);
+
+        if (isset($response->metadata)) {
+            return new ValidateResultado($response, []);
+        }
+
+        $errors['Turnos'] = $response->userMessage->errors->turno[0];
+
+        return new ValidateResultado(null, $errors);
     }
 
     /**
@@ -56,7 +64,7 @@ class SNTTurnosService
     /**
      * Busqueda de turnos en el Sistema Nacional de Turnos
      * @param $codigo
-     * @return array
+     * @return ValidateResultado
      */
     public function searchTurnoSNT($codigo)
     {

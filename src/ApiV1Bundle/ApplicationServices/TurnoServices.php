@@ -50,8 +50,10 @@ class TurnoServices extends SNCServices
         PuntoAtencionRepository $puntoAtencionRepository,
         ColaRepository $colaRepository,
         RedisServices $redisServices,
-        SNTTurnosService $turnoIntegration
-    ) {
+        SNTTurnosService $turnoIntegration,
+        VentanillaRepository $ventanillaRepository
+    )
+    {
         parent::__construct($container);
         $this->turnoRepository = $turnoRepository;
         $this->turnoValidator = $turnoValidator;
@@ -157,17 +159,32 @@ class TurnoServices extends SNCServices
      * @param $params
      * @return ValidateResultado|object
      */
-    public function getListTurnosSNT($params)
+    public function getListTurnosSNT($params, $onError)
     {
-        $validateResult = $this->turnoValidator->validarGetSNT($params);
+        $response = [];
+        $validateResultado = $this->turnoValidator->validarGetSNT($params);
 
-        if (! $validateResult->hasError()) {
-            $result = $this->turnoIntegration->getListTurnos($params);
-            $result->metadata->resultset = (array) $result->metadata->resultset;
+        if (! $validateResultado->hasError()) {
 
-            return $this->respuestaData((array) $result->metadata, $result->result);
+            $validateResultado = $this->turnoIntegration->getListTurnos($params);
+
+            if (! $validateResultado->hasError()) {
+                $response = $validateResultado->getEntity();
+                $response->metadata->resultset = (array) $response->metadata->resultset;
+                //transforma el resultado en array para enviarlo a Respuesta Data.
+                foreach ($response->result as $item) {
+                    $item->campos =  (array) $item->campos;
+                }
+            }
         }
-        return $validateResult;
+
+        return $this->processError(
+            $validateResultado,
+            function () use ($response) {
+                return $this->respuestaData((array)$response->metadata, $this->toArray($response->result));
+            },
+            $onError
+        );
     }
 
     /**

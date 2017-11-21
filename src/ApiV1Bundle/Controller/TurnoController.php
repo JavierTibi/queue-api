@@ -84,29 +84,13 @@ class TurnoController extends ApiController
     {
         $params = $request->query->all();
         $this->turnoServices = $this->getTurnoServices();
-        return  $this->turnoServices->getListTurnosSNT($params);
-    }
-
-    /**
-     * Busqueda de turnos por código en el Sistema Nacional de Turnos
-     *
-     * @param Request $request
-     * @return mixed
-     * @Get("/snt/turnos/buscar")
-     */
-    public function searchTurnosSNTAction(Request $request)
-    {
-        $params = $request->query->all();
-        $this->turnoServices = $this->getTurnoServices();
-        return $this->turnoServices->searchTurnoSNT(
+        return  $this->turnoServices->getListTurnosSNT(
             $params,
-            function($response) {
-                return $response;
-            },
-            function($error) {
-                return $this->respuestaError($error);
+            function ($err) {
+                return $this->respuestaError($err);
             }
         );
+
     }
 
     /**
