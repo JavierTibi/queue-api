@@ -118,4 +118,40 @@ class RedisServices extends SNCServices
         return $this->zrangeCola('puntoAtencion:' . $puntoAtencionId . ':ventanilla:' . $ventanilla->getId(), $offset, $limit);
     }
 
+    /**
+     * Quita el primer elemento de la cola y lo retorna
+     *
+     * @param $puntoAtencionId
+     * @param $ventanilla
+     * @return mixed
+     */
+    public function getProximoTurno($puntoAtencionId, $ventanilla)
+    {
+        $cola = 'puntoAtencion:' . $puntoAtencionId . ':ventanilla:' . $ventanilla->getId();
+        $turno = $this->getFirstElement($cola);
+        $this->remove($cola, $turno);
+        return $turno;
+    }
+
+    /**
+     * @param $cola
+     * @param $value
+     * @return mixed
+     */
+    private function remove($cola, $value)
+    {
+        return $this->getContainerRedis()->zrem($cola, $value);
+    }
+
+
+    /**
+     * @param $cola
+     * @return mixed
+     */
+    private function getFirstElement($cola)
+    {
+        $turnos =  $this->zrangeCola($cola, 0, -1);
+        return $turnos[0];
+    }
+
 }

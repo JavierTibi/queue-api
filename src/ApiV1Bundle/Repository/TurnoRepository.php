@@ -29,12 +29,17 @@ class TurnoRepository extends ApiRepository
      * @param $codigo
      * @return mixed
      */
-    public function search($cuil, $codigo)
+    public function search($cuil, $codigo, $puntoAtencionId = null)
     {
         $query = $this->getRepository()->createQueryBuilder('t');
         $query->join('t.datosTurno', 'd');
         $query->where('d.cuil = :cuil')->setParameter('cuil', $cuil);
         $query->andWhere('lower(t.codigo) LIKE :codigo')->setParameter('codigo', strtolower($codigo) . '%');
+
+        if (isset($puntoAtencionId)) {
+            $query->andWhere('t.puntoAtencion = :pa')->setParameter('pa', $puntoAtencionId);
+        }
+
         $query->orderBy('t.id', 'DESC');
         return $query->getQuery()->setMaxResults(1)->getOneOrNullResult();
     }

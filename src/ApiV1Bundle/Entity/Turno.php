@@ -259,7 +259,7 @@ class Turno
      */
     public function getFecha()
     {
-        return $this->fecha;
+        return $this->fecha->format('Y-m-d');
     }
 
     /**
@@ -267,7 +267,7 @@ class Turno
      */
     public function getHora()
     {
-        return $this->hora;
+        return $this->hora->format('H:i:s');
     }
 
     /**

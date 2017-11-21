@@ -124,4 +124,24 @@ class TurnoController extends ApiController
             }
         );
     }
+
+
+    /**
+     * @param Request $request
+     * @return mixed
+     * @Get("/turnos/proximo")
+     */
+    public function nextAction(Request $request)
+    {
+        $params = $request->query->all();
+        $this->turnoServices = $this->getTurnoServices();
+
+        return $this->turnoServices->getProximoTurno(
+            $params,
+            function ($err) {
+                return $this->respuestaError($err);
+            }
+        );
+
+    }
 }
