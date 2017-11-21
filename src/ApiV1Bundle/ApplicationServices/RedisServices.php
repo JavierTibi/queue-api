@@ -20,13 +20,21 @@ class RedisServices extends SNCServices
      * @param $value
      * @return ValidateResultado
      */
-    public function zaddCola($puntoAtencionId, $colaId, $prioridad, $value) {
+    public function zaddCola($puntoAtencionId, $colaId, $prioridad, $turno) {
         $errors = [];
         $fecha = new \DateTime();
+
+        $array = [
+            'tramite' => $turno->getTramite(),
+            'codigo' => $turno->getCodigo(),
+            'horario' => $turno->getHora()->format('H:i:s'),
+            'cuil' => $turno->getDatosTurno()->getCuil()
+        ];
+
         $val = $this->getContainerRedis()->zadd(
             'puntoAtencion:' . $puntoAtencionId . ':cola:' . $colaId,
             $prioridad . $fecha->getTimestamp(),
-            $value
+            json_encode($array)
         );
 
         if ($val == 0) {
@@ -68,21 +76,34 @@ class RedisServices extends SNCServices
      * @param $key
      * @return mixed
      */
-    private function zrangeCola($key)
+    private function zrangeCola($key, $offset, $limit)
     {
-        return $this->getContainerRedis()->zrange($key, 0, -1);
+        return $this->getContainerRedis()->zrange($key, $offset, $limit);
     }
 
     /**
-     * Obtiene los elementos de una cola
+     * Obtiene los elementos de una cola con offset y limit
      *
      * @param $puntoAtencionId
      * @param $colaId
      * @return mixed
      */
-    public function getCola($puntoAtencionId, $colaId)
+    public function getCola($puntoAtencionId, $colaId, $offset, $limit)
     {
-        return $this->zrangeCola('puntoAtencion:' . $puntoAtencionId . ':cola:' . $colaId);
+        return $this->zrangeCola('puntoAtencion:' . $puntoAtencionId . ':cola:' . $colaId, $offset, $limit);
+    }
+
+    /**
+     * Obtiene todos los elementos de una cola
+     *
+     * @param $puntoAtencionId
+     * @param $colaId
+     * @return mixed
+     *
+     */
+    public function getTotalCola($puntoAtencionId, $colaId)
+    {
+        return $this->zrangeCola('puntoAtencion:' . $puntoAtencionId . ':cola:' . $colaId, 0, -1);
     }
 
     /**
@@ -92,9 +113,9 @@ class RedisServices extends SNCServices
      * @param $ventanilla
      * @return mixed
      */
-    public function getColaVentanilla($puntoAtencionId, $ventanilla)
+    public function getColaVentanilla($puntoAtencionId, $ventanilla, $offset, $limit)
     {
-        return $this->zrangeCola('puntoAtencion:' . $puntoAtencionId . ':ventanilla:' . $ventanilla->getId());
+        return $this->zrangeCola('puntoAtencion:' . $puntoAtencionId . ':ventanilla:' . $ventanilla->getId(), $offset, $limit);
     }
 
 }

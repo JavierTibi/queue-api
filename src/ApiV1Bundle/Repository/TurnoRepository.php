@@ -38,28 +38,4 @@ class TurnoRepository extends ApiRepository
         $query->orderBy('t.id', 'DESC');
         return $query->getQuery()->setMaxResults(1)->getOneOrNullResult();
     }
-
-    /**
-     * Get turnos por código
-     * @param int $puntoAtencionId
-     * @param array$codigos
-     * @return array
-     */
-    public function getTurnosByCodigos($puntoAtencionId, $codigos)
-    {
-        $query = $this->getRepository()->createQueryBuilder('t');
-
-        $query->select(
-            't.id',
-            't.tramite',
-            't.codigo',
-            't.hora',
-            'd.cuil');
-        $query->join('t.datosTurno', 'd');
-        $query->andWhere('t.puntoAtencion = :pa')->setParameter('pa', $puntoAtencionId);
-        $query->andWhere('t.estado = :estado')->setParameter('estado', Turno::ESTADO_RECEPCIONADO);
-        $query->andWhere('lower(t.codigo) IN (:codigos)')->setParameter('codigos', $codigos);
-        $query->orderBy('t.id', 'DESC');
-        return $query->getQuery()->getResult();
-    }
 }

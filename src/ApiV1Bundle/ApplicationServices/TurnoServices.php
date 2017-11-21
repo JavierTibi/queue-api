@@ -9,6 +9,7 @@
 namespace ApiV1Bundle\ApplicationServices;
 
 
+use ApiV1Bundle\Entity\Getter\TurnoGetter;
 use ApiV1Bundle\Entity\Turno;
 use ApiV1Bundle\Entity\TurnoFactory;
 use ApiV1Bundle\Entity\Validator\TurnoValidator;
@@ -144,7 +145,7 @@ class TurnoServices extends SNCServices
     private function recepcionarTurno($turno)
     {
         $cola = $this->colaRepository->findOneBy(['grupoTramiteSNTId' => $turno->getGrupoTramiteIdSNT()]);
-        return $this->redisServices->zaddCola($turno->getPuntoAtencion()->getId(), $cola->getId(), $turno->getPrioridad(), $turno->getCodigo());
+        return $this->redisServices->zaddCola($turno->getPuntoAtencion()->getId(), $cola->getId(), $turno->getPrioridad(), $turno);
     }
 
     /**
@@ -182,49 +183,47 @@ class TurnoServices extends SNCServices
     }
 
 
-    public function findAllPaginate($params)
+    /**
+     * @param $params
+     * @return ValidateResultado|object
+     */
+    public function findAllPaginate($params, $onError)
     {
-        $validateResult = $this->turnoValidator->validarGetRecepcionados($params);
+        $resultset = [];
+        $response = [];
+        $ventanilla = $this->ventanillaRepository->find($params['ventanilla']);
+        $validateResultado = $this->turnoValidator->validarGetRecepcionados($params, $ventanilla);
 
-        if (! $validateResult->hasError()) {
-            $ventanilla = $this->ventanillaRepository->find($params['ventanilla']);
+        if (! $validateResultado->hasError()) {
 
-            $colas = $ventanilla->getColas();
+            $turnoGetter = new TurnoGetter(
+                $this->ventanillaRepository,
+                $this->redisServices
+            );
 
-            if($colas->count() == 1) {
+            $validateResultado = $turnoGetter->getAll($params, $ventanilla);
 
-                $this->redisServices->getCola($params['puntoatencion'], $colas->first()->getId());
+            if (! $validateResultado->hasError()) {
+                $response = json_decode($validateResultado->getEntity());
 
-            } elseif ($colas->count() > 1) {
-
-                $validateCola = $this->redisServices->unionColas($params['puntoatencion'], $colas, $ventanilla);
-                if(! $validateCola->hasError()) {
-                    $codigosTurno = $this->redisServices->getColaVentanilla($params['puntoatencion'], $ventanilla);
-                    $result = $this->searchTurnosByCodigo($params['puntoatencion'], $codigosTurno);
-                    $resultset = [
-                        'resultset' => [
-                            'count' => 100,
-                            'offset' => $params['offset'],
-                            'limit' => $params['limit']
-                        ]
-                    ];
-                    return $this->respuestaData($resultset, $result);
-                }
-                return $validateCola;
-
-            } else {
-                // LA VENTANILLA NO TIENE COLA
+                $resultset = [
+                    'resultset' => [
+                        'count' => $response->cantTurnos,
+                        'offset' => $params['offset'],
+                        'limit' => $params['limit']
+                    ]
+                ];
             }
+
         }
 
-    }
-
-    /**
-     * @param array $codigoTurnos
-     */
-    private function searchTurnosByCodigo($puntoAtencionId, $codigoTurnos)
-    {
-        return $this->turnoRepository->getTurnosByCodigos($puntoAtencionId, $codigoTurnos);
+        return $this->processError(
+            $validateResultado,
+            function () use ($resultset, $response) {
+                return $this->respuestaData($resultset, $this->toArray($response->turnos));
+            },
+            $onError
+        );
     }
 
 }

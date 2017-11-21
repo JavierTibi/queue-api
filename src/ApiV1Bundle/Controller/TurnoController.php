@@ -109,6 +109,11 @@ class TurnoController extends ApiController
         $params = $request->query->all();
         $this->turnoServices = $this->getTurnoServices();
 
-        return $this->turnoServices->findAllPaginate($params);
+        return $this->turnoServices->findAllPaginate(
+            $params,
+            function ($err) {
+                return $this->respuestaError($err);
+            }
+        );
     }
 }

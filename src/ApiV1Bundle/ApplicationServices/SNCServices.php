@@ -115,4 +115,17 @@ class SNCServices
     {
         return $this->container->get('security.password_encoder');
     }
+
+    /**
+     * @param $list
+     * @return array
+     */
+    protected function toArray($list)
+    {
+        $array = [];
+        foreach ($list as $item) {
+            $array[] = (array) $item;
+        }
+        return $array;
+    }
 }
