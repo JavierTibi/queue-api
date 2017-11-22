@@ -20,6 +20,7 @@ use ApiV1Bundle\Repository\PuntoAtencionRepository;
 use ApiV1Bundle\Repository\TurnoRepository;
 use ApiV1Bundle\Repository\VentanillaRepository;
 use Symfony\Component\DependencyInjection\Container;
+use Symfony\Component\HttpFoundation\Request;
 
 class TurnoServices extends SNCServices
 {
@@ -320,5 +321,46 @@ class TurnoServices extends SNCServices
             },
             $onError
         );
+    }
+
+    /**
+     * Obtiene la posicion de un turno
+     *
+     * @param $id
+     * @param $onError
+     * @return mixed
+     */
+    public function getPosicionTurno($id, $onError)
+    {
+        $result = [];
+        $turno = $this->turnoRepository->find($id);
+
+        $validateResultado = $this->turnoValidator->validarTurno($turno);
+
+        if (! $validateResultado->hasError()) {
+            $cola = $this->colaRepository->findOneBy(['grupoTramiteSNTId' => $turno->getGrupoTramiteIdSNT()]);
+            $pos = $this->redisServices->getPosicion($turno, $cola);
+
+            if ($pos == -1) {
+                $error['Turno'] = 'Turno no encontrado en la cola';
+                $validateResultado = new ValidateResultado(null, $error);
+            }
+
+            $result = [
+                'id' => $turno->getId(),
+                'tramite' => $turno->getTramite(),
+                'codigo' => $turno->getCodigo(),
+                'posicion' => $pos
+            ];
+        }
+        
+        return $this->processError(
+            $validateResultado,
+            function () use ($result) {
+                return $this->respuestaData([], $result);
+            },
+            $onError
+        );
+
     }
 }

@@ -144,6 +144,7 @@ class TurnoController extends ApiController
     }
 
     /**
+     * Obtiene próximo turno
      * @param Request $request
      * @return mixed
      * @Get("/turnos/proximo")
@@ -155,6 +156,24 @@ class TurnoController extends ApiController
 
         return $this->turnoServices->getProximoTurno(
             $params,
+            function ($err) {
+                return $this->respuestaError($err);
+            }
+        );
+    }
+
+    /**
+     * Obtiene la posición de la cola de un Turno
+     *
+     * @param $id
+     * @return mixed
+     * @Get("/turnos/{id}/posicion")
+     */
+    public function getPositionAction($id)
+    {
+        $this->turnoServices = $this->getTurnoServices();
+        return $this->turnoServices->getPosicionTurno(
+            $id,
             function ($err) {
                 return $this->respuestaError($err);
             }
