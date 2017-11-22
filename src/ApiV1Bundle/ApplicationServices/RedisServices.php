@@ -14,10 +14,12 @@ use ApiV1Bundle\Entity\Validator\ValidateResultado;
 class RedisServices extends SNCServices
 {
     /**
+     * Agrega un elemento a la cola
+     *
      * @param $puntoAtencionId
      * @param $colaId
      * @param $prioridad
-     * @param $value
+     * @param $turno
      * @return ValidateResultado
      */
     public function zaddCola($puntoAtencionId, $colaId, $prioridad, $turno) {
@@ -152,6 +154,30 @@ class RedisServices extends SNCServices
     {
         $turnos =  $this->zrangeCola($cola, 0, -1);
         return $turnos[0];
+    }
+
+    /**
+     * Obtiene la posicion de un turno en la ocola
+     * @param $turno
+     * @param $cola
+     * @return int
+     */
+    public function getPosicion($turno, $cola)
+    {
+        $turnos = $this->getCola(
+            $turno->getPuntoAtencion()->getId(),
+            $cola->getId(),
+            0,
+            -1
+        );
+
+        for ($i = 0; $i < count($turnos); $i++) {
+            if (json_decode($turnos[$i])->codigo == $turno->getCodigo()) {
+               return $i;
+            }
+        }
+
+        return -1;
     }
 
 }
