@@ -8,7 +8,6 @@
 
 namespace ApiV1Bundle\ApplicationServices;
 
-
 use ApiV1Bundle\Entity\Getter\TurnoGetter;
 use ApiV1Bundle\Entity\Turno;
 use ApiV1Bundle\Entity\TurnoFactory;
@@ -52,8 +51,7 @@ class TurnoServices extends SNCServices
         RedisServices $redisServices,
         SNTTurnosService $turnoIntegration,
         VentanillaRepository $ventanillaRepository
-    )
-    {
+    ) {
         parent::__construct($container);
         $this->turnoRepository = $turnoRepository;
         $this->turnoValidator = $turnoValidator;
@@ -165,7 +163,6 @@ class TurnoServices extends SNCServices
         $validateResultado = $this->turnoValidator->validarGetSNT($params);
 
         if (! $validateResultado->hasError()) {
-
             $validateResultado = $this->turnoIntegration->getListTurnos($params);
 
             if (! $validateResultado->hasError()) {
@@ -212,14 +209,15 @@ class TurnoServices extends SNCServices
         if (! $validateResult->hasError()) {
             $validateResult = $this->turnoIntegration->searchTurnoSNT($params['codigo']);
             $result = $validateResult->getEntity();
-
-            // @ToDo cambiar la transformación de objeto a array
-            $result->punto_atencion = (array) $result->punto_atencion;
-            $result->tramite = (array) $result->tramite;
-            $result->grupo_tramite = (array) $result->grupo_tramite;
-            $result->datos_turno = (array) $result->datos_turno;
-            $result->datos_turno['campos'] = (array) $result->datos_turno['campos'];
-            $result = (array) $result;
+            if ($result) {
+                // @ToDo cambiar la transformación de objeto a array
+                $result->punto_atencion = (array) $result->punto_atencion;
+                $result->tramite = (array) $result->tramite;
+                $result->grupo_tramite = (array) $result->grupo_tramite;
+                $result->datos_turno = (array) $result->datos_turno;
+                $result->datos_turno['campos'] = (array) $result->datos_turno['campos'];
+                $result = (array) $result;
+            }
         }
         return $this->processError(
             $validateResult,
@@ -244,7 +242,6 @@ class TurnoServices extends SNCServices
         $validateResultado = $this->turnoValidator->validarGetRecepcionados($params, $ventanilla);
 
         if (! $validateResultado->hasError()) {
-
             $turnoGetter = new TurnoGetter(
                 $this->ventanillaRepository,
                 $this->redisServices,
@@ -264,7 +261,6 @@ class TurnoServices extends SNCServices
                     ]
                 ];
             }
-
         }
 
         return $this->processError(
@@ -308,11 +304,11 @@ class TurnoServices extends SNCServices
                 'estado' => $turno->getEstado(),
                 'datosTurno' => [
                     'nombre' => $turno->getDatosTurno()->getNombre(),
-		    'apellido' => $turno->getDatosTurno()->getApellido(),
-		    'cuil' => $turno->getDatosTurno()->getCuil(),
+                    'apellido' => $turno->getDatosTurno()->getApellido(),
+                    'cuil' => $turno->getDatosTurno()->getCuil(),
                     'email' => $turno->getDatosTurno()->getEmail(),
                     'telefono' => $turno->getDatosTurno()->getTelefono(),
-		    'campos' => $turno->getDatosTurno()->getCampos()
+                    'campos' => $turno->getDatosTurno()->getCampos()
                 ]
             ];
         }
@@ -325,5 +321,4 @@ class TurnoServices extends SNCServices
             $onError
         );
     }
-
 }

@@ -5,11 +5,8 @@
  * Date: 12/11/2017
  * Time: 7:01 PM
  */
-
 namespace ApiV1Bundle\Controller;
 
-
-use ApiV1Bundle\Entity\Turno;
 use Symfony\Component\HttpFoundation\Request;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Controller\Annotations\Get;
@@ -84,13 +81,34 @@ class TurnoController extends ApiController
     {
         $params = $request->query->all();
         $this->turnoServices = $this->getTurnoServices();
-        return  $this->turnoServices->getListTurnosSNT(
+        return $this->turnoServices->getListTurnosSNT(
             $params,
             function ($err) {
                 return $this->respuestaError($err);
             }
         );
+    }
 
+    /**
+     * Busqueda de turnos por código en el Sistema Nacional de Turnos
+     *
+     * @param Request $request
+     * @return mixed
+     * @Get("/snt/turnos/buscar")
+     */
+    public function searchTurnosSNTAction(Request $request)
+    {
+        $params = $request->query->all();
+        $this->turnoServices = $this->getTurnoServices();
+        return $this->turnoServices->searchTurnoSNT(
+            $params,
+            function ($response) {
+                return $response;
+            },
+            function ($error) {
+                return $this->respuestaError($error);
+            }
+        );
     }
 
     /**
@@ -125,7 +143,6 @@ class TurnoController extends ApiController
         );
     }
 
-
     /**
      * @param Request $request
      * @return mixed
@@ -142,6 +159,5 @@ class TurnoController extends ApiController
                 return $this->respuestaError($err);
             }
         );
-
     }
 }
