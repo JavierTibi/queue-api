@@ -2,6 +2,7 @@
 
 namespace ApiV1Bundle\Entity\Validator;
 
+use ApiV1Bundle\Entity\PuntoAtencion;
 use ApiV1Bundle\Entity\Validator\ValidateResultado;
 use ApiV1Bundle\Repository\PuntoAtencionRepository;
 
@@ -31,7 +32,7 @@ class PuntoAtencionValidator extends SNCValidator
         ]);
         
         if(isset($params['punto_atencion_id_SNT'])){
-            $puntoAtencion = $this->puntoAtencionRepository->findBypuntoAtencionIdSnt($params['punto_atencion_id_SNT']);
+            $puntoAtencion = $this->puntoAtencionRepository->findOneBy(['puntoAtencionIdSnt' => $params['punto_atencion_id_SNT']]);
         }
         
         if($puntoAtencion){
@@ -43,28 +44,30 @@ class PuntoAtencionValidator extends SNCValidator
     /**
      * Validar campos a editar y punto de atencion
      * 
-     * @param type $id Id del punto de atencion a editar
-     * @param type $params Array de parametros a modificar
-     * @return ValidateResultado
+     * @param PuntoAtencion $puntoAtencion del punto de atencion a editar
+     * @param  array $params Array de parametros a modificar
+     * @return \ApiV1Bundle\Entity\Validator\ValidateResultado
      */
-    public function validarEditar($puntoAtencion, $params) {
-        $error = [];
+    public function validarEditar($puntoAtencion, $params)
+    {
         $error = $this->validar($params, [
             'nombre' => 'required',
         ]);
-        
-        if ($puntoAtencion && ! count($error)) {
-            return new ValidateResultado($puntoAtencion, []);
-        }else if ( !$puntoAtencion ){
-            return $this->validarPuntoAtencion($puntoAtencion);
+
+        if (! count($error)) {
+            $validateResult = $this->validarPuntoAtencion($puntoAtencion);
+
+            if (! $validateResult->hasError()) {
+                return new ValidateResultado($puntoAtencion, []);
+            }
         }
-        
+
         return new ValidateResultado(null, $error);
     }
     /**
      * Valida el borrado de un punto de atención
      *
-     * @param $puntoAtencion Entidad Punto de atencion
+     * @param PuntoAtencion $puntoAtencion Entidad Punto de atencion
      * @return ValidateResultado
      */
     public function validarDelete($puntoAtencion)

@@ -57,6 +57,27 @@ class User implements UserInterface, \Serializable
      */
     private $rol;
 
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="fecha_creado", type="datetimetz")
+     */
+    private $fechaCreado;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="fecha_modificado", type="datetimetz")
+     */
+    private $fechaModificado;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="fecha_borrado", type="datetimetz", nullable=true)
+     */
+    private $fechaBorrado;
+
     public function __construct($username, $rol)
     {
         $this->username = $username;
@@ -190,5 +211,16 @@ class User implements UserInterface, \Serializable
         }
 
         return $result;
+    }
+
+    /**
+     * Genera las fechas de creación y modificación de un punto de atención
+     *
+     * @ORM\PrePersist
+     */
+    public function setFechas()
+    {
+        $this->fechaCreado = new \DateTime();
+        $this->fechaModificado = new \DateTime();
     }
 }

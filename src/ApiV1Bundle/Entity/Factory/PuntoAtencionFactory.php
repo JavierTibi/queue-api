@@ -11,11 +11,11 @@ class PuntoAtencionFactory
 {
     private $puntoAtencionValidator;
     private $puntoAtencionRepository;
-    
+
     /**
-     * 
+     * PuntoAtencionFactory constructor.
+     * @param PuntoAtencionRepository $puntoAtencionRepository
      * @param PuntoAtencionValidator $puntoAtencionValidator
-     * @param \ApiV1Bundle\Entity\Factory\untoAtencionRepository $puntoAtencionRepository
      */
     public function __construct(
         PuntoAtencionRepository $puntoAtencionRepository,
