@@ -32,15 +32,15 @@ class PuntoAtencionSync
      */
     public function edit($id, $params)
     {
-        $puntoAtencion = $this->puntoAtencionRepository->find($id);
-        $errores = $this->puntoAtencionValidator->validarEditar($puntoAtencion, $params);
+        $puntoAtencion = $this->puntoAtencionRepository->findOneBy(['puntoAtencionIdSnt' => $id]);
+        $validateResult = $this->puntoAtencionValidator->validarEditar($puntoAtencion, $params);
         
-        if (! $errores->hasError()) {
+        if (! $validateResult->hasError()) {
             $puntoAtencion->setNombre($params['nombre']);
             return new ValidateResultado($puntoAtencion, []);
         }
         
-        return new ValidateResultado(null, $errores->getErrors());
+        return $validateResult;
     }
 
     /**
@@ -51,7 +51,7 @@ class PuntoAtencionSync
      */
     public function delete($id)
     {
-        $puntoAtencion = $this->puntoAtencionRepository->find($id);
+        $puntoAtencion = $this->puntoAtencionRepository->findOneBy(['puntoAtencionIdSnt' => $id]);
         $validateResultado = $this->puntoAtencionValidator->validarDelete($puntoAtencion);
         if (!$validateResultado->hasError()) {
             return new ValidateResultado($puntoAtencion, []);

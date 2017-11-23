@@ -73,12 +73,12 @@ class PuntoAtencionServices extends SNCServices
     
     /**
      * Editar punto de atencion 
-     * 
-     * @param integer $id Identificador único de un punto de atención
-     * @param type $params Array con los datos para modificar un punto de atención
-     * @param $success | Si tuvo éxito o no
-     * @param string $error Mensaje de error al modificar un punto de atención
-     * @return type
+     *
+     * @param int $id Identificador único de un punto de atención
+     * @param array $params Array con los datos para modificar un punto de atención
+     * @param $sucess | Si tuvo éxito
+     * @param $error
+     * @return mixed
      */
     public function edit($id, $params, $sucess, $error) {
         $puntoAtencionSync = new PuntoAtencionSync(
@@ -94,14 +94,14 @@ class PuntoAtencionServices extends SNCServices
             $error
         );
     }
-    
+
     /**
-     * Eliminar punto de atencion 
-     * 
+     * Eliminar punto de atencion
+     *
      * @param integer $id Identificador único de un punto de atención
-     * @param $success  Si tuvo éxito o no
-     * @param string $error Mensaje de error al modificar un punto de atención
-     * @return type
+     * @param $sucess
+     * @param string $error Mensaje de error al eliminar un punto de atención
+     * @return mixed
      */
     public function delete($id, $sucess, $error) {
         $puntoAtencionSync = new PuntoAtencionSync(
