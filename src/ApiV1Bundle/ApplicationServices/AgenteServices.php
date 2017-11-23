@@ -71,6 +71,8 @@ class AgenteServices extends SNCServices
                 'ventanillaActual' => $agente->getVentanillaActual(),
                 'ventanillas' => $ventanillas
             ];
+
+            $ventanillas = [];
         }
 
         $resultset = [
@@ -80,6 +82,7 @@ class AgenteServices extends SNCServices
                 'limit' => $limit
             ]
         ];
+
         return $this->respuestaData($resultset, $result);
     }
 
