@@ -178,7 +178,8 @@ class UsuarioServices extends SNCServices
                     'puntoAtencion' => [
                         'id' => $usuario->getPuntoAtencionId(),
                         'nombre' => $usuario->getNombrePuntoAtencion()
-                    ]
+                    ],
+                    'ventanillaAsignada' => $usuario->getVentanillaActualId()
                 ];
                 foreach ($usuario->getVentanillas() as $ventanilla) {
                     $result['ventanillas'][] = $ventanilla->getId();
