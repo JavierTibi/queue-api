@@ -59,11 +59,13 @@ class AgenteRepository extends ApiRepository
      * @param $ventanillaId
      * @return mixed|\Doctrine\DBAL\Driver\Statement|array|NULL
      */
-    public function findOneByVentanilla($ventanillaId)
+    public function getCantidadDeAgentesAsociadosAVentanilla($ventanillaId)
     {
         $query = $this->getRepository()->createQueryBuilder('a');
+        $query->select('count(a.id)');
         $query->where('a.ventanillaActual = :ventanillaId');
         $query->setParameter('ventanillaId', $ventanillaId);
-        return $query->getQuery()->getSingleResult();
+        $total = $query->getQuery()->getSingleScalarResult();
+        return (int) $total;
     }
 }

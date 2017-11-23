@@ -105,10 +105,10 @@ class AgenteSync
     {
         $agente = $this->agenteRepository->findOneByUser($idUser);
         $ventanilla = $this->ventanillaRepository->find($idVentanilla);
-        $agenteVentanilla = $this->agenteRepository->findOneByVentanilla($idVentanilla);
+        $cantidadAgentes = $this->agenteRepository->getCantidadDeAgentesAsociadosAVentanilla($idVentanilla);
         $validateResultado = $this->agenteValidator->validarAsignarVentanilla(
             $agente,
-            $agenteVentanilla,
+            $cantidadAgentes,
             $ventanilla
         );
         if (! $validateResultado->hasError()) {
