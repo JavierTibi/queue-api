@@ -25,11 +25,12 @@ class RedisServices extends SNCServices
     public function zaddCola($puntoAtencionId, $colaId, $prioridad, $turno) {
         $errors = [];
         $fecha = new \DateTime();
+        $hora = new \DateTime($turno->getHora());
 
         $array = [
             'tramite' => $turno->getTramite(),
             'codigo' => $turno->getCodigo(),
-            'horario' => $turno->getHora()->format('H:i:s'),
+            'horario' => $hora->format('H:i:s'),
             'cuil' => $turno->getDatosTurno()->getCuil()
         ];
 
