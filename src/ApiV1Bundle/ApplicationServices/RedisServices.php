@@ -30,8 +30,10 @@ class RedisServices extends SNCServices
         $array = [
             'tramite' => $turno->getTramite(),
             'codigo' => $turno->getCodigo(),
-            'horario' => $hora->format('H:i:s'),
-            'cuil' => $turno->getDatosTurno()->getCuil()
+            'horario' => $hora->format('H:i'),
+            'cuil' => $turno->getDatosTurno()->getCuil(),
+            'nombre' => $turno->getDatosTurno()->getNombre(),
+            'apellido' => $turno->getDatosTurno()->getApellido()
         ];
 
         $val = $this->getContainerRedis()->zadd(
