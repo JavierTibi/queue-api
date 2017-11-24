@@ -7,6 +7,7 @@ use ApiV1Bundle\Entity\Validator\AgenteValidator;
 use ApiV1Bundle\Entity\Validator\UserValidator;
 use ApiV1Bundle\Repository\AgenteRepository;
 use ApiV1Bundle\Repository\PuntoAtencionRepository;
+use ApiV1Bundle\Repository\UsuarioRepository;
 use ApiV1Bundle\Repository\VentanillaRepository;
 use Symfony\Component\DependencyInjection\Container;
 
@@ -55,23 +56,19 @@ class AgenteServices extends SNCServices
      */
     public function findAllPaginate($puntoAtencionId, $limit, $offset)
     {
-        $agentes = $this->agenteRepository->findAllPaginate($puntoAtencionId, $offset, $limit);
         $result = [];
         $ventanillas = [];
 
-        foreach ($agentes as $agente) {
+        $agentes = $this->agenteRepository->findAllPaginate($puntoAtencionId, $offset, $limit);
+
+        foreach ($agentes as $item) {
+            $agente = $this->agenteRepository->find($item['agente_id']);
+
             foreach ($agente->getVentanillas() as $ventanilla) {
-                $ventanillas[] = $ventanilla->getIdentificador();
+                $ventanillas['ventanillas'][] = $ventanilla->getIdentificador();
             }
 
-            $result[] = [
-                'id' => $agente->getUser()->getId(),
-                'nombre' => $agente->getNombre(),
-                'apellido' => $agente->getApellido(),
-                'ventanillaActual' => $agente->getVentanillaActual(),
-                'ventanillas' => $ventanillas
-            ];
-
+            $result[] = array_merge($item, $ventanillas);
             $ventanillas = [];
         }
 

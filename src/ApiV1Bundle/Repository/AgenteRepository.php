@@ -24,13 +24,21 @@ class AgenteRepository extends ApiRepository
      * @param $puntoAtencionId
      * @param $offset
      * @param $limit
+     * @return array
      */
     public function findAllPaginate($puntoAtencionId, $offset, $limit)
     {
         $query = $this->getRepository()->createQueryBuilder('a');
-        $query->leftJoin('a.ventanillaActual', 'v');
-        $query->where('a.puntoAtencion = :puntoAtencionId');
-        $query->setParameter('puntoAtencionId', $puntoAtencionId);
+        $query->select([
+            'u.id',
+            'a.id as agente_id',
+            'a.nombre',
+            'a.apellido',
+            'IDENTITY(a.ventanillaActual) as ventanillaActual',
+        ]);
+
+        $query->join('a.user', 'u');
+        $query->where('a.puntoAtencion = :puntoAtencionId')->setParameter('puntoAtencionId', $puntoAtencionId);
         $query->setFirstResult($offset);
         $query->setMaxResults($limit);
         $query->orderBy('a.id', 'ASC');
