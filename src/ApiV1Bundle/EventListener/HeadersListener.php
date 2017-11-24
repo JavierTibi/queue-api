@@ -13,7 +13,7 @@ class HeadersListener
     private $securityServices;
     private $routes = [];
 
-    public function __construct(SecurityServices $securityServices, Array $routes)
+    public function __construct(SecurityServices $securityServices, array $routes)
     {
         $this->securityServices = $securityServices;
         $this->routes = $routes;
@@ -62,17 +62,35 @@ class HeadersListener
      */
     private function tokenValidationResponse($pathInfo, $token)
     {
-        if (array_key_exists($pathInfo, $this->routes)) {
-            $roles = $this->routes[$pathInfo];
+        $path = $this->checkRoute($pathInfo, $this->routes);
+        if ($path) {
+            $roles = $this->routes[$path];
             $token = $this->securityServices->validarToken($token);
             if (! $token->isValid() || ! in_array($token->getRol(), $roles)) {
-               return new RespuestaConEstado(
-                   RespuestaConEstado::STATUS_FORBIDDEN,
-                   RespuestaConEstado::CODE_FORBIDDEN,
-                   'Forbidden'
-               );
+                return new RespuestaConEstado(
+                    RespuestaConEstado::STATUS_FORBIDDEN,
+                    RespuestaConEstado::CODE_FORBIDDEN,
+                    'Forbidden'
+                );
             }
         }
         return null;
+    }
+
+    /**
+     * Validamos que la url del request empiece con alguna de las urls
+     * que están en la lista de rutas que necesitan password
+     *
+     * @param $pathInfo
+     * @param $routes
+     * @return boolean
+     */
+    private function checkRoute($pathInfo, $routes)
+    {
+        foreach ($routes as $path => $role) {
+            $subroute = substr($pathInfo, 0, strlen($path));
+            return $path;
+        }
+        return false;
     }
 }

@@ -46,20 +46,33 @@ class SecurityController extends ApiController
             function ($error) {
                 return $this->respuestaError($error);
             }
-
         );
     }
 
     /**
-     * Validar token
+     * Test token
      *
      * @param Request $request
      * @Post("/auth/test")
      */
-    public function validate(Request $request)
+    public function validateSimplePath(Request $request)
     {
         return [
             'Let me know if you can see this!'
+        ];
+    }
+
+    /**
+     * Test token
+     *
+     * @param Request $request
+     * @Post("/auth/test/{something}")
+     */
+    public function validateComplexPath(Request $request, $something)
+    {
+        return [
+            'Let me know if you can see this!',
+            $something
         ];
     }
 }
