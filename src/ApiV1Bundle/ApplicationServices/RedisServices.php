@@ -33,7 +33,8 @@ class RedisServices extends SNCServices
             'horario' => $hora->format('H:i'),
             'cuil' => $turno->getDatosTurno()->getCuil(),
             'nombre' => $turno->getDatosTurno()->getNombre(),
-            'apellido' => $turno->getDatosTurno()->getApellido()
+            'apellido' => $turno->getDatosTurno()->getApellido(),
+            'cola' => $colaId
         ];
 
         $val = $this->getContainerRedis()->zadd(
@@ -43,26 +44,26 @@ class RedisServices extends SNCServices
         );
 
         if ($val == 0) {
-            $errors['errors'] = 'No se ha podido crear la cola';
+            $errors['errors'] = 'El turno que ya se encuentra en el Sistema de Colas.';
+            return new ValidateResultado(null, $errors);
         }
 
-        return new ValidateResultado(null, $errors);
+        return new ValidateResultado($turno, []);
     }
 
     /**
      * Unifica las colas de una ventanilla
      *
      * @param $puntoAtencionId
-     * @param $colas
      * @param $ventanilla
      * @return ValidateResultado
      */
-    public function unionColas($puntoAtencionId, $colas, $ventanilla)
+    public function unionColas($puntoAtencionId, $ventanilla)
     {
         $errors = [];
         $keys = [];
 
-        foreach ($colas as $cola) {
+        foreach ($ventanilla->getColas() as $cola) {
             if ($this->exists('puntoAtencion:' . $puntoAtencionId . ':cola:' . $cola->getId()) > 0) {
                 $keys[] = 'puntoAtencion:' . $puntoAtencionId . ':cola:' . $cola->getId();
             }
@@ -123,7 +124,7 @@ class RedisServices extends SNCServices
      */
     public function getColaVentanilla($puntoAtencionId, $ventanilla, $offset, $limit)
     {
-        if ($this->exists('puntoAtencion:' . $puntoAtencionId . ':ventanilla:' . $ventanilla->getId()) > 0) {
+        if ($this->exists('puntoAtencion:' . $puntoAtencionId . ':ventanilla:' . $ventanilla->getId())) {
             return $this->zrangeCola('puntoAtencion:' . $puntoAtencionId . ':ventanilla:' . $ventanilla->getId(), $offset, $limit);
         }
 
@@ -139,10 +140,19 @@ class RedisServices extends SNCServices
      */
     public function getProximoTurno($puntoAtencionId, $ventanilla)
     {
-        $cola = 'puntoAtencion:' . $puntoAtencionId . ':ventanilla:' . $ventanilla->getId();
-        $turno = $this->getFirstElement($cola);
-        $this->remove($cola, $turno);
-        return $turno;
+        $validateResult = $this->unionColas($puntoAtencionId, $ventanilla);
+
+        if (! $validateResult->hasError()) {
+            $cola = 'puntoAtencion:' . $puntoAtencionId . ':ventanilla:' . $ventanilla->getId();
+
+            if ($this->exists($cola)) {
+                $turno = $this->getFirstElement($cola);
+                $colaOriginal = 'puntoAtencion:' . $puntoAtencionId . ':cola:' . json_decode($turno)->cola;
+                $this->remove($colaOriginal, $turno);
+                $this->remove($cola, $turno);
+                return $turno;
+            }
+        }
     }
 
     /**

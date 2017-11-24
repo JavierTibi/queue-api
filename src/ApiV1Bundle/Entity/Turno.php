@@ -200,9 +200,9 @@ class Turno
         $estado,
         $tramite,
         $codigo,
-        $prioridad,
-        $motivo
-    ) {
+        $prioridad
+    )
+    {
         $this->puntoAtencion = $puntoAtencion;
         $this->datosTurno = $datosTurno;
         $this->grupoTramiteIdSNT = $grupoTramite;
@@ -213,7 +213,6 @@ class Turno
         $this->tramite = $tramite;
         $this->codigo = $codigo;
         $this->prioridad = $prioridad;
-        $this->motivoTerminado = $motivo;
     }
 
     /**
@@ -364,4 +363,4 @@ class Turno
     {
         return $this->fechaBorrado;
     }
-}
+}
