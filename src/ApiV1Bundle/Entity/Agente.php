@@ -210,6 +210,9 @@ class Agente extends Usuario
         return $this->getPuntoAtencion()->getNombre();
     }
 
+    /**
+     * @return NULL|number
+     */
     public function getVentanillaActualId()
     {
         return $this->getVentanillaActual() ? $this->getVentanillaActual()->getId() : null;

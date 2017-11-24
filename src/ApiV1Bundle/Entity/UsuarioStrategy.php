@@ -108,7 +108,8 @@ class UsuarioStrategy
                 'id' => $usuario->getPuntoAtencionId(),
                 'nombre' => $usuario->getNombrePuntoAtencion()
             ],
-            'ventanillas' => []
+            'ventanillas' => [],
+            'ventanillaAsignada' => $usuario->getVentanillaActualId()
         ];
         foreach ($usuario->getVentanillas() as $ventanilla) {
             $data['ventanillas'][] = $ventanilla->getId();
