@@ -6,7 +6,6 @@ use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\Annotations\Post;
 use FOS\RestBundle\Controller\Annotations\Put;
 use FOS\RestBundle\Controller\Annotations\Delete;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -48,7 +47,8 @@ class UsuarioController extends ApiController
      * @return mixed
      * @Put("/usuarios/{idUser}")
      */
-    public function putAction(Request $request, $idUser) {
+    public function putAction(Request $request, $idUser)
+    {
         $params = $request->request->all();
         $this->usuarioServices = $this->getUsuarioServices();
 
@@ -85,7 +85,7 @@ class UsuarioController extends ApiController
         );
     }
 
-	/**
+    /**
      * Listado de usuarios
      *
      * @param Request $request Espera el resultado de una petición como parámetro

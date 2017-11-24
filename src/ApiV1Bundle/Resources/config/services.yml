@@ -40,6 +40,7 @@ parameters:
     snc.security.validation.class: Lcobucci\JWT\ValidationData
 
     ## External services
+    snc.notificaciones.class: ApiV1Bundle\ExternalServices\NotificationsExternalService
     snc.services.integration.class: ApiV1Bundle\ExternalServices\SNCExternalService
     snc.integration.turnos.class: ApiV1Bundle\ExternalServices\SNTTurnosService
     
@@ -124,6 +125,10 @@ services:
 
     ### EXTERNAL SERVICES ####
 
+    snc.notificaciones.service:
+        class: '%snc.notificaciones.class%'
+        arguments: ['@service_container']
+    
     snc.service.integration:
         class: '%snc.services.integration.class%'
         arguments: ['@service_container']
@@ -152,7 +157,7 @@ services:
 
     snc.services.usuario:
         class: '%snc.services.usuario.class%'
-        arguments: ['@service_container', '@snc.validator.user', '@snc.validator.admin', '@snc.validator.responsable', '@snc.validator.agente', '@snc.repository.agente', '@snc.repository.admin', '@snc.repository.responsable', '@snc.repository.user', '@snc.repository.ventanilla', '@snc.repository.puntoatencion', '@snc.repository.usuario']
+        arguments: ['@service_container', '@snc.validator.user', '@snc.validator.admin', '@snc.validator.responsable', '@snc.validator.agente', '@snc.repository.agente', '@snc.repository.admin', '@snc.repository.responsable', '@snc.repository.user', '@snc.repository.ventanilla', '@snc.repository.puntoatencion', '@snc.repository.usuario', '@snc.notificaciones.service']
 
     snc.services.cola:
         class: '%snc.services.cola.class%'

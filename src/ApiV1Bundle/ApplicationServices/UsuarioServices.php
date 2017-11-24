@@ -8,18 +8,14 @@
 
 namespace ApiV1Bundle\ApplicationServices;
 
-use ApiV1Bundle\Entity\Admin;
-use ApiV1Bundle\Entity\Factory\AdminFactory;
-use ApiV1Bundle\Entity\Factory\AgenteFactory;
-use ApiV1Bundle\Entity\Factory\ResponsableFactory;
-use ApiV1Bundle\Entity\Sync\AdminSync;
-use ApiV1Bundle\Entity\Sync\AgenteSync;
-use ApiV1Bundle\Entity\Sync\ResponsableSync;
-use ApiV1Bundle\Entity\User;
-use ApiV1Bundle\Entity\Validator\UserValidator;
+use ApiV1Bundle\Entity\Factory\UsuarioFactoryStrategy;
+use ApiV1Bundle\Entity\Sync\UsuarioSyncStrategy;
+use ApiV1Bundle\Entity\UsuarioStrategy;
 use ApiV1Bundle\Entity\Validator\AdminValidator;
-use ApiV1Bundle\Entity\Validator\ResponsableValidator;
 use ApiV1Bundle\Entity\Validator\AgenteValidator;
+use ApiV1Bundle\Entity\Validator\ResponsableValidator;
+use ApiV1Bundle\Entity\Validator\UserValidator;
+use ApiV1Bundle\ExternalServices\NotificationsExternalService;
 use ApiV1Bundle\Repository\AdminRepository;
 use ApiV1Bundle\Repository\AgenteRepository;
 use ApiV1Bundle\Repository\PuntoAtencionRepository;
@@ -28,9 +24,6 @@ use ApiV1Bundle\Repository\UserRepository;
 use ApiV1Bundle\Repository\UsuarioRepository;
 use ApiV1Bundle\Repository\VentanillaRepository;
 use Symfony\Component\DependencyInjection\Container;
-use ApiV1Bundle\Entity\Factory\UsuarioFactoryStrategy;
-use ApiV1Bundle\Entity\Sync\UsuarioSyncStrategy;
-use ApiV1Bundle\Entity\UsuarioStrategy;
 
 class UsuarioServices extends SNCServices
 {
@@ -45,6 +38,7 @@ class UsuarioServices extends SNCServices
     private $agenteValidator;
     private $puntoAtencionRepository;
     private $usuarioRepository;
+    private $notificationsService;
 
 
     public function __construct(
@@ -59,7 +53,8 @@ class UsuarioServices extends SNCServices
         UserRepository $userRepository,
         VentanillaRepository $ventanillaRepository,
         PuntoAtencionRepository $puntoAtencionRepository,
-        UsuarioRepository $usuarioRepository
+        UsuarioRepository $usuarioRepository,
+        NotificationsExternalService $notificationsService
     ) {
         parent::__construct($container);
         $this->userValidator = $userValidator;
@@ -73,6 +68,7 @@ class UsuarioServices extends SNCServices
         $this->ventanillaRepository = $ventanillaRepository;
         $this->puntoAtencionRepository = $puntoAtencionRepository;
         $this->usuarioRepository = $usuarioRepository;
+        $this->notificationsService = $notificationsService;
     }
 
     /**
@@ -97,18 +93,27 @@ class UsuarioServices extends SNCServices
             $repository = $usuarioFactory->getRepository();
             $validateResult = $usuarioFactory->create($params);
 
+            $userdata = [
+                'email' => null,
+                'password' => null
+            ];
+
             // securizar contraseña
             if (! $validateResult->hasError()) {
-                $usuarioFactory->securityPassword(
-                    $validateResult->getEntity()->getUser(),
-                    $this->getSecurityPassword()
-                );
+                $user = $validateResult->getEntity()->getUser();
+                $userdata['email'] = $user->getUsername();
+                $userdata['password'] = $user->getPassword();
+                // make the password secure
+                $usuarioFactory->securityPassword($user, $this->getSecurityPassword());
             }
         }
 
         return $this->processResult(
             $validateResult,
-            function ($entity) use ($sucess, $repository) {
+            function ($entity) use ($sucess, $repository, $userdata) {
+                // enviamos mail al usuario
+                $this->enviarEmailUsuario($userdata);
+                // guardamos el usuario
                 return call_user_func($sucess, $repository->save($entity));
             },
             $error
@@ -250,5 +255,22 @@ class UsuarioServices extends SNCServices
             },
             $error
         );
+    }
+
+    /**
+     * Enviar mail al usuario recien creado
+     *
+     * @param $userdata
+     * @return mixed|array|NULL|string
+     */
+    private function enviarEmailUsuario($userdata)
+    {
+        $response = $this->notificationsService->enviarNotificacion(
+            $this->notificationsService->getDefaultTemplate(),
+            $userdata['email'],
+            '20359715286',
+            $userdata
+        );
+        return $response;
     }
 }
