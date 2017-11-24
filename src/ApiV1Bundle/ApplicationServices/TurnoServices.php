@@ -21,6 +21,7 @@ use ApiV1Bundle\Repository\TurnoRepository;
 use ApiV1Bundle\Repository\VentanillaRepository;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpFoundation\Request;
+use ApiV1Bundle\Helper\ServicesHelper;
 
 class TurnoServices extends SNCServices
 {
@@ -349,7 +350,7 @@ class TurnoServices extends SNCServices
             $result = [
                 'id' => $turno->getId(),
                 'tramite' => $turno->getTramite(),
-                'codigo' => $turno->getCodigo(),
+                'codigo' => ServicesHelper::obtenerCodigoSimple($turno->getCodigo()),
                 'posicion' => $pos
             ];
         }

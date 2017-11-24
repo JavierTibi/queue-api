@@ -13,5 +13,17 @@ class ServicesHelper
         }
         return null;
     }
+    
+    /**
+     * Pasa un código unico a sus primeros 8 caracters
+     *
+     * @param string $code
+     * @return string
+     */
+    public static function obtenerCodigoSimple($code)
+    {
+        $parts = explode('-', $code);
+        return $parts[0];
+    }
 
 }
