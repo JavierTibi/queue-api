@@ -111,7 +111,7 @@ class Turno
 
     /*
     * @var string
-    * @ORM\Column(name="estado", type="smallint", nullable = true)
+    * @ORM\Column(name="motivo", type="string", length=255, nullable=true)
     */
     private $motivoTerminado;
 
@@ -200,8 +200,7 @@ class Turno
         $tramite,
         $codigo,
         $prioridad
-    )
-    {
+    ) {
         $this->puntoAtencion = $puntoAtencion;
         $this->datosTurno = $datosTurno;
         $this->grupoTramiteIdSNT = $grupoTramite;
@@ -363,6 +362,4 @@ class Turno
     {
         return $this->fechaBorrado;
     }
-
 }
-
