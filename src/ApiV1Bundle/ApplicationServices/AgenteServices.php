@@ -68,6 +68,8 @@ class AgenteServices extends SNCServices
                 $ventanillas['ventanillas'][] = $ventanilla->getIdentificador();
             }
 
+            // @Todo este unset está muy mal, algún día en el futuro hay que arreglarlo
+            unset($item['agente_id']);
             $result[] = array_merge($item, $ventanillas);
             $ventanillas = [];
         }
