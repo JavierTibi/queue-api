@@ -8,8 +8,6 @@
 
 namespace ApiV1Bundle\Entity;
 
-
-
 use ApiV1Bundle\Entity\Validator\TurnoValidator;
 use ApiV1Bundle\Entity\Validator\ValidateResultado;
 use ApiV1Bundle\Repository\PuntoAtencionRepository;
@@ -32,8 +30,7 @@ class TurnoFactory
         TurnoRepository $turnoRepository,
         TurnoValidator $turnoValidator,
         PuntoAtencionRepository $puntoAtencionRepository
-    )
-    {
+    ) {
         $this->turnoRepository = $turnoRepository;
         $this->turnoValidator = $turnoValidator;
         $this->puntoAtencionRepository = $puntoAtencionRepository;
@@ -48,8 +45,9 @@ class TurnoFactory
         $validateResultado = $this->turnoValidator->validarCreate($params);
 
         if (! $validateResultado->hasError()) {
-
-            $puntoAtencion = $this->puntoAtencionRepository->findOneBy(['puntoAtencionIdSnt' => $params['puntoAtencion']]);
+            $puntoAtencion = $this->puntoAtencionRepository->findOneBy([
+                'puntoAtencionIdSnt' => $params['puntoAtencion'
+            ]]);
 
             $validatePuntoAtencion = $this->turnoValidator->validarPuntoAtencion($puntoAtencion);
 
@@ -88,9 +86,7 @@ class TurnoFactory
             } else {
                 return $validatePuntoAtencion;
             }
-
         }
-
         return $validateResultado;
     }
 
@@ -110,8 +106,8 @@ class TurnoFactory
                     $turno->getPuntoAtencion(),
                     $turno->getDatosTurno(),
                     $turno->getGrupoTramiteIdSNT(),
-                    $turno->getFecha(),
-                    $turno->getHora(),
+                    new \DateTime($turno->getFecha()),
+                    new \DateTime($turno->getHora()),
                     $params['estado'],
                     $turno->getTramite(),
                     $params['codigo'],
@@ -125,8 +121,6 @@ class TurnoFactory
                 return new ValidateResultado($newTurno, []);
             }
         }
-
         return $validateResultado;
-
     }
 }
