@@ -59,21 +59,21 @@ class RedisServices extends SNCServices
      */
     public function unionColas($puntoAtencionId, $colas, $ventanilla)
     {
-
         $errors = [];
         $keys = [];
 
         foreach ($colas as $cola) {
-            $keys[] = 'puntoAtencion:' . $puntoAtencionId . ':cola:' . $cola->getId();
+            if ($this->exists('puntoAtencion:' . $puntoAtencionId . ':cola:' . $cola->getId()) > 0) {
+                $keys[] = 'puntoAtencion:' . $puntoAtencionId . ':cola:' . $cola->getId();
+            }
         }
 
-        $val = $this->getContainerRedis()->zunionstore(
-            'puntoAtencion:' . $puntoAtencionId . ':ventanilla:' . $ventanilla->getId(),
-            $keys
-        );
+        if(count($keys) > 0) {
+            $val = $this->getContainerRedis()->zunionstore('puntoAtencion:' . $puntoAtencionId . ':ventanilla:' . $ventanilla->getId(), $keys);
 
-        if ($val == 0) {
-            $errors['errors'] = 'No se ha podido crear la cola';
+            if ($val == 0) {
+                $errors['errors'] = 'No se ha podido crear la cola';
+            }
         }
 
         return new ValidateResultado(null, $errors);
@@ -123,11 +123,11 @@ class RedisServices extends SNCServices
      */
     public function getColaVentanilla($puntoAtencionId, $ventanilla, $offset, $limit)
     {
-        return $this->zrangeCola(
-            'puntoAtencion:' . $puntoAtencionId . ':ventanilla:' . $ventanilla->getId(),
-            $offset,
-            $limit
-        );
+        if ($this->exists('puntoAtencion:' . $puntoAtencionId . ':ventanilla:' . $ventanilla->getId()) > 0) {
+            return $this->zrangeCola('puntoAtencion:' . $puntoAtencionId . ':ventanilla:' . $ventanilla->getId(), $offset, $limit);
+        }
+
+        return [];
     }
 
     /**
@@ -183,10 +183,20 @@ class RedisServices extends SNCServices
 
         for ($i = 0; $i < count($turnos); $i++) {
             if (json_decode($turnos[$i])->codigo == $turno->getCodigo()) {
-                return $i;
+               return $i;
             }
         }
 
         return -1;
     }
+
+    /**
+     * @param string $key
+     * @return int
+     */
+    private function exists($key)
+    {
+        return $this->getContainerRedis()->exists($key);
+    }
+
 }

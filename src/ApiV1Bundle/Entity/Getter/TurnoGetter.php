@@ -56,7 +56,7 @@ class TurnoGetter
 
             $validateCola = $this->redisServices->unionColas($params['puntoatencion'], $colas, $ventanilla);
 
-            if($validateCola->hasError()) {
+            if ($validateCola->hasError()) {
                 return $validateCola;
             }
 
