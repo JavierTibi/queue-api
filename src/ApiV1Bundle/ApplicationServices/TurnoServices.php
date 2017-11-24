@@ -294,7 +294,7 @@ class TurnoServices extends SNCServices
                 $this->turnoRepository
             );
 
-            $turno = $turnoGetter->getProximoTurno($params, $ventanilla);
+            $turno = $turnoGetter->getProximoTurno($params['puntoatencion'], $ventanilla);
 
             $result = [
                 'id' => $turno->getId(),
