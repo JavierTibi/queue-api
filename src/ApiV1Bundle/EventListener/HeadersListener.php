@@ -89,7 +89,9 @@ class HeadersListener
     {
         foreach ($routes as $path => $role) {
             $subroute = substr($pathInfo, 0, strlen($path));
-            return $path;
+            if ($subroute == $path) {
+                return $path;
+            }
         }
         return false;
     }

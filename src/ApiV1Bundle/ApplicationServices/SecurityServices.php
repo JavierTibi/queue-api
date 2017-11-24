@@ -131,7 +131,9 @@ class SecurityServices extends SNCServices
     {
         $token = md5($authorization);
         $tokenCancelado = $this->tokenRepository->findOneByToken($token);
-        list($bearer, $token) = explode(' ', $authorization);
+        if ($authorization) {
+            list($bearer, $token) = explode(' ', $authorization);
+        }
         return $this->jwtoken->validate($token, $tokenCancelado);
     }
 }
