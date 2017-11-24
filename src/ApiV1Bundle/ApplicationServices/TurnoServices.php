@@ -84,11 +84,7 @@ class TurnoServices extends SNCServices
 
         if (! $validateResult->hasError()) {
             $turno = $validateResult->getEntity();
-            $validateRedis = $this->recepcionarTurno($turno);
-
-            if ($validateRedis->hasError()) {
-                return $validateRedis;
-            }
+            $validateResult = $this->recepcionarTurno($turno);
         }
 
         return $this->processResult(
@@ -294,25 +290,29 @@ class TurnoServices extends SNCServices
                 $this->turnoRepository
             );
 
-            $turno = $turnoGetter->getProximoTurno($params['puntoatencion'], $ventanilla);
+            $validateResultado = $turnoGetter->getProximoTurno($params['puntoatencion'], $ventanilla);
 
-            $result = [
-                'id' => $turno->getId(),
-                'tramite' => $turno->getTramite(),
-                'puntoAtencion' => $turno->getPuntoAtencion()->getId(),
-                'codigo' => $turno->getCodigo(),
-                'fecha' => $turno->getFecha(),
-                'hora' => $turno->getHora(),
-                'estado' => $turno->getEstado(),
-                'datosTurno' => [
-                    'nombre' => $turno->getDatosTurno()->getNombre(),
-                    'apellido' => $turno->getDatosTurno()->getApellido(),
-                    'cuil' => $turno->getDatosTurno()->getCuil(),
-                    'email' => $turno->getDatosTurno()->getEmail(),
-                    'telefono' => $turno->getDatosTurno()->getTelefono(),
-                    'campos' => $turno->getDatosTurno()->getCampos()
-                ]
-            ];
+            if (! $validateResultado->hasError()) {
+                $turno = $validateResultado->getEntity();
+
+                $result = [
+                    'id' => $turno->getId(),
+                    'tramite' => $turno->getTramite(),
+                    'puntoAtencion' => $turno->getPuntoAtencion()->getId(),
+                    'codigo' => $turno->getCodigo(),
+                    'fecha' => $turno->getFecha(),
+                    'hora' => $turno->getHora(),
+                    'estado' => $turno->getEstado(),
+                    'datosTurno' => [
+                        'nombre' => $turno->getDatosTurno()->getNombre(),
+                        'apellido' => $turno->getDatosTurno()->getApellido(),
+                        'cuil' => $turno->getDatosTurno()->getCuil(),
+                        'email' => $turno->getDatosTurno()->getEmail(),
+                        'telefono' => $turno->getDatosTurno()->getTelefono(),
+                        'campos' => $turno->getDatosTurno()->getCampos()
+                    ]
+                ];
+            }
         }
 
         return $this->processError(

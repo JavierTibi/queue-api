@@ -54,7 +54,7 @@ class TurnoGetter
 
         if ($colas->count() > 0) {
 
-            $validateCola = $this->redisServices->unionColas($params['puntoatencion'], $colas, $ventanilla);
+            $validateCola = $this->redisServices->unionColas($params['puntoatencion'], $ventanilla);
 
             if ($validateCola->hasError()) {
                 return $validateCola;
@@ -94,12 +94,26 @@ class TurnoGetter
      *
      * @param $puntoAtencionId
      * @param $ventanilla
-     * @return mixed
+     * @return ValidateResultado
      */
     public function getProximoTurno($puntoAtencionId, $ventanilla)
     {
         $proximoTurno = $this->redisServices->getProximoTurno($puntoAtencionId, $ventanilla);
-        return $this->getTurno($puntoAtencionId, json_decode($proximoTurno));
+
+        if ($proximoTurno) {
+            $turno = $this->getTurno($puntoAtencionId, json_decode($proximoTurno));
+
+            if ($turno) {
+                return new ValidateResultado($turno, []);
+            }
+
+            $errors['Turnos'] = 'Turno no encontrado en el Sistema Nacional de Turnos.';
+            return new ValidateResultado(null, $errors);
+
+        }
+
+        $errors['Turnos'] = 'No hay más turnos.';
+        return new ValidateResultado(null, $errors);
     }
 
     private function getTurno($puntoAtencionId, $turno)
