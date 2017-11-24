@@ -127,4 +127,24 @@ class JWToken
     {
         return gethostname();
     }
+
+    /**
+     * @param string $tokenString
+     * @return string mixed
+     */
+    public function getPayload($tokenString)
+    {
+        $parts = explode(' ', $tokenString);
+        return $parts[1];
+    }
+
+    /**
+     * @param string $token
+     * @return array
+     */
+    public function getUID($token)
+    {
+        $token = (new Parser())->parse((string) $token);
+        return $token->getClaim('uid'); // Retrieves the token claims
+    }
 }

@@ -120,7 +120,7 @@ class Agente extends Usuario
     }
 
     /**
-     * @param Ventanilla $ventanillaActual
+     * @param Ventanilla $ventanillaActual ¬1"¬°!°"
      */
     public function setVentanillaActual($ventanillaActual)
     {

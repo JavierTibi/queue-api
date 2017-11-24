@@ -3,6 +3,8 @@
 namespace ApiV1Bundle\Entity\Sync;
 
 use ApiV1Bundle\Entity\Agente;
+use ApiV1Bundle\Entity\User;
+use ApiV1Bundle\Entity\Usuario;
 use ApiV1Bundle\Entity\Validator\AgenteValidator;
 use ApiV1Bundle\Entity\Validator\ValidateResultado;
 use ApiV1Bundle\Repository\AgenteRepository;
@@ -116,6 +118,30 @@ class AgenteSync implements UsuarioSyncInterface
             $validateResultado->setEntity($agente);
             return $validateResultado;
         }
+        return $validateResultado;
+    }
+
+    /**
+     * Desasigna una ventanilla al Agente
+     * @param integer $idUsuario Identificador del usuario
+     * @param integer $idVentanilla Identificador de la ventanilla
+     *
+     * @return ValidateResultado
+     */
+    public function desasignarVentanilla($usuario)
+    {
+        $validateResultado = $this->agenteValidator->validarAgente(
+            $usuario
+        );
+
+        if (! $validateResultado->hasError()) {
+            if ($usuario->getUser()->getRol() == User::ROL_AGENTE) {
+                $usuario->setVentanillaActual(null);
+                $validateResultado->setEntity($usuario);
+                return $validateResultado;
+            }
+        }
+
         return $validateResultado;
     }
 }

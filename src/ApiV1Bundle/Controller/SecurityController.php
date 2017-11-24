@@ -8,6 +8,8 @@ use Symfony\Component\HttpFoundation\Request;
 class SecurityController extends ApiController
 {
 
+    private $securityServices;
+
     /**
      * User login
      *

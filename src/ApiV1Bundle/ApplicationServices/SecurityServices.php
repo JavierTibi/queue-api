@@ -1,6 +1,7 @@
 <?php
 namespace ApiV1Bundle\ApplicationServices;
 
+use ApiV1Bundle\Repository\UsuarioRepository;
 use Symfony\Component\DependencyInjection\Container;
 use ApiV1Bundle\Repository\UserRepository;
 use ApiV1Bundle\Helper\JWToken;
@@ -14,19 +15,35 @@ class SecurityServices extends SNCServices
     private $tokenRepository;
     private $jwtoken;
     private $userValidator;
+    private $usuarioRepository;
+    private $agenteService;
 
+    /**
+     * SecurityServices constructor.
+     * @param Container $container
+     * @param UserRepository $userRepository
+     * @param TokenRepository $tokenRepository
+     * @param JWToken $jwtoken
+     * @param UserValidator $userValidator
+     * @param UsuarioRepository $usuarioRepository
+     * @param AgenteServices $agenteServices
+     */
     public function __construct(
         Container $container,
         UserRepository $userRepository,
         TokenRepository $tokenRepository,
         JWToken $jwtoken,
-        UserValidator $userValidator
+        UserValidator $userValidator,
+        UsuarioRepository $usuarioRepository,
+        AgenteServices $agenteServices
     ) {
         parent::__construct($container);
         $this->userRepository = $userRepository;
         $this->tokenRepository = $tokenRepository;
         $this->jwtoken = $jwtoken;
         $this->userValidator = $userValidator;
+        $this->usuarioRepository = $usuarioRepository;
+        $this->agenteService = $agenteServices;
     }
 
     /**
@@ -67,11 +84,18 @@ class SecurityServices extends SNCServices
         // validamos el token
         if ($this->validarToken($authorization)) {
             $token = md5($authorization);
+
             // agregamos el token a la lista si no existe
             $verificarCancelado = $this->tokenRepository->findOneByToken($token);
             if (! $verificarCancelado) {
-                $tokenFactory = new TokenFactory($this->tokenRepository);
-                $validateResult = $tokenFactory->insert($token);
+                //desasignar usuario de una ventanilla
+                $validateResult = $this->desasignarUsuarioVentanilla($authorization);
+
+                if (! $validateResult->hasError()) {
+                    $tokenFactory = new TokenFactory($this->tokenRepository);
+                    $validateResult = $tokenFactory->insert($token);
+                }
+
                 return $this->processResult(
                     $validateResult,
                     function ($entity) use ($success) {
@@ -82,6 +106,18 @@ class SecurityServices extends SNCServices
             }
         }
         return call_user_func($success, []);
+    }
+
+    /**
+     * @param $authorization
+     * @return mixed
+     */
+    private function desasignarUsuarioVentanilla($authorization)
+    {
+        $tokenString = $this->jwtoken->getPayload($authorization);
+        $uid = $this->jwtoken->getUID($tokenString);
+        $user = $this->usuarioRepository->findOneByUser($uid);
+        return $this->agenteService->desasignarVentanilla($user);
     }
 
     /**

@@ -124,4 +124,27 @@ class AgenteServices extends SNCServices
             $error
         );
     }
+
+    /**
+     * Desasigna una ventanilla a un Agente
+     * @param $usuario
+     * @return mixed
+     */
+    public function desasignarVentanilla($usuario)
+    {
+        $agenteSync = new AgenteSync(
+            $this->agenteValidator,
+            $this->agenteRepository,
+            $this->ventanillaRepository,
+            $this->puntoAtencionRepository
+        );
+
+        $validateResult = $agenteSync->desasignarVentanilla($usuario);
+
+        if (! $validateResult->hasError()) {
+            $this->agenteRepository->flush();
+        }
+
+        return $validateResult;
+    }
 }

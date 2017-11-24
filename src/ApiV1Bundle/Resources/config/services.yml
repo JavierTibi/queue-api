@@ -145,7 +145,7 @@ services:
     
     snc.services.security:
         class: '%snc.services.security.class%'
-        arguments: ['@service_container', '@snc.repository.user', '@snc.repository.token', '@snc.helper.jwtoken', '@snc.validator.user']
+        arguments: ['@service_container', '@snc.repository.user', '@snc.repository.token', '@snc.helper.jwtoken', '@snc.validator.user', '@snc.repository.usuario', '@snc.services.agente']
 
     snc.services.agente:
         class: '%snc.services.agente.class%'
