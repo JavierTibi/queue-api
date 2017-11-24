@@ -6,15 +6,15 @@ use ApiV1Bundle\Entity\User;
 use ApiV1Bundle\Entity\Admin;
 use ApiV1Bundle\Entity\Validator\UserValidator;
 use ApiV1Bundle\Entity\Validator\AdminValidator;
-use ApiV1Bundle\Repository\UserRepository;
 use ApiV1Bundle\Repository\AdminRepository;
 use ApiV1Bundle\Entity\Validator\ValidateResultado;
+use ApiV1Bundle\Entity\Interfaces\UsuarioSyncInterface;
 
 /**
  * Class AdminSync
  * @package ApiV1Bundle\Entity\Sync
  */
-class AdminSync
+class AdminSync implements UsuarioSyncInterface
 {
     private $userValidator;
     private $adminValidator;
@@ -34,7 +34,7 @@ class AdminSync
         $this->adminValidator = $adminValidator;
         $this->adminRepository = $adminRepository;
     }
-    
+
     public function edit($id, $params)
     {
         $validateResultado = $this->adminValidator->validarParams($params);

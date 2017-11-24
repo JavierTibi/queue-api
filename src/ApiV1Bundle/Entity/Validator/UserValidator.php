@@ -5,6 +5,7 @@ namespace ApiV1Bundle\Entity\Validator;
 
 use ApiV1Bundle\Repository\UserRepository;
 use ApiV1Bundle\Entity\Validator\ValidateResultado;
+use ApiV1Bundle\Entity\User;
 
 class UserValidator extends SNCValidator
 {
@@ -49,6 +50,20 @@ class UserValidator extends SNCValidator
         if (! $this->encoder->isPasswordValid($user, $password)) {
             $errors[] = 'Usuario/contraseña incorrectos';
         }
+        return new ValidateResultado(null, $errors);
+    }
+
+    public function validarCreate($params)
+    {
+        $rules = [
+            'rol' => 'required',
+            'username' => 'required:email',
+            'nombre' => 'required'
+        ];
+        if (isset($params['rol']) && $params['rol'] == User::ROL_AGENTE) {
+            $rules['ventanillas'] = 'required:matriz';
+        }
+        $errors = $this->validar($params, $rules);
         return new ValidateResultado(null, $errors);
     }
 

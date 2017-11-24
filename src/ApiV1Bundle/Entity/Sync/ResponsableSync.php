@@ -2,20 +2,18 @@
 
 namespace ApiV1Bundle\Entity\Sync;
 
-
-use ApiV1Bundle\Entity\Agente;
 use ApiV1Bundle\Repository\PuntoAtencionRepository;
 use ApiV1Bundle\Repository\ResponsableRepository;
-use ApiV1Bundle\Repository\UserRepository;
 use ApiV1Bundle\Entity\Validator\ResponsableValidator;
 use ApiV1Bundle\Entity\Validator\UserValidator;
 use ApiV1Bundle\Entity\Validator\ValidateResultado;
+use ApiV1Bundle\Entity\Interfaces\UsuarioSyncInterface;
 
 /**
  * Class ResponsableSync
  * @package ApiV1Bundle\Entity\Sync
  */
-class ResponsableSync
+class ResponsableSync implements UsuarioSyncInterface
 {
     private $userValidator;
     private $responsableRepository;
@@ -33,8 +31,8 @@ class ResponsableSync
         UserValidator $userValidator,
         ResponsableRepository $responsableRepository,
         ResponsableValidator $responsableValidator,
-        PuntoAtencionRepository $puntoAtencionRepository)
-    {
+        PuntoAtencionRepository $puntoAtencionRepository
+    ) {
         $this->userValidator = $userValidator;
         $this->responsableRepository = $responsableRepository;
         $this->responsableValidator = $responsableValidator;
@@ -43,10 +41,9 @@ class ResponsableSync
 
     public function edit($id, $params)
     {
-        $validateResultado = $this->responsableValidator->validarParams($params);
+        $validateResultado = $this->responsableValidator->validarParams($id, $params);
 
         if (! $validateResultado->hasError()) {
-
             $responsable = $this->responsableRepository->findOneByUser($id);
             $user = $responsable->getUser();
 

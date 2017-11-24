@@ -4,17 +4,17 @@ namespace ApiV1Bundle\Entity\Sync;
 
 use ApiV1Bundle\Entity\Agente;
 use ApiV1Bundle\Entity\Validator\AgenteValidator;
-use ApiV1Bundle\Entity\Validator\UserValidator;
 use ApiV1Bundle\Entity\Validator\ValidateResultado;
 use ApiV1Bundle\Repository\AgenteRepository;
 use ApiV1Bundle\Repository\PuntoAtencionRepository;
 use ApiV1Bundle\Repository\VentanillaRepository;
+use ApiV1Bundle\Entity\Interfaces\UsuarioSyncInterface;
 
 /**
  * Class AgenteSync
  * @package ApiV1Bundle\Entity\Sync
  */
-class AgenteSync
+class AgenteSync implements UsuarioSyncInterface
 {
     private $agenteValidator;
     private $agenteRepository;

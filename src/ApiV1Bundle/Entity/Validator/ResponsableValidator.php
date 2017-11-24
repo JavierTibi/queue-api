@@ -8,7 +8,6 @@
 
 namespace ApiV1Bundle\Entity\Validator;
 
-
 use ApiV1Bundle\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 
@@ -26,7 +25,14 @@ class ResponsableValidator extends SNCValidator
         $this->userRepository = $userRepository;
     }
 
-    public function validarParams($params)
+    /**
+     * Validamos los parametros del front
+     *
+     * @param $id
+     * @param $params
+     * @return \ApiV1Bundle\Entity\Validator\ValidateResultado
+     */
+    public function validarParams($id, $params)
     {
         $errors = $this->validar($params, [
             'nombre' => 'required',
@@ -35,10 +41,10 @@ class ResponsableValidator extends SNCValidator
         ]);
 
         if (! count($errors) > 0) {
-            $user = $this->userRepository->findOneById($params['id']);
+            $user = $this->userRepository->findOneById($id);
             if ($user && $user->getUsername() != $params['username']) {
                 $otherUser = $this->userRepository->findOneByUsername($params['username']);
-                if($otherUser) {
+                if ($otherUser) {
                     $errors['User'] = 'Ya existe un usuario con el email ingresado.';
                     return new ValidateResultado(null, $errors);
                 }

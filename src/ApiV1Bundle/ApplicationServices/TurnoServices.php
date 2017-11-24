@@ -353,7 +353,7 @@ class TurnoServices extends SNCServices
                 'posicion' => $pos
             ];
         }
-        
+
         return $this->processError(
             $validateResultado,
             function () use ($result) {
@@ -361,6 +361,5 @@ class TurnoServices extends SNCServices
             },
             $onError
         );
-
     }
 }

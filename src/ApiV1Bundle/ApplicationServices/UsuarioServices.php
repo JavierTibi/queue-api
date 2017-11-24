@@ -28,6 +28,9 @@ use ApiV1Bundle\Repository\UserRepository;
 use ApiV1Bundle\Repository\UsuarioRepository;
 use ApiV1Bundle\Repository\VentanillaRepository;
 use Symfony\Component\DependencyInjection\Container;
+use ApiV1Bundle\Entity\Factory\UsuarioFactoryStrategy;
+use ApiV1Bundle\Entity\Sync\UsuarioSyncStrategy;
+use ApiV1Bundle\Entity\UsuarioStrategy;
 
 class UsuarioServices extends SNCServices
 {
@@ -57,8 +60,7 @@ class UsuarioServices extends SNCServices
         VentanillaRepository $ventanillaRepository,
         PuntoAtencionRepository $puntoAtencionRepository,
         UsuarioRepository $usuarioRepository
-    )
-    {
+    ) {
         parent::__construct($container);
         $this->userValidator = $userValidator;
         $this->adminValidator = $adminValidator;
@@ -81,34 +83,27 @@ class UsuarioServices extends SNCServices
      */
     public function create($params, $sucess, $error)
     {
-        if ($params['rol'] == User::ROL_AGENTE) {
-            $usuarioFactory = new AgenteFactory(
+        $validateResult = $this->userValidator->validarCreate($params);
+        if (! $validateResult->hasError()) {
+            $usuarioFactory = new UsuarioFactoryStrategy(
                 $this->userValidator,
                 $this->ventanillaRepository,
-                $this->puntoAtencionRepository
+                $this->puntoAtencionRepository,
+                $this->adminRepository,
+                $this->agenteRepository,
+                $this->responsableRepository,
+                $params['rol']
             );
+            $repository = $usuarioFactory->getRepository();
+            $validateResult = $usuarioFactory->create($params);
 
-            $repository = $this->agenteRepository;
-
-        } elseif ($params['rol'] == User::ROL_RESPONSABLE) {
-            $usuarioFactory = new ResponsableFactory(
-                $this->userValidator,
-                $this->puntoAtencionRepository
-            );
-            $repository = $this->responsableRepository;
-
-        } else {
-            $usuarioFactory = new AdminFactory(
-                $this->userValidator
-            );
-            $repository = $this->adminRepository;
-        }
-
-        $validateResult = $usuarioFactory->create($params);
-
-        //segurizar password
-        if (! $validateResult->hasError()) {
-            $usuarioFactory->securityPassword($validateResult->getEntity()->getUser(), $this->getSecurityPassword());
+            // securizar contraseña
+            if (! $validateResult->hasError()) {
+                $usuarioFactory->securityPassword(
+                    $validateResult->getEntity()->getUser(),
+                    $this->getSecurityPassword()
+                );
+            }
         }
 
         return $this->processResult(
@@ -131,8 +126,7 @@ class UsuarioServices extends SNCServices
     {
         $usuarios = $this->usuarioRepository->findAllPaginate($offset, $limit);
         $result = [];
-
-        foreach ($usuarios as $usuario){
+        foreach ($usuarios as $usuario) {
             $result[] = [
                 'id' => $usuario->getUser()->getId(),
                 'nombre' => $usuario->getNombre(),
@@ -166,52 +160,12 @@ class UsuarioServices extends SNCServices
         $validateResultado = $this->userValidator->validarUser($user);
 
         if (! $validateResultado->hasError()) {
-            if ($user->getRol() == User::ROL_AGENTE) {
-                $usuario = $this->agenteRepository->findOneByUser($user);
-
-                $result = [
-                    'id' => $usuario->getUser()->getId(),
-                    'nombre' => $usuario->getNombre(),
-                    'apellido' => $usuario->getApellido(),
-                    'username' => $usuario->getUser()->getUsername(),
-                    'rol' => $usuario->getUser()->getRol(),
-                    'puntoAtencion' => [
-                        'id' => $usuario->getPuntoAtencionId(),
-                        'nombre' => $usuario->getNombrePuntoAtencion()
-                    ],
-                    'ventanillaAsignada' => $usuario->getVentanillaActualId()
-                ];
-                foreach ($usuario->getVentanillas() as $ventanilla) {
-                    $result['ventanillas'][] = $ventanilla->getId();
-                }
-            }
-
-            if ($user->getRol() == User::ROL_RESPONSABLE) {
-                $usuario = $this->responsableRepository->findOneByUser($user);
-                $result = [
-                    'id' => $usuario->getUser()->getId(),
-                    'nombre' => $usuario->getNombre(),
-                    'apellido' => $usuario->getApellido(),
-                    'username' => $usuario->getUser()->getUsername(),
-                    'rol' => $usuario->getUser()->getRol(),
-                    'puntoAtencion' => [
-                        'id' => $usuario->getPuntoAtencionId(),
-                        'nombre' => $usuario->getNombrePuntoAtencion()
-                    ]
-                ];
-            }
-
-            if ($user->getRol() == User::ROL_ADMIN) {
-                $usuario = $this->adminRepository->findOneByUser($user);
-                $result = [
-                    'id' => $usuario->getUser()->getId(),
-                    'nombre' => $usuario->getNombre(),
-                    'apellido' => $usuario->getApellido(),
-                    'username' => $usuario->getUser()->getUsername(),
-                    'rol' => $usuario->getUser()->getRol()
-                ];
-            }
-
+            $usuarioRepository = new UsuarioStrategy(
+                $this->agenteRepository,
+                $this->responsableRepository,
+                $this->adminRepository
+            );
+            $result = $usuarioRepository->getUser($user);
             return $this->respuestaData([], $result);
         }
 
@@ -228,41 +182,25 @@ class UsuarioServices extends SNCServices
      * @param $error | funcion que devuelve si ocurrio un error
      * @return mixed
      */
-    public function edit($params, $idUser, $sucess, $error) {
-
+    public function edit($params, $idUser, $sucess, $error)
+    {
         $user = $this->userRepository->find($idUser);
         $validateResult = $this->userValidator->validarUsuario($user);
-
-        if ( ! $validateResult->hasError() ) {
-            switch ($user->getRol()){
-                case User::ROL_ADMIN:
-                    $userSync = new AdminSync(
-                        $this->userValidator,
-                        $this->adminValidator,
-                        $this->adminRepository
-                    );
-                    $repository = $this->adminRepository;
-                    break;
-                case User::ROL_RESPONSABLE:
-                    $userSync = new ResponsableSync(
-                        $this->userValidator,
-                        $this->responsableRepository,
-                        $this->responsableValidator,
-                        $this->puntoAtencionRepository
-                    );
-                    $repository = $this->responsableRepository;
-                    break;
-                case User::ROL_AGENTE:
-                    $userSync = new AgenteSync(
-                        $this->agenteValidator,
-                        $this->agenteRepository,
-                        $this->ventanillaRepository,
-                        $this->puntoAtencionRepository
-                    );
-                    $repository = $this->agenteRepository;
-                    break;
-            }
-
+        $repository = null;
+        if (! $validateResult->hasError()) {
+            $userSync = new UsuarioSyncStrategy(
+                $this->userValidator,
+                $this->adminRepository,
+                $this->adminValidator,
+                $this->agenteRepository,
+                $this->agenteValidator,
+                $this->responsableRepository,
+                $this->responsableValidator,
+                $this->ventanillaRepository,
+                $this->puntoAtencionRepository,
+                $user->getRol()
+            );
+            $repository = $userSync->getRepository();
             $validateResult = $userSync->edit($idUser, $params);
         }
 
@@ -287,36 +225,21 @@ class UsuarioServices extends SNCServices
     {
         $user = $this->userRepository->find($id);
         $validateResult = $this->userValidator->validarUsuario($user);
-        if ( ! $validateResult->hasError() ) {
-            switch ($user->getRol()){
-                case User::ROL_ADMIN:
-                    $userSync = new AdminSync(
-                        $this->userValidator,
-                        $this->adminValidator,
-                        $this->adminRepository
-                    );
-                    $repository = $this->adminRepository;
-                    break;
-                case User::ROL_RESPONSABLE:
-                    $userSync = new ResponsableSync(
-                        $this->userValidator,
-                        $this->responsableRepository,
-                        $this->responsableValidator,
-                        $this->puntoAtencionRepository
-                    );
-                    $repository = $this->responsableRepository;
-                    break;
-                case User::ROL_AGENTE:
-                    $userSync = new AgenteSync(
-                        $this->agenteValidator,
-                        $this->agenteRepository,
-                        $this->ventanillaRepository,
-                        $this->puntoAtencionRepository
-                    );
-                    $repository = $this->agenteRepository;
-                    break;
-            }
-
+        $repository = null;
+        if (! $validateResult->hasError()) {
+            $userSync = new UsuarioSyncStrategy(
+                $this->userValidator,
+                $this->adminRepository,
+                $this->adminValidator,
+                $this->agenteRepository,
+                $this->agenteValidator,
+                $this->responsableRepository,
+                $this->responsableValidator,
+                $this->ventanillaRepository,
+                $this->puntoAtencionRepository,
+                $user->getRol()
+            );
+            $repository = $userSync->getRepository();
             $validateResult = $userSync->delete($id);
         }
 

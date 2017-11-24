@@ -10,7 +10,7 @@ class ColaValidator extends SNCValidator
     public function validarParamsGet($puntoAtencionId){
         $errors = [];
         if (is_null($puntoAtencionId)) {
-            $errors[] = "El punto de atención es obligatorio.";
+            $errors[] = 'El punto de atención es obligatorio.';
         }
 
         return new ValidateResultado(null, $errors);

@@ -27,5 +27,8 @@ parameters:
     database_testing_user: root
     database_testing_password: ~
     
+    # Redis
+    redis_host: redis://hxv-sntdb.hexacta.com
+    
     # Integration API
     snt_api_integration: http://sntapi.hexacta.com/api/v1.0

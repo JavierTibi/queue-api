@@ -11,7 +11,7 @@ class PuntoAtencionServices extends SNCServices
 {
     private $puntoAtencionRepository;
     private $puntoAtencionValidator;
-    
+
     /**
      * PuntoAtencionServices construct
      * @param Container $container
@@ -22,8 +22,7 @@ class PuntoAtencionServices extends SNCServices
         Container $container,
         PuntoAtencionRepository $puntoAtencionRepository,
         PuntoAtencionValidator $puntoAtencionValidator
-    ) 
-    {
+    ) {
         parent::__construct($container);
         $this->puntoAtencionRepository = $puntoAtencionRepository;
         $this->puntoAtencionValidator = $puntoAtencionValidator;
@@ -49,30 +48,31 @@ class PuntoAtencionServices extends SNCServices
 
     /**
      * Crear punto de atencion
-     * 
+     *
      * @param type $params Array con los datos para modificar un punto de atención
      * @param $success | Si tuvo éxito o no
      * @param string $error Mensaje de error al modificar un punto de atención
      * @return type
      */
-    public function create($params, $sucess, $error) {
+    public function create($params, $sucess, $error)
+    {
         $puntoAtencionFactory = new PuntoAtencionFactory(
             $this->puntoAtencionRepository,
             $this->puntoAtencionValidator
         );
         $validateResult = $puntoAtencionFactory->create($params);
-        
+
         return $this->processResult(
-            $validateResult, 
+            $validateResult,
             function ($entity) use ($sucess) {
                 return call_user_func($sucess, $this->puntoAtencionRepository->save($entity));
             },
             $error
-            );
+        );
     }
-    
+
     /**
-     * Editar punto de atencion 
+     * Editar punto de atencion
      *
      * @param int $id Identificador único de un punto de atención
      * @param array $params Array con los datos para modificar un punto de atención
@@ -80,7 +80,8 @@ class PuntoAtencionServices extends SNCServices
      * @param $error
      * @return mixed
      */
-    public function edit($id, $params, $sucess, $error) {
+    public function edit($id, $params, $sucess, $error)
+    {
         $puntoAtencionSync = new PuntoAtencionSync(
             $this->puntoAtencionRepository,
             $this->puntoAtencionValidator
@@ -103,16 +104,19 @@ class PuntoAtencionServices extends SNCServices
      * @param string $error Mensaje de error al eliminar un punto de atención
      * @return mixed
      */
-    public function delete($id, $sucess, $error) {
+    public function delete($id, $sucess, $error)
+    {
         $puntoAtencionSync = new PuntoAtencionSync(
             $this->puntoAtencionRepository,
             $this->puntoAtencionValidator
         );
         $validateResult = $puntoAtencionSync->delete($id);
-        return $this->processResult($validateResult,
-            function($entity) use ($sucess){
+        return $this->processResult(
+            $validateResult,
+            function ($entity) use ($sucess) {
                 return call_user_func($sucess, $this->puntoAtencionRepository->remove($entity));
             },
-                $error);
+            $error
+        );
     }
 }

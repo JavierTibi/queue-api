@@ -9,41 +9,42 @@ use ApiV1Bundle\Repository\PuntoAtencionRepository;
 class PuntoAtencionValidator extends SNCValidator
 {
     private $puntoAtencionRepository;
-    
+
     /**
      * PuntoAtencionValidator constuct
      * @param PuntoAtencionRepository $puntoAtencionRepository
      */
     public function __construct(
         PuntoAtencionRepository $puntoAtencionRepository
-    ) 
-    {
+    ) {
         $this->puntoAtencionRepository = $puntoAtencionRepository;
-        
     }
-    
-    public function validarCrear($params) {
+
+    public function validarCrear($params)
+    {
         $error = [];
         $puntoAtencion = null;
-        
+
         $error = $this->validar($params, [
             'punto_atencion_id_SNT' => 'required',
             'nombre' => 'required',
         ]);
-        
-        if(isset($params['punto_atencion_id_SNT'])){
-            $puntoAtencion = $this->puntoAtencionRepository->findOneBy(['puntoAtencionIdSnt' => $params['punto_atencion_id_SNT']]);
+
+        if (isset($params['punto_atencion_id_SNT'])) {
+            $puntoAtencion = $this->puntoAtencionRepository->findOneBy([
+                'puntoAtencionIdSnt' => $params['punto_atencion_id_SNT']
+            ]);
         }
-        
-        if($puntoAtencion){
+
+        if ($puntoAtencion) {
             $error['PuntoAtencion'] = 'El punto de atención ya existe';
         }
         return new ValidateResultado(null, $error);
     }
-    
+
     /**
      * Validar campos a editar y punto de atencion
-     * 
+     *
      * @param PuntoAtencion $puntoAtencion del punto de atencion a editar
      * @param  array $params Array de parametros a modificar
      * @return \ApiV1Bundle\Entity\Validator\ValidateResultado
@@ -73,6 +74,5 @@ class PuntoAtencionValidator extends SNCValidator
     public function validarDelete($puntoAtencion)
     {
         return $this->validarPuntoAtencion($puntoAtencion);
-        
     }
 }

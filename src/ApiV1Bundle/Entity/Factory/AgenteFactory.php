@@ -8,7 +8,6 @@
 
 namespace ApiV1Bundle\Entity\Factory;
 
-
 use ApiV1Bundle\Entity\Agente;
 use ApiV1Bundle\Entity\User;
 use ApiV1Bundle\Entity\Validator\AgenteValidator;
@@ -17,8 +16,9 @@ use ApiV1Bundle\Entity\Validator\ValidateResultado;
 use ApiV1Bundle\Entity\Ventanilla;
 use ApiV1Bundle\Repository\PuntoAtencionRepository;
 use ApiV1Bundle\Repository\VentanillaRepository;
+use ApiV1Bundle\Entity\Interfaces\UsuarioFactoryInterface;
 
-class AgenteFactory extends UsuarioFactory
+class AgenteFactory extends UsuarioFactory implements UsuarioFactoryInterface
 {
     private $userValidator;
     private $ventanillaRepository;

@@ -8,14 +8,14 @@
 
 namespace ApiV1Bundle\Entity\Factory;
 
-
 use ApiV1Bundle\Entity\Responsable;
 use ApiV1Bundle\Entity\User;
 use ApiV1Bundle\Entity\Validator\UserValidator;
 use ApiV1Bundle\Entity\Validator\ValidateResultado;
 use ApiV1Bundle\Repository\PuntoAtencionRepository;
+use ApiV1Bundle\Entity\Interfaces\UsuarioFactoryInterface;
 
-class ResponsableFactory extends UsuarioFactory
+class ResponsableFactory extends UsuarioFactory implements UsuarioFactoryInterface
 {
 
     private $userValidator;

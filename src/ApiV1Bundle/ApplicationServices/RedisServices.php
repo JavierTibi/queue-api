@@ -8,7 +8,6 @@
 
 namespace ApiV1Bundle\ApplicationServices;
 
-
 use ApiV1Bundle\Entity\Validator\ValidateResultado;
 
 class RedisServices extends SNCServices
@@ -22,7 +21,8 @@ class RedisServices extends SNCServices
      * @param $turno
      * @return ValidateResultado
      */
-    public function zaddCola($puntoAtencionId, $colaId, $prioridad, $turno) {
+    public function zaddCola($puntoAtencionId, $colaId, $prioridad, $turno)
+    {
         $errors = [];
         $fecha = new \DateTime();
         $hora = new \DateTime($turno->getHora());
@@ -67,7 +67,10 @@ class RedisServices extends SNCServices
             $keys[] = 'puntoAtencion:' . $puntoAtencionId . ':cola:' . $cola->getId();
         }
 
-        $val = $this->getContainerRedis()->zunionstore('puntoAtencion:' . $puntoAtencionId . ':ventanilla:' . $ventanilla->getId(), $keys);
+        $val = $this->getContainerRedis()->zunionstore(
+            'puntoAtencion:' . $puntoAtencionId . ':ventanilla:' . $ventanilla->getId(),
+            $keys
+        );
 
         if ($val == 0) {
             $errors['errors'] = 'No se ha podido crear la cola';
@@ -120,7 +123,11 @@ class RedisServices extends SNCServices
      */
     public function getColaVentanilla($puntoAtencionId, $ventanilla, $offset, $limit)
     {
-        return $this->zrangeCola('puntoAtencion:' . $puntoAtencionId . ':ventanilla:' . $ventanilla->getId(), $offset, $limit);
+        return $this->zrangeCola(
+            'puntoAtencion:' . $puntoAtencionId . ':ventanilla:' . $ventanilla->getId(),
+            $offset,
+            $limit
+        );
     }
 
     /**
@@ -176,11 +183,10 @@ class RedisServices extends SNCServices
 
         for ($i = 0; $i < count($turnos); $i++) {
             if (json_decode($turnos[$i])->codigo == $turno->getCodigo()) {
-               return $i;
+                return $i;
             }
         }
 
         return -1;
     }
-
 }

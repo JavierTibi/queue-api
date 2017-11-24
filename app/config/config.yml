@@ -104,4 +104,4 @@ snc_redis:
         default:
             type: predis
             alias: default
-            dsn: redis://hxv-sntdb.hexacta.com
+            dsn: '%redis_host%'
