@@ -102,6 +102,7 @@ class TurnoFactory
             $turno = $this->turnoRepository->search($params['cuil'], $params['codigo']);
             $validateResultado = $this->turnoValidator->validarTurno($turno);
             if (! $validateResultado->hasError()) {
+                $motivo = isset($params['motivo']) ? $params['motivo'] : null;
                 $newTurno = new Turno(
                     $turno->getPuntoAtencion(),
                     $turno->getDatosTurno(),
@@ -111,7 +112,8 @@ class TurnoFactory
                     $params['estado'],
                     $turno->getTramite(),
                     $params['codigo'],
-                    $params['prioridad']
+                    $params['prioridad'],
+                    $motivo
                 );
 
                 if (isset($params['motivo'])) {

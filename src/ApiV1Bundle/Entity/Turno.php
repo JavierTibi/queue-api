@@ -109,9 +109,10 @@ class Turno
      */
     private $estado;
 
-    /*
+   /**
     * @var string
-    * @ORM\Column(name="motivo", type="string", length=255, nullable=true)
+    *
+    * @ORM\Column(name="motivo", type="string", length=255, nullable=false)
     */
     private $motivoTerminado;
 
@@ -199,7 +200,8 @@ class Turno
         $estado,
         $tramite,
         $codigo,
-        $prioridad
+        $prioridad,
+        $motivo
     ) {
         $this->puntoAtencion = $puntoAtencion;
         $this->datosTurno = $datosTurno;
@@ -211,6 +213,7 @@ class Turno
         $this->tramite = $tramite;
         $this->codigo = $codigo;
         $this->prioridad = $prioridad;
+        $this->motivoTerminado = $motivo;
     }
 
     /**
@@ -332,7 +335,6 @@ class Turno
     {
         $this->motivoTerminado = $motivoTerminado;
     }
-
 
     /**
      * Genera las fechas de creación y modificación del turno
