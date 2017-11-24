@@ -107,3 +107,8 @@ snc_redis:
             type: predis
             alias: default
             dsn: '%redis_host%'
+            logging: '%kernel.debug%'
+            options:
+                parameters:
+                    database: 1
+ 
