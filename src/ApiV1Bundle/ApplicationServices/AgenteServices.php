@@ -64,8 +64,12 @@ class AgenteServices extends SNCServices
         foreach ($agentes as $item) {
             $agente = $this->agenteRepository->find($item['agente_id']);
 
-            foreach ($agente->getVentanillas() as $ventanilla) {
-                $ventanillas['ventanillas'][] = $ventanilla->getIdentificador();
+            if (count($agente->getVentanillas())) {
+                foreach ($agente->getVentanillas() as $ventanilla) {
+                    $ventanillas['ventanillas'][] = $ventanilla->getIdentificador();
+                }
+            } else {
+                $ventanillas['ventanillas'] = [];
             }
 
             // @Todo este unset está muy mal, algún día en el futuro hay que arreglarlo
