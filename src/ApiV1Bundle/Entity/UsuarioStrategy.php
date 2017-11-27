@@ -112,7 +112,10 @@ class UsuarioStrategy
             'ventanillaActual' => $usuario->getVentanillaActualId()
         ];
         foreach ($usuario->getVentanillas() as $ventanilla) {
-            $data['ventanillas'][] = $ventanilla->getId();
+            $data['ventanillas'][] = [
+                'id' => $ventanilla->getId(),
+                'identificador' => $ventanilla->getIdentificador()
+            ];
         }
         return $data;
     }

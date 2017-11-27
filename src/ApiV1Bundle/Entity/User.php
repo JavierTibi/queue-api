@@ -2,8 +2,6 @@
 namespace ApiV1Bundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert;
-use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
@@ -11,7 +9,6 @@ use Symfony\Component\Security\Core\User\UserInterface;
  *
  * @ORM\Table(name="user")
  * @ORM\Entity(repositoryClass="ApiV1Bundle\Repository\UserRepository")
- * @Gedmo\SoftDeleteable(fieldName="fechaBorrado")
  * @ORM\HasLifecycleCallbacks()
  */
 class User implements UserInterface, \Serializable

@@ -132,20 +132,16 @@ class UsuarioServices extends SNCServices
         $usuarios = $this->usuarioRepository->findAllPaginate($offset, $limit);
         $result = [];
         foreach ($usuarios as $usuario) {
-            $user = $usuario->getUser();
-            // @Todo esta verificación debería hacerla el ORM, no nosotros
-            if (is_null($usuario->getFechaBorrado())) {
-                $result[] = [
-                    'id' => $user->getId(),
-                    'nombre' => $usuario->getNombre(),
-                    'apellido' => $usuario->getApellido(),
-                    'rol' => $user->getRol(),
-                    'puntoAtencion' => [
-                        'id' => $usuario->getPuntoAtencionId(),
-                        'nombre' => $usuario->getNombrePuntoAtencion()
-                    ]
-                ];
-            }
+            $result[] = [
+                'id' => $usuario->getUser()->getId(),
+                'nombre' => $usuario->getNombre(),
+                'apellido' => $usuario->getApellido(),
+                'rol' => $usuario->getUser()->getRol(),
+                'puntoAtencion' => [
+                    'id' => $usuario->getPuntoAtencionId(),
+                    'nombre' => $usuario->getNombrePuntoAtencion()
+                ]
+            ];
         }
         $resultset = [
             'resultset' => [

@@ -3,15 +3,12 @@ namespace ApiV1Bundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert;
-use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * Agente
  *
  * @ORM\Table(name="user_agente")
  * @ORM\Entity(repositoryClass="ApiV1Bundle\Repository\AgenteRepository")
- * @Gedmo\SoftDeleteable(fieldName="fechaBorrado")
  * @ORM\HasLifecycleCallbacks()
  */
 class Agente extends Usuario
@@ -106,7 +103,7 @@ class Agente extends Usuario
      */
     public function getPuntoAtencionId()
     {
-        return $this->getPuntoAtencion()->getId();
+        return $this->getPuntoAtencion() ? $this->getPuntoAtencion()->getId() : null;
     }
 
     /**
@@ -207,7 +204,7 @@ class Agente extends Usuario
      */
     public function getNombrePuntoAtencion()
     {
-        return $this->getPuntoAtencion()->getNombre();
+        return $this->getPuntoAtencion() ? $this->getPuntoAtencion()->getNombre() : null;
     }
 
     /**
