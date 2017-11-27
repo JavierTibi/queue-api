@@ -112,7 +112,7 @@ class Turno
    /**
     * @var string
     *
-    * @ORM\Column(name="motivo", type="string", length=255, nullable=false)
+    * @ORM\Column(name="motivo", type="string", length=255, nullable=true)
     */
     private $motivoTerminado;
 
@@ -363,4 +363,5 @@ class Turno
     {
         return $this->fechaBorrado;
     }
-}
+}
+
