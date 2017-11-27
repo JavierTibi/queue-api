@@ -24,13 +24,14 @@ class UsuarioController extends ApiController
     public function postAction(Request $request)
     {
         $params = $request->request->all();
-        $this->usuarioServices = $this->getUsuarioServices();
+        $usuarioServices = $this->getUsuarioServices();
 
-        return $this->usuarioServices->create(
+        return $usuarioServices->create(
             $params,
-            function ($usuario) {
+            function ($usuario, $userdata) use ($usuarioServices) {
                 return $this->respuestaOk('Usuario creado con éxito', [
-                    'id' => $usuario->getUser()->getId()
+                    'id' => $usuario->getUser()->getId(),
+                    'response' => $usuarioServices->enviarEmailUsuario($userdata)
                 ]);
             },
             function ($err) {

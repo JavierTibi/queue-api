@@ -111,10 +111,7 @@ class UsuarioServices extends SNCServices
         return $this->processResult(
             $validateResult,
             function ($entity) use ($sucess, $repository, $userdata) {
-                // enviamos mail al usuario
-                $this->enviarEmailUsuario($userdata);
-                // guardamos el usuario
-                return call_user_func($sucess, $repository->save($entity));
+                return call_user_func_array($sucess, [$repository->save($entity), $userdata]);
             },
             $error
         );
@@ -263,7 +260,7 @@ class UsuarioServices extends SNCServices
      * @param $userdata
      * @return mixed|array|NULL|string
      */
-    private function enviarEmailUsuario($userdata)
+    public function enviarEmailUsuario($userdata)
     {
         $response = $this->notificationsService->enviarNotificacion(
             $this->notificationsService->getDefaultTemplate(),
