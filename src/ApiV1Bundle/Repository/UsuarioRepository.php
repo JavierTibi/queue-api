@@ -2,7 +2,6 @@
 
 namespace ApiV1Bundle\Repository;
 
-
 class UsuarioRepository extends ApiRepository
 {
     /**

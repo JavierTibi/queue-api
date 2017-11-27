@@ -11,7 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Class Usuario
  * @package ApiV1Bundle\Entity
- * /**
+ *
  * @ORM\Entity(repositoryClass="ApiV1Bundle\Repository\UsuarioRepository")
  * @ORM\InheritanceType("JOINED")
  * @ORM\DiscriminatorColumn(name="discr", type="string")
