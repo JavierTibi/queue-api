@@ -161,11 +161,13 @@ class TurnoServices extends SNCServices
         $validateResultado = $this->turnoValidator->validarGetSNT($params);
 
         if (! $validateResultado->hasError()) {
-            $validateResultado = $this->turnoIntegration->getListTurnos($params);
+            $codigoTurnos = $this->buscarCodigosTurnosRecepcionados($params);
+            $validateResultado = $this->turnoIntegration->getListTurnos($params, $codigoTurnos);
 
             if (! $validateResultado->hasError()) {
                 $response = $validateResultado->getEntity();
                 $response->metadata->resultset = (array) $response->metadata->resultset;
+
                 //transforma el resultado en array para enviarlo a Respuesta Data.
                 foreach ($response->result as $item) {
                     $item->campos =  (array) $item->campos;
@@ -180,6 +182,11 @@ class TurnoServices extends SNCServices
             },
             $onError
         );
+    }
+
+    private function buscarCodigosTurnosRecepcionados($params)
+    {
+        return $this->turnoRepository->turnosRecepcionados($params['fecha'], $params['puntoatencion']);
     }
 
     /**

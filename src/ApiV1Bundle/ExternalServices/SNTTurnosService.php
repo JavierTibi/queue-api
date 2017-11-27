@@ -21,13 +21,14 @@ class SNTTurnosService
      * @param $params
      * @return ValidateResultado
      */
-    public function getListTurnos($params)
+    public function getListTurnos($params, $codigoTurnos)
     {
         $parameters = [
             'puntoatencion' => (int)$params['puntoatencion'],
             'fecha' => $params['fecha'],
             'offset' => $params['offset'],
-            'limit' => $params['limit']
+            'limit' => $params['limit'],
+            'codigos' => $codigoTurnos
         ];
 
         $url = $this->integrationService->getUrl('turnos.fecha');
