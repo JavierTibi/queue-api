@@ -2,17 +2,13 @@
 
 namespace ApiV1Bundle\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert;
-use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * Admin
  *
  * @ORM\Table(name="user_admin")
  * @ORM\Entity(repositoryClass="ApiV1Bundle\Repository\AdminRepository")
- * @Gedmo\SoftDeleteable(fieldName="fechaBorrado")
  * @ORM\HasLifecycleCallbacks()
  */
 class Admin extends Usuario

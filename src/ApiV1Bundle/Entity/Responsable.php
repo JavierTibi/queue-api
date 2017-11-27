@@ -2,8 +2,6 @@
 namespace ApiV1Bundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert;
-use Gedmo\Mapping\Annotation as Gedmo;
 use ApiV1Bundle\Entity\User;
 
 /**
@@ -11,7 +9,6 @@ use ApiV1Bundle\Entity\User;
  *
  * @ORM\Table(name="user_responsable")
  * @ORM\Entity(repositoryClass="ApiV1Bundle\Repository\ResponsableRepository")
- * @Gedmo\SoftDeleteable(fieldName="fechaBorrado")
  * @ORM\HasLifecycleCallbacks()
  */
 class Responsable extends Usuario
@@ -91,7 +88,7 @@ class Responsable extends Usuario
      */
     public function getPuntoAtencionId()
     {
-        return $this->getPuntoAtencion()->getId();
+        return $this->getPuntoAtencion() ? $this->getPuntoAtencion()->getId() : null;
     }
 
     /**
@@ -122,9 +119,9 @@ class Responsable extends Usuario
     {
         return $this->fechaBorrado;
     }
-    
+
     /**
-     * 
+     *
      * @param type $puntoAtencionID
      */
     public function setPuntoAtencion($puntoAtencionID) {
@@ -136,6 +133,6 @@ class Responsable extends Usuario
      */
     public function getNombrePuntoAtencion()
     {
-        return $this->getPuntoAtencion()->getNombre();
+        return $this->getPuntoAtencion() ? $this->getPuntoAtencion()->getNombre() : null;
     }
 }
