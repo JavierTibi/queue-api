@@ -57,7 +57,9 @@ class TurnoRepository extends ApiRepository
          $query->select([
             't.codigo'
         ]);
-        $query->where('t.puntoAtencion = :puntoAtencionId')->setParameter('puntoAtencionId', $puntoAtencionId);
+
+        $query->join('t.puntoAtencion', 'p');
+        $query->where('p.puntoAtencionIdSnt = :puntoAtencionId')->setParameter('puntoAtencionId', $puntoAtencionId);
         $query->andWhere('t.estado = :estado')->setParameter('estado', Turno::ESTADO_RECEPCIONADO); 
         $query->andWhere('t.fecha = :fecha')->setParameter('fecha', $fechaFormat);
         $query->orderBy('t.id', 'DESC');
