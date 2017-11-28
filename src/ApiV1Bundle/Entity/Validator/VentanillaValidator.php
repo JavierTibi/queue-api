@@ -2,11 +2,17 @@
 
 namespace ApiV1Bundle\Entity\Validator;
 
-
+use ApiV1Bundle\Repository\ColaRepository;
 use ApiV1Bundle\Entity\Ventanilla;
 
 class VentanillaValidator extends SNCValidator
 {
+    private $colaRepository;
+
+    public function __construct(ColaRepository $colaRepository)
+    {
+        $this->colaRepository= $colaRepository;
+    }
     /**
      * @param $params
      * @return ValidateResultado
@@ -18,7 +24,17 @@ class VentanillaValidator extends SNCValidator
             'colas' => 'required:matriz'
         ]);
 
-        //TODO validar punto de atencion
+        foreach ($params['colas'] as $idCola) {
+                $cola = $this->colaRepository->find($idCola);
+                $validateCola = $this->validarCola($cola);
+                if ($validateCola->hasError()) {
+                    return $validateCola;
+                }
+            }
+            
+            if (! count($errors) > 0) {
+                return $this->validarPuntoAtencion($puntoAtencion);
+            }
 
         return new ValidateResultado(null, $errors);
     }

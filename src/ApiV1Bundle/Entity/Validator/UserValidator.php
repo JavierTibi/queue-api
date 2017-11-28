@@ -4,17 +4,20 @@ namespace ApiV1Bundle\Entity\Validator;
 
 
 use ApiV1Bundle\Repository\UserRepository;
+use ApiV1Bundle\Repository\VentanillaRepository;
 use ApiV1Bundle\Entity\Validator\ValidateResultado;
 use ApiV1Bundle\Entity\User;
 
 class UserValidator extends SNCValidator
 {
     private $userRepository;
+    private $ventanillaRepository;
     private $encoder;
 
-    public function __construct(UserRepository $userRepository, $encoder)
+    public function __construct(UserRepository $userRepository, VentanillaRepository $ventanillaRepository, $encoder)
     {
         $this->userRepository = $userRepository;
+        $this->ventanillaRepository = $ventanillaRepository;
         $this->encoder = $encoder;
     }
 
@@ -110,10 +113,19 @@ class UserValidator extends SNCValidator
                 'puntoAtencion' => 'required:integer',
                 'ventanillas' => 'required:matriz'
             ]);
-
+            
+            foreach ($params['ventanillas'] as $idVentanilla) {
+                $ventanilla = $this->ventanillaRepository->find($idVentanilla);
+                $validateVentanilla =  $this->validarVentanilla($ventanilla);
+                if ($validateVentanilla->hasError()) {
+                    return $validateVentanilla;
+                }
+            }
+            
             if (! count($errors) > 0) {
                 return $this->validarPuntoAtencion($puntoAtencion);
             }
+            
 
             return new ValidateResultado(null, $errors);
 

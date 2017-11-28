@@ -65,9 +65,9 @@ class AgenteFactory extends UsuarioFactory implements UsuarioFactoryInterface
 
             foreach ($params['ventanillas'] as $idVentanilla) {
                 $ventanilla = $this->ventanillaRepository->find($idVentanilla);
-                $agente->addVentanilla($ventanilla);
-            }
-
+                    $agente->addVentanilla($ventanilla);
+                }
+            
             $validateResultado->setEntity($agente);
         }
 

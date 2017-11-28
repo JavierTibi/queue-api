@@ -40,9 +40,9 @@ class VentanillaFactory
 
             foreach ($params['colas'] as $colaId) {
                 $cola = $this->colaRepository->find($colaId);
-                $ventanilla->addCola($cola);
-            }
-
+                    $ventanilla->addCola($cola);
+                }
+                
             return new ValidateResultado($ventanilla, []);
         }
 

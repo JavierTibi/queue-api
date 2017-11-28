@@ -182,6 +182,7 @@ services:
 
     snc.validator.ventanilla:
           class: '%snc.validator.ventanilla.class%'
+          arguments: ['@snc.repository.cola']
     
     snc.validator.admin:
         class : '%snc.validator.admin.class%'
@@ -192,7 +193,7 @@ services:
         
     snc.validator.user:
        class: '%snc.validator.user.class%'
-       arguments: ['@snc.repository.user', '@security.password_encoder']
+       arguments: ['@snc.repository.user', '@snc.repository.ventanilla', '@security.password_encoder']
 
     snc.validator.cola:
        class: '%snc.validator.cola.class%'
