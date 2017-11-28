@@ -76,4 +76,19 @@ class AgenteRepository extends ApiRepository
         $total = $query->getQuery()->getSingleScalarResult();
         return (int) $total;
     }
+
+    /**
+     * Listado de ventanillas por agente que no esten ocupadas por otros agentes
+     *
+     * @param $agenteId
+     * @return array
+     */
+    public function findVentanillasAgente($agenteId)
+    {
+        $query = $this->getRepository()->createQueryBuilder('u');
+        $query->select(['v.id', 'v.identificador']);
+        $query->join('u.ventanillas', 'v');
+        $query->where('u.id = :id')->setParameter('id', $agenteId);
+        return  $query->getQuery()->getResult();
+    }
 }

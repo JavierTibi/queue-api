@@ -14,8 +14,36 @@ use Symfony\Component\HttpFoundation\Response;
 
 class VentanillaController extends ApiController
 {
-
     private $ventanillaServices;
+
+    /**
+     * Listado de ventanillas
+     *
+     * @param Request $request Espera el resultado de una petición como parámetro
+     * @return mixed
+     * @Get("/ventanillas")
+     */
+    public function getListAction(Request $request)
+    {
+        $puntoAtencionId = $request->get('puntoatencion', null);
+        $offset = $request->get('offset', 0);
+        $limit = $request->get('limit', 10);
+        $this->ventanillaServices = $this->getVentanillaServices();
+        return $this->ventanillaServices->findAllPaginate($puntoAtencionId, (int) $limit, (int) $offset);
+    }
+
+    /**
+     * Obtiene una ventanilla
+     *
+     * @param integer $id Identificador único
+     * @return mixed
+     * @Get("/ventanillas/{id}")
+     */
+    public function getItemAction($id)
+    {
+        $this->ventanillaServices = $this->getVentanillaServices();
+        return $this->ventanillaServices->get($id);
+    }
 
     /**
      * Crear una ventanilla
@@ -86,34 +114,4 @@ class VentanillaController extends ApiController
             }
         );
     }
-
-    /**
-     * Listado de ventanillas
-     *
-     * @param Request $request Espera el resultado de una petición como parámetro
-     * @return mixed
-     * @Get("/ventanillas")
-     */
-    public function getListAction(Request $request)
-    {
-        $puntoAtencionId = $request->get('puntoatencion', null);
-        $offset = $request->get('offset', 0);
-        $limit = $request->get('limit', 10);
-        $this->ventanillaServices = $this->getVentanillaServices();
-        return $this->ventanillaServices->findAllPaginate($puntoAtencionId, (int) $limit, (int) $offset);
-    }
-
-    /**
-     * Obtiene una ventanilla
-     *
-     * @param integer $id Identificador único
-     * @return mixed
-     * @Get("/ventanillas/{id}")
-     */
-    public function getItemAction($id)
-    {
-        $this->ventanillaServices = $this->getVentanillaServices();
-        return $this->ventanillaServices->get($id);
-    }
-
 }

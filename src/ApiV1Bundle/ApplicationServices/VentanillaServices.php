@@ -14,6 +14,7 @@ use ApiV1Bundle\Repository\ColaRepository;
 use ApiV1Bundle\Repository\PuntoAtencionRepository;
 use ApiV1Bundle\Repository\VentanillaRepository;
 use Symfony\Component\DependencyInjection\Container;
+use ApiV1Bundle\Repository\AgenteRepository;
 
 class VentanillaServices extends SNCServices
 {
@@ -51,10 +52,12 @@ class VentanillaServices extends SNCServices
         );
         $validateResult = $ventanillaFactory->create($params);
 
-        return $this->processResult($validateResult,
+        return $this->processResult(
+            $validateResult,
             function ($entity) use ($sucess) {
                 return call_user_func($sucess, $this->ventanillaRepository->save($entity));
-            }, $error
+            },
+            $error
         );
     }
 
@@ -76,10 +79,12 @@ class VentanillaServices extends SNCServices
         );
         $validateResult = $ventanillaSync->edit($id, $params);
 
-        return $this->processResult($validateResult,
+        return $this->processResult(
+            $validateResult,
             function () use ($success) {
                 return call_user_func($success, $this->ventanillaRepository->flush());
-            }, $error
+            },
+            $error
         );
     }
 
@@ -100,10 +105,12 @@ class VentanillaServices extends SNCServices
         );
         $validateResult = $ventanillaSync->delete($id);
 
-        return $this->processResult($validateResult,
+        return $this->processResult(
+            $validateResult,
             function ($entity) use ($success) {
                 return call_user_func($success, $this->ventanillaRepository->remove($entity));
-            }, $error
+            },
+            $error
         );
     }
 

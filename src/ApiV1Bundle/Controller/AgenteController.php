@@ -37,8 +37,20 @@ class AgenteController extends ApiController
      */
     public function getItemAction($id)
     {
-        $this->agenteServices = $this->getVentanillaServices();
+        $this->agenteServices = $this->getAgenteServices();
         return $this->agenteServices->get($id);
+    }
+
+    /**
+     * Muestra el listado de ventanillas por usuario que no están asignadas
+     *
+     * @param $id
+     * @Get("/agentes/{id}/ventanillas")
+     */
+    public function getVentanillasByAgente($id)
+    {
+        $this->agenteServices = $this->getAgenteServices();
+        return $this->agenteServices->findVentanillasAgente($id);
     }
 
     /**

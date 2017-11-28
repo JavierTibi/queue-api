@@ -149,7 +149,7 @@ services:
 
     snc.services.agente:
         class: '%snc.services.agente.class%'
-        arguments: ['@service_container', '@snc.repository.agente', '@snc.validator.agente', '@snc.validator.user', '@snc.repository.ventanilla', '@snc.repository.puntoatencion']
+        arguments: ['@service_container', '@snc.repository.agente', '@snc.validator.agente', '@snc.repository.usuario', '@snc.validator.user', '@snc.repository.ventanilla', '@snc.repository.puntoatencion']
 
     snc.services.ventanilla:
         class: '%snc.services.ventanilla.class%'

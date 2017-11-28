@@ -19,6 +19,7 @@ class AgenteServices extends SNCServices
 {
     private $agenteRepository;
     private $agenteValidator;
+    private $usuarioRepository;
     private $userValidator;
     private $ventanillaRepository;
     private $puntoAtencionRepository;
@@ -28,6 +29,7 @@ class AgenteServices extends SNCServices
      * @param Container $container
      * @param AgenteRepository $agenteRepository
      * @param AgenteValidator $agenteValidator
+     * @param UsuarioRepository $usuarioRepository
      * @param UserValidator $userValidator
      * @param VentanillaRepository $ventanillaRepository
      * @param PuntoAtencionRepository $puntoAtencionRepository
@@ -36,6 +38,7 @@ class AgenteServices extends SNCServices
         Container $container,
         AgenteRepository $agenteRepository,
         AgenteValidator $agenteValidator,
+        UsuarioRepository $usuarioRepository,
         UserValidator $userValidator,
         VentanillaRepository $ventanillaRepository,
         PuntoAtencionRepository $puntoAtencionRepository
@@ -43,6 +46,7 @@ class AgenteServices extends SNCServices
         parent::__construct($container);
         $this->agenteRepository = $agenteRepository;
         $this->agenteValidator = $agenteValidator;
+        $this->usuarioRepository = $usuarioRepository;
         $this->userValidator = $userValidator;
         $this->ventanillaRepository = $ventanillaRepository;
         $this->puntoAtencionRepository = $puntoAtencionRepository;
@@ -152,5 +156,44 @@ class AgenteServices extends SNCServices
         }
 
         return $validateResult;
+    }
+
+    /**
+     * Listado de ventanillas disponibles para el agente
+     * @param $id
+     * @return object|\ApiV1Bundle\Entity\Response\Respuesta
+     */
+    public function findVentanillasAgente($id)
+    {
+        $usuario = $this->usuarioRepository->findOneByUser($id);
+        $agente = $this->agenteRepository->find($usuario->getId());
+        $validateResultado = $this->agenteValidator->validarAgente($agente);
+        if (! $validateResultado->hasError()) {
+            $response = [];
+            // listado de ventanillas actualmente en uso
+            $listaAgentes = $this->agenteRepository->findByPuntoAtencion($agente->getPuntoAtencion()->getId());
+            $ventanillasEnUso = [];
+            foreach ($listaAgentes as $agentePuntoAtencion) {
+                if ($agentePuntoAtencion->getId() != $agente->getId()) {
+                    $ventanillaActual = $agentePuntoAtencion->getventanillaActual();
+                    if ($ventanillaActual) {
+                        $ventanillasEnUso[] = $ventanillaActual->getId();
+                    }
+                }
+            }
+            // listado de ventanillas del agente
+            foreach ($agente->getVentanillas() as $ventanilla) {
+                if (! in_array($ventanilla->getId(), $ventanillasEnUso)) {
+                    $response[] = [
+                        'id' => $ventanilla->getId(),
+                        'identificador' => $ventanilla->getIdentificador()
+                    ];
+                }
+            }
+
+            return $this->respuestaData([], $response);
+        }
+
+        return $this->respuestaData([], null);
     }
 }
