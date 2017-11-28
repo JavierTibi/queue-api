@@ -35,9 +35,11 @@ class AgenteRepository extends ApiRepository
             'a.nombre',
             'a.apellido',
             'IDENTITY(a.ventanillaActual) as ventanillaActual',
+            'v.identificador as ventanillaActualIdentificador'
         ]);
 
         $query->join('a.user', 'u');
+        $query->join('a.ventanillaActual', 'v');
         $query->where('a.puntoAtencion = :puntoAtencionId')->setParameter('puntoAtencionId', $puntoAtencionId);
         $query->setFirstResult($offset);
         $query->setMaxResults($limit);
