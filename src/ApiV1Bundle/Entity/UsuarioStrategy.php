@@ -106,7 +106,8 @@ class UsuarioStrategy
         $data = [
             'puntoAtencion' => [
                 'id' => $usuario->getPuntoAtencionId(),
-                'nombre' => $usuario->getNombrePuntoAtencion()
+                'nombre' => $usuario->getNombrePuntoAtencion(),
+                'snt_id' => $usuario->getPuntoAtencionIdSnt()
             ],
             'ventanillas' => [],
             'ventanillaActual' => $usuario->getVentanillaActualId()
@@ -131,7 +132,8 @@ class UsuarioStrategy
         $data = [
             'puntoAtencion' => [
                 'id' => $usuario->getPuntoAtencionId(),
-                'nombre' => $usuario->getNombrePuntoAtencion()
+                'nombre' => $usuario->getNombrePuntoAtencion(),
+                'snt_id' => $usuario->getPuntoAtencionIdSnt()
             ]
         ];
         return $data;

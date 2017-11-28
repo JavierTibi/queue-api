@@ -103,4 +103,12 @@ class Admin extends Usuario
     {
         return '';
     }
+
+    /**
+     * @return null
+     */
+    public function getPuntoAtencionIdSnt()
+    {
+        return null;
+    }
 }

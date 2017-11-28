@@ -135,4 +135,12 @@ class Responsable extends Usuario
     {
         return $this->getPuntoAtencion() ? $this->getPuntoAtencion()->getNombre() : null;
     }
+
+    /**
+     * @return int|null
+     */
+    public function getPuntoAtencionIdSnt()
+    {
+        return $this->getPuntoAtencion() ? $this->getPuntoAtencion()->getPuntoAtencionIdSnt() : null;
+    }
 }

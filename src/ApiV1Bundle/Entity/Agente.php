@@ -214,4 +214,12 @@ class Agente extends Usuario
     {
         return $this->getVentanillaActual() ? $this->getVentanillaActual()->getId() : null;
     }
+
+    /**
+     * @return int|null
+     */
+    public function getPuntoAtencionIdSnt()
+    {
+        return $this->getPuntoAtencion() ? $this->getPuntoAtencion()->getPuntoAtencionIdSnt() : null;
+    }
 }
