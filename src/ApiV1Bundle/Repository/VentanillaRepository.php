@@ -33,9 +33,7 @@ class VentanillaRepository extends ApiRepository
             'v.id',
             'v.identificador'
         ]);
-        $query->leftJoin('v.agentes', 'a');
         $query->where('v.puntoAtencion = :puntoAtencionId');
-        $query->andWhere('a.id is null');
         $query->setParameter('puntoAtencionId', $puntoAtencionId);
         $query->orderBy('v.identificador', 'ASC');
         $query->setFirstResult($offset);
