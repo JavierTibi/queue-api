@@ -44,7 +44,7 @@ class RedisServices extends SNCServices
         );
 
         if ($val == 0) {
-            $errors['errors'] = 'El turno que ya se encuentra en el Sistema de Colas.';
+            $errors['errors'] = 'El turno ya se encuentra en el Sistema de Colas.';
             return new ValidateResultado(null, $errors);
         }
 
