@@ -31,7 +31,7 @@ class HeadersListener
             $event->setResponse($optionsResponse);
         }
         // validate token
-        if ($this->kernel->getEnvironment() != 'test') {
+        if ($this->kernel->getEnvironment() == 'prod') {
             $tokenResponse = $this->tokenValidationResponse(
                 $request->getPathInfo(),
                 $request->headers->get('authorization', null),

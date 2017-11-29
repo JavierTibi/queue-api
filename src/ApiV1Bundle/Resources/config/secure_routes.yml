@@ -8,7 +8,7 @@ parameters:
             metodos: ['GET', 'POST', 'PUT', 'DELETE']
         '/api/v1.0/colas':
             roles: ['ROL_ADMIN', 'ROL_RESPONSABLE', 'ROL_AGENTE']
-            metodos: ['GET', 'POST', 'PUT', 'DELETE']
+            metodos: ['GET']
         '/api/v1.0/snt/turnos':
             roles: ['ROL_ADMIN', 'ROL_RESPONSABLE', 'ROL_AGENTE']
             metodos: ['GET', 'POST', 'PUT', 'DELETE']
