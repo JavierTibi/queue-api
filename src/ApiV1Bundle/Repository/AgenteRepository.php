@@ -39,7 +39,7 @@ class AgenteRepository extends ApiRepository
         ]);
 
         $query->join('a.user', 'u');
-        $query->join('a.ventanillaActual', 'v');
+        $query->leftJoin('a.ventanillaActual', 'v');
         $query->where('a.puntoAtencion = :puntoAtencionId')->setParameter('puntoAtencionId', $puntoAtencionId);
         $query->setFirstResult($offset);
         $query->setMaxResults($limit);
