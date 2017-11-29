@@ -1,3 +1,23 @@
 parameters:
     secureroutes:
-        '/api/v1.0/auth/test': ['ROL_ADMIN', 'ROL_RESPONSABLE', 'ROL_AGENTE']
+        '/api/v1.0/auth/test':
+            roles: ['ROL_ADMIN', 'ROL_RESPONSABLE', 'ROL_AGENTE']
+            metodos: ['POST', 'PUT', 'DELETE']
+        '/api/v1.0/agentes':
+            roles: ['ROL_ADMIN', 'ROL_RESPONSABLE', 'ROL_AGENTE']
+            metodos: ['GET', 'POST', 'PUT', 'DELETE']
+        '/api/v1.0/colas':
+            roles: ['ROL_ADMIN', 'ROL_RESPONSABLE', 'ROL_AGENTE']
+            metodos: ['GET', 'POST', 'PUT', 'DELETE']
+        '/api/v1.0/snt/turnos':
+            roles: ['ROL_ADMIN', 'ROL_RESPONSABLE', 'ROL_AGENTE']
+            metodos: ['GET', 'POST', 'PUT', 'DELETE']
+        '/api/v1.0/turnos':
+            roles: ['ROL_ADMIN', 'ROL_RESPONSABLE', 'ROL_AGENTE']
+            metodos: ['GET', 'POST', 'PUT', 'DELETE']
+        '/api/v1.0/usuarios':
+            roles: ['ROL_ADMIN', 'ROL_RESPONSABLE', 'ROL_AGENTE']
+            metodos: ['GET', 'POST', 'PUT', 'DELETE']
+        '/api/v1.0/ventanillas':
+            roles: ['ROL_ADMIN', 'ROL_RESPONSABLE', 'ROL_AGENTE']
+            metodos: ['GET', 'POST', 'PUT', 'DELETE']

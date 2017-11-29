@@ -133,6 +133,7 @@ class SecurityServices extends SNCServices
         $tokenCancelado = $this->tokenRepository->findOneByToken($token);
         if ($authorization) {
             list($bearer, $token) = explode(' ', $authorization);
+            $token = str_replace('"', '', $token);
         }
         return $this->jwtoken->validate($token, $tokenCancelado);
     }
