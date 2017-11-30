@@ -12,15 +12,56 @@ class UsuarioControllerTest extends ControllerTestCase
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
     }
 
-    public function testPostAction()
+    public function testPostActionAdmin()
     {
         $client = self::createClient();
         $client->followRedirects();
 
         $params = [
-            'nombre' => 'Dude',
-            'apellido' => 'McDudeFace',
-            'username' => 'duda@example.com',
+            'nombre' => 'Admin',
+            'apellido' => 'McAdminFace',
+            'username' => 'admin@example.com',
+            'rol' => 1,
+            'puntoAtencion' => 1,
+            'ventanillas' => [2, 4]
+        ];
+
+        $client->request('POST', '/api/v1.0/usuarios', $params);
+        $data = json_decode($client->getResponse()->getContent(), true);
+        var_dump($client->getResponse()->getContent());
+        $this->assertEquals(200, $client->getResponse()->getStatusCode());
+        return $data['additional']['id'];
+    }
+
+    public function testPostActionResp()
+    {
+        $client = self::createClient();
+        $client->followRedirects();
+
+        $params = [
+            'nombre' => 'Resp',
+            'apellido' => 'McRespFace',
+            'username' => 'resp@example.com',
+            'rol' => 2,
+            'puntoAtencion' => 1,
+            'ventanillas' => [2, 4]
+        ];
+
+        $client->request('POST', '/api/v1.0/usuarios', $params);
+        $data = json_decode($client->getResponse()->getContent(), true);
+        $this->assertEquals(200, $client->getResponse()->getStatusCode());
+        return $data['additional']['id'];
+    }
+
+    public function testPostActionAgente()
+    {
+        $client = self::createClient();
+        $client->followRedirects();
+
+        $params = [
+            'nombre' => 'Agente',
+            'apellido' => 'McAgenteFace',
+            'username' => 'agente@example.com',
             'rol' => 3,
             'puntoAtencion' => 1,
             'ventanillas' => [2, 4]
@@ -33,7 +74,7 @@ class UsuarioControllerTest extends ControllerTestCase
     }
 
     /**
-     * @depends testPostAction
+     * @depends testPostActionAdmin
      */
     public function testPutAction($id)
     {
@@ -44,7 +85,7 @@ class UsuarioControllerTest extends ControllerTestCase
             'nombre' => 'Dude',
             'apellido' => 'McDudeFace',
             'username' => 'dud@example.com',
-            'rol' => 3,
+            'rol' => 1,
             'puntoAtencion' => 1,
             'ventanillas' => [2, 4]
         ];
@@ -54,7 +95,7 @@ class UsuarioControllerTest extends ControllerTestCase
     }
 
     /**
-     * @depends testPostAction
+     * @depends testPostActionAdmin
      */
     public function testGetAction($id)
     {
@@ -66,9 +107,33 @@ class UsuarioControllerTest extends ControllerTestCase
     }
 
     /**
-     * @depends testPostAction
+     * @depends testPostActionAdmin
      */
-    public function testDeleteAction($id)
+    public function testDeleteActionAdmin($id)
+    {
+        $client = self::createClient();
+        $client->followRedirects();
+
+        $client->request('DELETE', '/api/v1.0/usuarios/' . $id);
+        $this->assertEquals(200, $client->getResponse()->getStatusCode());
+    }
+
+    /**
+     * @depends testPostActionResp
+     */
+    public function testDeleteActionResp($id)
+    {
+        $client = self::createClient();
+        $client->followRedirects();
+
+        $client->request('DELETE', '/api/v1.0/usuarios/' . $id);
+        $this->assertEquals(200, $client->getResponse()->getStatusCode());
+    }
+
+    /**
+     * @depends testPostActionAgente
+     */
+    public function testDeleteActionAgente($id)
     {
         $client = self::createClient();
         $client->followRedirects();
