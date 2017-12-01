@@ -80,6 +80,9 @@ class UsuarioServices extends SNCServices
     public function create($params, $sucess, $error)
     {
         $validateResult = $this->userValidator->validarCreate($params);
+        $repository = null;
+        $userdata = null;
+
         if (! $validateResult->hasError()) {
             $usuarioFactory = new UsuarioFactoryStrategy(
                 $this->userValidator,
