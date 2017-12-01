@@ -25,6 +25,12 @@ class VentanillaControllerTest extends ControllerTestCase
         $client->request('POST', '/api/v1.0/ventanillas', $params);
         $data = json_decode($client->getResponse()->getContent(), true);
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
+
+        // Ventanilla sin colas
+        $params['colas'] = [];
+        $client->request('POST', '/api/v1.0/ventanillas', $params);
+        $this->assertEquals(400, $client->getResponse()->getStatusCode());
+
         return $data['additional']['id'];
     }
 
@@ -43,6 +49,10 @@ class VentanillaControllerTest extends ControllerTestCase
 
         $client->request('PUT', '/api/v1.0/ventanillas/' . $id, $params);
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
+
+        // Ventanilla inexistente
+        $client->request('PUT', '/api/v1.0/ventanillas/0', $params);
+        $this->assertEquals(400, $client->getResponse()->getStatusCode());
     }
 
     /**
