@@ -65,17 +65,6 @@ class ColaController extends ApiController
                 return $this->respuestaError($err);
             }
         );
-
-        /*
-         * POC REDIS
-         *            $this->getContainerRedis(),
-        $this->redis = $this->getContainerRedis();
-        $val = $this->redis->sadd('cola:1', 10);
-        $fecha = new \DateTime();
-        $val = $this->redis->zadd('prioridad:0:cola:1', $fecha->getTimestamp(), 'hola fausto');
-        dump($this->redis->zscan('prioridad:0:cola:1', 0));
-        dump($val);
-        exit; */
     }
 
     /**

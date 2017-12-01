@@ -134,6 +134,7 @@ class VentanillaServices extends SNCServices
     }
 
     /**
+     * Obtiene una ventanilla
      * @param $id
      * @return object
      */
@@ -141,8 +142,22 @@ class VentanillaServices extends SNCServices
     {
         $ventanilla = $this->ventanillaRepository->find($id);
         $validateResultado = $this->ventanillaValidator->validarVentanilla($ventanilla);
+
         if (! $validateResultado->hasError()) {
-            return $this->respuestaData([], $ventanilla);
+            $colas = [];
+            foreach ($ventanilla->getColas() as $cola) {
+                $colas[] = [
+                    'id' => $cola->getId(),
+                    'nombre' => $cola->getNombre()
+                ];
+            }
+
+            $result = [
+                'id' => $ventanilla->getId(),
+                'identificador' => $ventanilla->getIdentificador(),
+                'colas' => $colas
+            ];
+            return $this->respuestaData([], $result);
         }
 
         return $this->respuestaData([], null);
