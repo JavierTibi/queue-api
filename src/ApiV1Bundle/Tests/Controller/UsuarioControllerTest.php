@@ -21,15 +21,19 @@ class UsuarioControllerTest extends ControllerTestCase
             'nombre' => 'Admin',
             'apellido' => 'McAdminFace',
             'username' => 'admin@example.com',
-            'rol' => 1,
-            'puntoAtencion' => 1,
-            'ventanillas' => [2, 4]
+            'rol' => 1
         ];
 
         $client->request('POST', '/api/v1.0/usuarios', $params);
         $data = json_decode($client->getResponse()->getContent(), true);
-        var_dump($client->getResponse()->getContent());
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
+
+        // Parametro faltante
+        unset($params['apellido']);
+        $client->request('POST', '/api/v1.0/usuarios', $params);
+        $this->assertEquals(400, $client->getResponse()->getStatusCode());
+
+
         return $data['additional']['id'];
     }
 
@@ -43,33 +47,32 @@ class UsuarioControllerTest extends ControllerTestCase
             'apellido' => 'McRespFace',
             'username' => 'resp@example.com',
             'rol' => 2,
-            'puntoAtencion' => 1,
-            'ventanillas' => [2, 4]
+            'puntoAtencion' => 1
         ];
 
         $client->request('POST', '/api/v1.0/usuarios', $params);
         $data = json_decode($client->getResponse()->getContent(), true);
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
-        return $data['additional']['id'];
-    }
 
-    public function testPostActionAgente()
-    {
-        $client = self::createClient();
-        $client->followRedirects();
-
-        $params = [
-            'nombre' => 'Agente',
-            'apellido' => 'McAgenteFace',
-            'username' => 'agente@example.com',
-            'rol' => 3,
-            'puntoAtencion' => 1,
-            'ventanillas' => [2, 4]
-        ];
-
+        // Punto de atención inexistente
+        $params['puntoAtencion'] = 0;
         $client->request('POST', '/api/v1.0/usuarios', $params);
-        $data = json_decode($client->getResponse()->getContent(), true);
-        $this->assertEquals(200, $client->getResponse()->getStatusCode());
+        $this->assertEquals(400, $client->getResponse()->getStatusCode());
+
+        $params['puntoAtencion'] = 1;
+
+        // Apellido faltante
+        unset($params['apellido']);
+        $client->request('POST', '/api/v1.0/usuarios', $params);
+        $this->assertEquals(400, $client->getResponse()->getStatusCode());
+
+        // Username faltante
+        $params['apellido'] = 'McRespFace';
+        unset($params['username']);
+        $client->request('POST', '/api/v1.0/usuarios', $params);
+        $this->assertEquals(400, $client->getResponse()->getStatusCode());
+
+
         return $data['additional']['id'];
     }
 
@@ -122,18 +125,6 @@ class UsuarioControllerTest extends ControllerTestCase
      * @depends testPostActionResp
      */
     public function testDeleteActionResp($id)
-    {
-        $client = self::createClient();
-        $client->followRedirects();
-
-        $client->request('DELETE', '/api/v1.0/usuarios/' . $id);
-        $this->assertEquals(200, $client->getResponse()->getStatusCode());
-    }
-
-    /**
-     * @depends testPostActionAgente
-     */
-    public function testDeleteActionAgente($id)
     {
         $client = self::createClient();
         $client->followRedirects();
