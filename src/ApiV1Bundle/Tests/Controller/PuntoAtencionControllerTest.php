@@ -32,6 +32,11 @@ class PuntoAtencionControllerTest extends ControllerTestCase
 
         $client->request('POST', '/api/v1.0/puntosatencion', $params);
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
+
+        // Ya existe
+        $client->request('POST', '/api/v1.0/puntosatencion', $params);
+        $this->assertEquals(400, $client->getResponse()->getStatusCode());
+
         return $id;
     }
 
@@ -50,6 +55,14 @@ class PuntoAtencionControllerTest extends ControllerTestCase
 
         $client->request('PUT', '/api/v1.0/puntosatencion/' . $id, $params);
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
+
+        // Punto atención inexistente
+        $client->request('PUT', '/api/v1.0/puntosatencion/0', $params);
+        $this->assertEquals(400, $client->getResponse()->getStatusCode());
+
+        // Sin nombre
+        $client->request('PUT', '/api/v1.0/puntosatencion/' . $id, []);
+        $this->assertEquals(400, $client->getResponse()->getStatusCode());
     }
 
     /**
@@ -62,5 +75,9 @@ class PuntoAtencionControllerTest extends ControllerTestCase
 
         $client->request('DELETE', '/api/v1.0/puntosatencion/' . $id);
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
+
+        // No existe
+        $client->request('DELETE', '/api/v1.0/puntosatencion/0');
+        $this->assertEquals(400, $client->getResponse()->getStatusCode());
     }
 }
