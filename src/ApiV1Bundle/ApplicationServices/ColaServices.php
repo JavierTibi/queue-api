@@ -71,7 +71,21 @@ class ColaServices extends SNCServices
         $validateResultado = $this->colaValidator->validarCola($cola);
 
         if (! $validateResultado->hasError()) {
-            return $this->respuestaData([], $cola);
+            $ventanillas = [];
+            foreach ($cola->getVentanillas() as $ventanilla) {
+                $ventanillas[] = [
+                    'id' => $ventanilla->getId(),
+                    'identificador' => $ventanilla->getIdentificador()
+                ];
+            }
+
+            $result = [
+                'id' => $cola->getId(),
+                'nombre' => $cola->getNombre(),
+                'grupoTramite' => $cola->getGrupoTramiteSNTId(),
+                'ventanillas' => $ventanillas
+            ];
+            return $this->respuestaData([], $result);
         }
 
         return $this->respuestaData([], null);
