@@ -24,3 +24,12 @@ doctrine:
         user: '%database_testing_user%'
         password: '%database_testing_password%'
         charset: UTF8
+
+#Redis
+snc_redis:
+    clients:
+        default:
+            type: predis
+            alias: default
+            dsn: '%redis_testing_host%'
+            logging: '%kernel.debug%'

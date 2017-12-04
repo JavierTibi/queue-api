@@ -29,6 +29,7 @@ parameters:
     
     # Redis
     redis_host: redis://hxv-sntdb.hexacta.com
+    redis_testing_host: redis://hxv-sntdb.hexacta.com/4
     
     # Integration API
     snt_api_integration: http://sntapi.hexacta.com/api/v1.0
