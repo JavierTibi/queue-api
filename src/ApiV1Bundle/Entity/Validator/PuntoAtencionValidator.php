@@ -55,16 +55,19 @@ class PuntoAtencionValidator extends SNCValidator
             'nombre' => 'required',
         ]);
 
-        if (! count($error)) {
+        if (!count($error)) {
             $validateResult = $this->validarPuntoAtencion($puntoAtencion);
 
-            if (! $validateResult->hasError()) {
-                return new ValidateResultado($puntoAtencion, []);
+            if (!$validateResult->hasError()) {
+                return new ValidateResultado($puntoAtencion, null);
+            } else {
+                return $validateResult;
             }
         }
 
         return new ValidateResultado(null, $error);
     }
+
     /**
      * Valida el borrado de un punto de atención
      *
