@@ -24,9 +24,12 @@ use ApiV1Bundle\Repository\UserRepository;
 use ApiV1Bundle\Repository\UsuarioRepository;
 use ApiV1Bundle\Repository\VentanillaRepository;
 use Symfony\Component\DependencyInjection\Container;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoder;
+use ApiV1Bundle\Helper\ServicesHelper;
 
 class UsuarioServices extends SNCServices
 {
+    private $encoder;
     private $userValidator;
     private $adminValidator;
     private $responsableValidator;
@@ -43,6 +46,7 @@ class UsuarioServices extends SNCServices
 
     public function __construct(
         Container $container,
+        UserPasswordEncoder $encoder,
         UserValidator $userValidator,
         AdminValidator $adminValidator,
         ResponsableValidator $responsableValidator,
@@ -57,6 +61,7 @@ class UsuarioServices extends SNCServices
         NotificationsExternalService $notificationsService
     ) {
         parent::__construct($container);
+        $this->encoder = $encoder;
         $this->userValidator = $userValidator;
         $this->adminValidator = $adminValidator;
         $this->responsableValidator = $responsableValidator;
@@ -96,7 +101,8 @@ class UsuarioServices extends SNCServices
             $repository = $usuarioFactory->getRepository();
             $validateResult = $usuarioFactory->create($params);
 
-            $userdata = [
+            $userData = [
+                'title' => '¡Usuario creado con éxito!',
                 'email' => null,
                 'password' => null
             ];
@@ -104,8 +110,9 @@ class UsuarioServices extends SNCServices
             // securizar contraseña
             if (! $validateResult->hasError()) {
                 $user = $validateResult->getEntity()->getUser();
-                $userdata['email'] = $user->getUsername();
-                $userdata['password'] = $user->getPassword();
+                // user data
+                $userData['email'] = $user->getUsername();
+                $userData['password'] = $user->getPassword();
                 // make the password secure
                 $usuarioFactory->securityPassword($user, $this->getSecurityPassword());
             }
@@ -113,8 +120,8 @@ class UsuarioServices extends SNCServices
 
         return $this->processResult(
             $validateResult,
-            function ($entity) use ($sucess, $repository, $userdata) {
-                return call_user_func_array($sucess, [$repository->save($entity), $userdata]);
+            function ($entity) use ($sucess, $repository, $userData) {
+                return call_user_func_array($sucess, [$repository->save($entity), $userData]);
             },
             $error
         );
@@ -257,19 +264,49 @@ class UsuarioServices extends SNCServices
         );
     }
 
+    public function modificarPassword($params, $onSuccess, $onError)
+    {
+        $username = isset($params['username']) ? $params['username'] : null;
+        $user = $this->userRepository->findOneByUsername($username);
+        $validateResult = $this->userValidator->validarUsuario($user);
+
+        $userData = [
+            'title' => '¡Contraseña modificada con éxito!',
+            'email' => null,
+            'password' => null
+        ];
+
+        if (! $validateResult->hasError()) {
+            $repository = $this->userRepository;
+            // user data
+            $userData['email'] = $user->getUsername();
+            $userData['password'] = ServicesHelper::randomPassword(12);
+            // make the password secure
+            $user->setPassword($this->encoder->encodePassword($user, $userData['password']));
+        }
+
+        return $this->processResult(
+            $validateResult,
+            function ($entity) use ($onSuccess, $repository, $userData) {
+                return call_user_func_array($onSuccess, [$repository->flush(), $userData]);
+            },
+            $onError
+        );
+    }
+
     /**
-     * Enviar mail al usuario recien creado
+     * Enviar mail al usuario
      *
      * @param $userdata
      * @return mixed|array|NULL|string
      */
-    public function enviarEmailUsuario($userdata)
+    public function enviarEmailUsuario($userData, $template)
     {
         $response = $this->notificationsService->enviarNotificacion(
-            $this->notificationsService->getDefaultTemplate(),
-            $userdata['email'],
+            $this->notificationsService->getEmailTemplate($template),
+            $userData['email'],
             '20359715286',
-            $userdata
+            $userData
         );
         return $response;
     }

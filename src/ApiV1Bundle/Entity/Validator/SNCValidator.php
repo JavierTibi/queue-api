@@ -8,7 +8,6 @@
 
 namespace ApiV1Bundle\Entity\Validator;
 
-
 use ApiV1Bundle\Helper\ServicesHelper;
 
 class SNCValidator
@@ -332,7 +331,7 @@ class SNCValidator
         if (! $usuario) {
             $errors['Usuario'] = 'Usuario inexistente';
         }
-        return new ValidateResultado(null, $errors);
+        return new ValidateResultado($usuario, $errors);
     }
 
     /**
@@ -358,4 +357,3 @@ class SNCValidator
         return new ValidateResultado(null, $errors);
     }
 }
-

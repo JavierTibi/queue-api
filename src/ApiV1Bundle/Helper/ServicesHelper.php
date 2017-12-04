@@ -3,6 +3,7 @@ namespace ApiV1Bundle\Helper;
 
 class ServicesHelper
 {
+
     public static function toArray($data)
     {
         if (is_array($data)) {
@@ -13,7 +14,7 @@ class ServicesHelper
         }
         return null;
     }
-    
+
     /**
      * Pasa un código unico a sus primeros 8 caracters
      *
@@ -26,4 +27,21 @@ class ServicesHelper
         return $parts[0];
     }
 
+    /**
+     * Generar contraseña al azar
+     *
+     * @param number $len
+     * @return string
+     */
+    public static function randomPassword($len = 8)
+    {
+        $chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%&()?[]';
+        $pass = [];
+        $alphaLength = strlen($chars) - 1;
+        for ($i = 0; $i < $len; $i ++) {
+            $n = rand(0, $alphaLength);
+            $pass[] = $chars[$n];
+        }
+        return implode($pass);
+    }
 }

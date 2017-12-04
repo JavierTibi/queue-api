@@ -7,7 +7,8 @@ parameters:
         token: 'ae35524801429b26e7bcd718ca01ca7b5c988788'
         from: 'snt@hexacta.com'
         subject: 'Sistema Nacional de Turnos'
-        template: 'test004-sistematurnos'
+        templates:
+            usuario: 'snt-usuarios-sistematurnos'
         urls:
             auth: '/api-auth/token'
             templates: '/templates'

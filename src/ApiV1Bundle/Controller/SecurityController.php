@@ -2,6 +2,7 @@
 namespace ApiV1Bundle\Controller;
 
 use FOS\RestBundle\Controller\Annotations\Route;
+use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\Annotations\Post;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -9,6 +10,7 @@ class SecurityController extends ApiController
 {
 
     private $securityServices;
+    private $usuarioServices;
 
     /**
      * User login
@@ -50,12 +52,36 @@ class SecurityController extends ApiController
     }
 
     /**
-     * Test token
+     * Modificar contraseña del usuario
      *
      * @param Request $request
-     * @Post("/auth/test")
+     * @Post("auth/reset")
      */
-    public function validateSimplePath(Request $request)
+    public function modificarPassword(Request $request)
+    {
+        $params = $request->request->all();
+        $this->usuarioServices = $this->getUsuarioServices();
+        return $this->usuarioServices->modificarPassword(
+            $params,
+            function ($result, $userData) {
+                return $this->respuestaOk(
+                    'Contraseña modificada con éxito',
+                    $this->usuarioServices->enviarEmailUsuario($userData, 'usuario')
+                );
+            },
+            function ($err) {
+                return $this->respuestaError($err);
+            }
+        );
+    }
+
+    /**
+     * GET Test token
+     *
+     * @param Request $request
+     * @Get("/auth/test")
+     */
+    public function validateGetSimplePath(Request $request)
     {
         return [
             'Let me know if you can see this!'
@@ -63,7 +89,20 @@ class SecurityController extends ApiController
     }
 
     /**
-     * Test token
+     * POST Test token
+     *
+     * @param Request $request
+     * @Post("/auth/test")
+     */
+    public function validatePostSimplePath(Request $request)
+    {
+        return [
+            'Let me know if you can see this!'
+        ];
+    }
+
+    /**
+     * POST Test token
      *
      * @param Request $request
      * @Post("/auth/test/{something}")

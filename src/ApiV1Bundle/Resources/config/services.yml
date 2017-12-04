@@ -157,7 +157,7 @@ services:
 
     snc.services.usuario:
         class: '%snc.services.usuario.class%'
-        arguments: ['@service_container', '@snc.validator.user', '@snc.validator.admin', '@snc.validator.responsable', '@snc.validator.agente', '@snc.repository.agente', '@snc.repository.admin', '@snc.repository.responsable', '@snc.repository.user', '@snc.repository.ventanilla', '@snc.repository.puntoatencion', '@snc.repository.usuario', '@snc.notificaciones.service']
+        arguments: ['@service_container', '@security.password_encoder', '@snc.validator.user', '@snc.validator.admin', '@snc.validator.responsable', '@snc.validator.agente', '@snc.repository.agente', '@snc.repository.admin', '@snc.repository.responsable', '@snc.repository.user', '@snc.repository.ventanilla', '@snc.repository.puntoatencion', '@snc.repository.usuario', '@snc.notificaciones.service']
 
     snc.services.cola:
         class: '%snc.services.cola.class%'

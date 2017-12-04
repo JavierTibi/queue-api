@@ -3,6 +3,7 @@ namespace ApiV1Bundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
+use ApiV1Bundle\Helper\ServicesHelper;
 
 /**
  * User
@@ -78,7 +79,7 @@ class User implements UserInterface, \Serializable
     public function __construct($username, $rol)
     {
         $this->username = $username;
-        $this->password = $this->generatePassword();
+        $this->password = ServicesHelper::randomPassword(12);
         $this->rol = $rol;
     }
 
@@ -191,25 +192,6 @@ class User implements UserInterface, \Serializable
     public function unserialize($serialized)
     {
         list ($this->id, $this->username, $this->password) = unserialize($serialized);
-    }
-
-    /**
-     * Generate random password
-     *
-     * @param number $length
-     * @return string
-     */
-    private function generatePassword($length = 8)
-    {
-        $chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-        $count = mb_strlen($chars);
-
-        for ($i = 0, $result = ''; $i < $length; $i++) {
-            $index = rand(0, $count - 1);
-            $result .= mb_substr($chars, $index, 1);
-        }
-
-        return $result;
     }
 
     /**

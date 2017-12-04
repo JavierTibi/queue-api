@@ -12,7 +12,7 @@ class NotificationsExternalService
     private $token;
     private $from;
     private $subject;
-    private $template;
+    private $templates;
     private $urls;
 
     public function __construct(Container $container)
@@ -24,7 +24,7 @@ class NotificationsExternalService
         $this->token = $config['token'];
         $this->from = $config['from'];
         $this->subject = $config['subject'];
-        $this->template = $config['template'];
+        $this->templates = $config['templates'];
         $this->urls = $config['urls'];
     }
 
@@ -200,9 +200,9 @@ class NotificationsExternalService
      *
      * @return string
      */
-    public function getDefaultTemplate()
+    public function getEmailTemplate($name)
     {
-        return $this->template;
+        return $this->templates[$name];
     }
 
     /**

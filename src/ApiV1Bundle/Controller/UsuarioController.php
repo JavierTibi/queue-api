@@ -31,7 +31,7 @@ class UsuarioController extends ApiController
             function ($usuario, $userdata) use ($usuarioServices) {
                 return $this->respuestaOk('Usuario creado con éxito', [
                     'id' => $usuario->getUser()->getId(),
-                    'response' => $usuarioServices->enviarEmailUsuario($userdata)
+                    'response' => $usuarioServices->enviarEmailUsuario($userdata, 'usuario')
                 ]);
             },
             function ($err) {
