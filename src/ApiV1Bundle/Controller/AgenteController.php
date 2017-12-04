@@ -72,4 +72,22 @@ class AgenteController extends ApiController
             }
         );
     }
+
+    /**
+     * Desasigna una ventanilla a un Agente
+     * @Post("/agentes/{idUser}/desasignar")
+     */
+    public function desasignarVentanillaAction($idUser)
+    {
+        $this->agenteServices = $this->getAgenteServices();
+        return $this->agenteServices->desasignarVentanilla(
+            $idUser,
+            function () {
+                return $this->respuestaOk('Agente asignado a la ventanilla con éxito');
+            },
+            function ($err) {
+                return $this->respuestaError($err);
+            }
+        );
+    }
 }

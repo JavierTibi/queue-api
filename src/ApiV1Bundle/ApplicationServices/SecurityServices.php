@@ -116,8 +116,7 @@ class SecurityServices extends SNCServices
     {
         $tokenString = $this->jwtoken->getPayload($authorization);
         $uid = $this->jwtoken->getUID($tokenString);
-        $user = $this->usuarioRepository->findOneByUser($uid);
-        return $this->agenteService->desasignarVentanilla($user);
+        return $this->agenteService->desasignarVentanilla($uid);
     }
 
     /**
