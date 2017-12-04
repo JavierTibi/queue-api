@@ -20,3 +20,4 @@ parameters:
     database_testing_password: asdf1234
     snt_api_integration: http://sntapi.hexacta.com:8008/api/v1.0
     redis_host: 'redis://hxv-sntdb.hexacta.com/0'
+    redis_testing_host: redis://hxv-sntdb.hexacta.com/4
