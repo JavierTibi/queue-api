@@ -137,11 +137,14 @@ class AgenteServices extends SNCServices
 
     /**
      * Desasigna una ventanilla a un Agente
-     * @param $usuario
+     * @param $uid
      * @return mixed
      */
-    public function desasignarVentanilla($usuario)
+    public function desasignarVentanilla($uid)
     {
+
+        $user = $this->usuarioRepository->findOneByUser($uid);
+
         $agenteSync = new AgenteSync(
             $this->agenteValidator,
             $this->agenteRepository,
@@ -149,7 +152,7 @@ class AgenteServices extends SNCServices
             $this->puntoAtencionRepository
         );
 
-        $validateResult = $agenteSync->desasignarVentanilla($usuario);
+        $validateResult = $agenteSync->desasignarVentanilla($user);
 
         if (! $validateResult->hasError()) {
             $this->agenteRepository->flush();
