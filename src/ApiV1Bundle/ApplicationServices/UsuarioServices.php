@@ -276,8 +276,9 @@ class UsuarioServices extends SNCServices
             'password' => null
         ];
 
-        if (! $validateResult->hasError()) {
-            $repository = $this->userRepository;
+        $repository = $this->userRepository;
+
+        if (! $validateResult->hasError()) {            
             // user data
             $userData['email'] = $user->getUsername();
             $userData['password'] = ServicesHelper::randomPassword(12);
