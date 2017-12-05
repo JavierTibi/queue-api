@@ -5,6 +5,7 @@ namespace ApiV1Bundle\ApplicationServices;
 use ApiV1Bundle\Entity\Sync\AgenteSync;
 use ApiV1Bundle\Entity\Validator\AgenteValidator;
 use ApiV1Bundle\Entity\Validator\UserValidator;
+use ApiV1Bundle\Entity\Validator\ValidateResultado;
 use ApiV1Bundle\Repository\AgenteRepository;
 use ApiV1Bundle\Repository\PuntoAtencionRepository;
 use ApiV1Bundle\Repository\UsuarioRepository;
@@ -138,11 +139,10 @@ class AgenteServices extends SNCServices
     /**
      * Desasigna una ventanilla a un Agente
      * @param $uid
-     * @return mixed
+     * @return ValidateResultado
      */
     public function desasignarVentanilla($uid)
     {
-
         $user = $this->usuarioRepository->findOneByUser($uid);
 
         $agenteSync = new AgenteSync(
@@ -157,7 +157,6 @@ class AgenteServices extends SNCServices
         if (! $validateResult->hasError()) {
             $this->agenteRepository->flush();
         }
-
         return $validateResult;
     }
 
