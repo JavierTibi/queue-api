@@ -80,14 +80,12 @@ class AgenteController extends ApiController
     public function desasignarVentanillaAction($idUser)
     {
         $this->agenteServices = $this->getAgenteServices();
-        return $this->agenteServices->desasignarVentanilla(
-            $idUser,
-            function () {
-                return $this->respuestaOk('Agente asignado a la ventanilla con éxito');
-            },
-            function ($err) {
-                return $this->respuestaError($err);
-            }
-        );
+        $validateResult = $this->agenteServices->desasignarVentanilla($idUser);
+
+        if (! $validateResult->hasError()) {
+            return $this->respuestaOk('Agente desasignado de la ventanilla con éxito');
+        }
+
+        return $this->respuestaError($validateResult->getErrors());
     }
 }
