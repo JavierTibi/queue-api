@@ -146,10 +146,12 @@ class RedisServices extends SNCServices
             $cola = 'puntoAtencion:' . $puntoAtencionId . ':ventanilla:' . $ventanilla->getId();
 
             if ($this->exists($cola)) {
+                $this->getContainerRedis()->multi();
                 $turno = $this->getFirstElement($cola);
                 $colaOriginal = 'puntoAtencion:' . $puntoAtencionId . ':cola:' . json_decode($turno)->cola;
                 $this->remove($colaOriginal, $turno);
                 $this->remove($cola, $turno);
+                $this->getContainerRedis()->exec();
                 return $turno;
             }
         }
