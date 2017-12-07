@@ -146,11 +146,26 @@ class RedisServices extends SNCServices
             $cola = 'puntoAtencion:' . $puntoAtencionId . ':ventanilla:' . $ventanilla->getId();
 
             if ($this->exists($cola)) {
-                $turno = $this->getFirstElement($cola);
-                $colaOriginal = 'puntoAtencion:' . $puntoAtencionId . ':cola:' . json_decode($turno)->cola;
-                $this->remove($colaOriginal, $turno);
-                $this->remove($cola, $turno);
-                return $turno;
+                $result = null;
+                $options = array(
+                    'cas' => true,      // Initialize with support for CAS operations
+                    'watch' => $cola,    // Key that needs to be WATCHed to detect changes
+                    'retry' => 3,       // Number of retries on aborted transactions, after
+                    // which the client bails out with an exception.
+                );
+
+                // Executes a transaction inside the given callable block:
+                $this->getContainerRedis()->transaction($options, function ($tx) use ($cola, $puntoAtencionId, &$result) {
+                    $tx->multi();   // With CAS, MULTI *must* be explicitly invoked.
+                    $turno = $this->getFirstElementTransaction($cola, $tx);
+                    $colaOriginal = 'puntoAtencion:' . $puntoAtencionId . ':cola:' . json_decode($turno)->cola;
+                    $this->removeTransaction($colaOriginal, $turno, $tx);
+                    $this->removeTransaction($cola, $turno, $tx);
+
+                    $result = $turno;
+                });
+
+                return $result;
             }
         }
     }
@@ -160,9 +175,9 @@ class RedisServices extends SNCServices
      * @param $value
      * @return mixed
      */
-    private function remove($cola, $value)
+    private function removeTransaction($cola, $value, $tx)
     {
-        return $this->getContainerRedis()->zrem($cola, $value);
+        return $tx->zrem($cola, $value);
     }
 
 
@@ -170,9 +185,9 @@ class RedisServices extends SNCServices
      * @param $cola
      * @return mixed
      */
-    private function getFirstElement($cola)
+    private function getFirstElementTransaction($cola, $tx)
     {
-        $turnos =  $this->zrangeCola($cola, 0, -1);
+        $turnos = $tx->zrange($cola, 0, -1);
         return $turnos[0];
     }
 
