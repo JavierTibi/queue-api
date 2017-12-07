@@ -1,7 +1,7 @@
 # api specific parameters
 parameters:
     notificaciones:
-        host: 'http://186.33.229.89/1.0'
+        host: '%snc_api_notificaciones%'
         user: 'sistematurnos'
         pass: '>Q!D`"9zB}f`L<[R'
         token: 'ae35524801429b26e7bcd718ca01ca7b5c988788'

@@ -33,3 +33,6 @@ parameters:
     
     # Integration API
     snt_api_integration: http://sntapi.hexacta.com/api/v1.0
+
+    # Sistema de notificaciones
+    snc_api_notificaciones: 'https://uat-gestor.argentina.gob.ar/1.0'
