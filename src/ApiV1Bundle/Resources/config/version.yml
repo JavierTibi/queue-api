@@ -1,4 +1,4 @@
 # api specific parameters
 parameters:
     api_name: 'Sistema Nacional de Colas'
-    api_version: 0.2.0
+    api_version: 0.2.1
