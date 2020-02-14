@@ -1,4 +1,4 @@
-apicolas
-========
+Queue Management API
+====================
 
-A Symfony project created on September 28, 2017, 3:14 pm.
+Symfony project created for queue management with Redis
